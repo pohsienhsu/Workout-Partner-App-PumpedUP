@@ -94,7 +94,7 @@ export class App extends Component {
                   backgroundColor: '#313A3A',
                 },
                 headerTintColor: '#fff',
-              }}Ｆ
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
