@@ -1,141 +1,109 @@
-// run 'npm start' in the path folder in terminal
-
 import React, { Component } from 'react';
-import { 
-  StatusBar,
-  StyleSheet, 
-  Text, 
-  View, //<div>
-  SafeAreaView, // for iphone XR or later version
-  TouchableOpacity,
-  Dimensions,
-  Alert,
-} from 'react-native';
-import { AppLoading, Asset, Font } from 'expo';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-// Firebase App (the core Firebase SDK) is always required and
-// must be listed before other Firebase SDKs
-import firebase from "firebase/app";
+import * as firebase from "firebase"
 
-// Add the Firebase services that you want to use
-import "firebase/auth";
-import "firebase/firestore";
+import { Provider } from "react-redux"
+import { createStore, applyMiddleware } from "redux"
+import rootReducer from "./redux/reducers"
+import thunk from "redux-thunk"
 
-import Game from './Game'
-import Card from './Card'
-import Login from './Login'
-import ApiKeys from './ApiKeys';
+import LandingScreen from "./components/auth/Landing"
+import RegisterScreen from "./components/auth/Register"
+import LoginScreen from "./components/auth/Login"
+import MainScreen from "./components/Main"
 
+const store = createStore(rootReducer, applyMiddleware(thunk))
 
-class App extends Component {
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCHAa1k7rYagsv1UUCK5Kci65jKY1tA1DQ",
+  authDomain: "instagram-clone-77b2e.firebaseapp.com",
+  projectId: "instagram-clone-77b2e",
+  storageBucket: "instagram-clone-77b2e.appspot.com",
+  messagingSenderId: "1036943764922",
+  appId: "1:1036943764922:web:7619f9493db8b055c28183",
+  measurementId: "G-5HNCXXG7ZQ"
+};
 
+// not running firebase
+// if (firebase.apps.length === 0) {
+//   firebase.initializeApp(firebaseConfig)
+// }
+
+const Stack = createStackNavigator()
+
+export class App extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      isLoadingComplete: false,
-      isAuthenticationReady: false,
-      isAuthenticated: false,
-    };
-
-    // Initialize firebase...
-    if (!firebase.apps.length) { firebase.initializeApp(ApiKeys.FirebaseConfig); }
-    firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
+    super(props)
+    // this.state = {
+    //   loaded: false
+    // }
   }
 
-  onAuthStateChanged = (user) => {
-    this.setState({isAuthenticationReady: true});
-    this.setState({isAuthenticated: !!user});
+  componentDidMount() {
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (!user) {
+    //     this.setState({
+    //       loggedIn: false,
+    //       loaded: true
+    //     })
+    //   } else {
+    //     this.setState({
+    //       loggedIn: true,
+    //       loaded: true
+    //     })
+    //   }
+
+    // })
   }
-  
+
   render() {
-    // if ( (!this.state.isLoadingComplete || !this.state.isAuthenticationReady) && !this.props.skipLoadingScreen) {
-    //   // return (
-    //   //   <AppLoading
-    //   //     startAsync={this._loadResourcesAsync}
-    //   //     onError={this._handleLoadingError}
-    //   //     onFinish={this._handleFinishLoading}
-    //   //   />
-    //   // );
-    //   return (<Login/>)
-    // } else {
+    // const { loggedIn, loaded } = this.state
+
+    // if (!loaded) {
     //   return (
-    //     <View style={styles.container}>
-    //       {(this.state.isAuthenticated) ? <Game /> : <Login />}
+    //     <View style={{ justifyContent: "center", flex: 1, alignItems: 'center' }}>
+    //       <Text >Loading...</Text>
     //     </View>
     //   )
     // }
+
+    // if (!loggedIn) {
+    //   return (
+    //     <NavigationContainer>
+    //       <Stack.Navigator initialRouteName="Landing">
+    //         <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+    //         <Stack.Screen name="Register" component={RegisterScreen} />
+    //         <Stack.Screen name="Login" component={LoginScreen} />
+    //       </Stack.Navigator>
+    //     </NavigationContainer>
+    //   );
+    // }
+
     return (
-        <View style={styles.container}>
-          {(this.state.isAuthenticated) ? <Game /> : <Login />}
-        </View>
-      )
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Main">
+            <Stack.Screen name="Main" component={MainScreen} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "PumpedUp",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff',
+              }}Ｆ
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    )
   }
 }
 
 export default App
 
-const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: 'yellow',
-  // },
-  // header: {
-  //   flex: 1,
-  //   backgroundColor: '#eee',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // heading : {
-  //   fontSize: 36,
-  //   fontWeight: 'bold',
-  //   textAlign: 'center',
-  // },
-  // main: {
-  //   flex: 3,
-  //   backgroundColor: '#fff',
-  // },
-  // buttonText: {
 
-  // },
-  // footer: {
-  //   flex: 1,
-  //   backgroundColor: '#eee',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // footing : {
-  //   fontSize: 20,
-  //   fontWeight: 'bold',
-  //   textAlign: 'center',
-  // },
-  // gameBoard: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   flexWrap: 'wrap',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   alignContent: 'center',
-  // },
-  // button: {
-  //   backgroundColor: '#ccc',
-  //   borderRadius: 8,
-  //   width: 48,
-  //   height: 48,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   margin: (Dimensions.get('window').width - (48*4)) / (5*2),
-  // },
-  // buttonText: {
-  //   fontSize: 30,
-  // },
-  // tryAgainButton: {
-  //   backgroundColor: 'steelblue',
-  //   padding: 8,
-  //   borderRadius: 8,
-  //   marginTop: 20,
-  // },
-  // tryAgainButtonText: {
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  // }
-})
+
