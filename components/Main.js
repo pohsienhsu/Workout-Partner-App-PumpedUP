@@ -25,7 +25,7 @@ export class Main extends Component {
 
     return (
       <Tab.Navigator 
-        initialRouteName="Feed"
+        initialRouteName="Home"
         barStyle={{ backgroundColor: '#313A3A', paddingBottom: 5 }}
       >
         <Tab.Screen name="Home" component={HomeScreen}
