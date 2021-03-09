@@ -9,10 +9,10 @@ import { createStore, applyMiddleware } from "redux"
 import rootReducer from "./redux/reducers"
 import thunk from "redux-thunk"
 
-import LandingScreen from "./components/auth/Landing"
-import RegisterScreen from "./components/auth/Register"
-import LoginScreen from "./components/auth/Login"
-import MainScreen from "./components/Main"
+import LandingScreen from "./src/auth/Landing"
+import RegisterScreen from "./src/auth/Register"
+import LoginScreen from "./src/auth/Login"
+import MainScreen from "./src/screens/MainScreen"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 

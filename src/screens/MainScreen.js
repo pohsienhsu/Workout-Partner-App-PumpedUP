@@ -1,14 +1,14 @@
-import React, { Component } from 'react'
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs"
-import { Feather } from "@expo/vector-icons"
-import { connect } from "react-redux"
-import { bindActionCreators } from "redux"
-import { fetchUser, fetchUserPosts } from '../redux/actions/index'
+import React, { Component } from 'react';
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { Feather } from "@expo/vector-icons";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { fetchUser, fetchUserPosts } from '../../redux/actions/index';
 
-import HomeScreen from "./main/Home"
+import HomeScreen from "./Home";
+import BeaconScreen from "./Beacon";
 
-import ProfileScreen from "./main/Profile"
-
+import ProfileScreen from "./Profile";
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -35,7 +35,7 @@ export class Main extends Component {
             )
           }}
         />
-        <Tab.Screen name="Beacon" component={EmptyScreen} navigation={this.props.navigation}
+        <Tab.Screen name="Beacon" component={BeaconScreen} navigation={this.props.navigation}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="search" color={color} size={26} />
