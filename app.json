@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AwesomeProject",
-    "slug": "AwesomeProject",
+    "name": "instagram_clone",
+    "slug": "instagram_clone",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
