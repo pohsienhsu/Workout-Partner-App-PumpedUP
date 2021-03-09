@@ -5,7 +5,7 @@ First install Nodejs and npm
 
 Install [expo](https://expo.io/learn)
 ```sh
-npm install expo-cli --global
+npm install --global expo-cli
 ```
 
 Install the needed packages in the root folder of the project (It may take a while)
