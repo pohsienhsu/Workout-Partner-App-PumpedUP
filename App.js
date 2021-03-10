@@ -15,6 +15,8 @@ import LandingScreen from "./src/auth/Intro"
 import RegisterScreen from "./src/auth/Register"
 import LoginScreen from "./src/auth/Login"
 import MainScreen from "./src/screens/MainScreen"
+import PairUpScreen from "./src/screens/PairUpSuccess"
+import HomeScreen from "./src/screens/Home"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -68,7 +70,7 @@ export class App extends Component {
           <Stack.Navigator initialRouteName="Landing">
             <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} navigation={this.props.navigation} options={{ headerShown: false }}/>
+            <Stack.Screen name="Login" component={LoginScreen} navigation={this.props.navigation} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       );

@@ -1,11 +1,36 @@
 import React from 'react'
-import {View, Text} from "react-native"
+import { View, Text, StyleSheet, Image, Botton } from "react-native"
 
-export default function Home() {
+export default function Home(props) {
   return (
-    <View>
-      <Text> Home Screen </Text>
+    <View style={styles.container}>
+      <View>
+        <Image
+          style={styles.profileImage}
+          source={{ uri: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fw19-trn-projrock-dj-03-0247-1587740368.jpg" }}
+        />
+      </View>
+      <View>
+          {/* <Botton
+            title="Yes"
+            onPress={() => {
+              props.navigation.navigate("PairUp")
+            }}
+          /> */}
+      </View>
     </View>
   )
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  profileImage: {
+    margin: 10,
+    height: 300,
+    width: 300,
+    borderRadius: 150,
+    alignSelf: "center"
+  }
+})

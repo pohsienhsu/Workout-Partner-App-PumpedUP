@@ -10,6 +10,7 @@ import firebase from 'firebase'
 import HomeScreen from "./Home";
 import BeaconScreen from "./Beacon";
 import ProfileScreen from "./Profile";
+import PairUpSuccess from "./PairUpSuccess"
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -30,7 +31,7 @@ export class Main extends Component {
         initialRouteName="Home"
         barStyle={{ backgroundColor: '#313A3A', paddingBottom: 20 }}
       >
-        <Tab.Screen name="Home" component={HomeScreen}
+        <Tab.Screen name="Home" component={HomeScreen} navigation={this.props.navigation}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="home" color={color} size={26} />
@@ -44,7 +45,7 @@ export class Main extends Component {
             )
           }}
         />
-        <Tab.Screen name="Inbox" component={EmptyScreen}
+        <Tab.Screen name="Inbox" component={PairUpSuccess}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="inbox" color={color} size={26} />
