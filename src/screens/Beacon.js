@@ -8,7 +8,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import DropDownPicker from 'react-native-dropdown-picker';
 // https://reactnativeexample.com/a-picker-dropdown-component-for-react-native/
 
-export default function Beacon() {
+export default function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
   const [bodyPart, setBodyPart] = useState({
     chest: false,
@@ -67,6 +67,7 @@ export default function Beacon() {
           placeholder="Select workout experience"
           containerStyle={{ height: 50, width: '80%' }}
           dropDownMaxHeight={1500}
+          containerStyle={styles.dropDown}
           // onChangeItem={item => console.log(item.label, item.value)}
         />
       </View>
@@ -125,7 +126,8 @@ export default function Beacon() {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    marginVertical: 20
   },
   container: {
     // alignItems: 'center',
@@ -137,7 +139,12 @@ const styles = StyleSheet.create({
     color: "#EF9C2E"
   },
   checkbox: {
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    marginLeft: 60,
+    marginRight: 60
   },
+  dropDown: {
+    marginHorizontal: 60
+  }
   
 })
