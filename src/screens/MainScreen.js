@@ -3,11 +3,12 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import { Feather } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser, fetchUserPosts } from '../../redux/actions/index';
+import { fetchUser, fetchUserPosts, clearData } from '../../redux/actions/index';
+
+import firebase from 'firebase'
 
 import HomeScreen from "./Home";
 import BeaconScreen from "./Beacon";
-
 import ProfileScreen from "./Profile";
 
 const Tab = createMaterialBottomTabNavigator()
@@ -18,15 +19,16 @@ const EmptyScreen = () => {
 
 export class Main extends Component {
   componentDidMount() {
-    // this.props.fetchUser()
+    this.props.fetchUser()
+    this.props.clearData()
     // this.props.fetchUserPosts()
   }
   render() {
 
     return (
-      <Tab.Navigator 
+      <Tab.Navigator
         initialRouteName="Home"
-        barStyle={{ backgroundColor: '#313A3A', paddingBottom: 5 }}
+        barStyle={{ backgroundColor: '#313A3A', paddingBottom: 20 }}
       >
         <Tab.Screen name="Home" component={HomeScreen}
           options={{
@@ -50,6 +52,12 @@ export class Main extends Component {
           }}
         />
         <Tab.Screen name="Profile" component={ProfileScreen}
+          listeners={({ navigation }) => ({
+            tabPress: event => {
+              event.preventDefault();
+              navigation.navigate("Profile", { uid: firebase.auth().currentUser.uid })
+            }
+          })}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="user" color={color} size={26} />
@@ -68,11 +76,11 @@ export class Main extends Component {
   }
 }
 
-// const mapStateToProps = (store) => ({
-//   currentUser: store.userState.currentUser
-// })
-// const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts }, dispatch)
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch)
 
-// export default connect(mapStateToProps, mapDispatchProps)(Main)
+export default connect(mapStateToProps, mapDispatchProps)(Main)
 
-export default Main
+// export default Main

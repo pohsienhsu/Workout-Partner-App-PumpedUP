@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Button, TextInput, Text } from "react-native"
+import { View, Button, TextInput, Text, StyleSheet } from "react-native"
 import firebase from "firebase"
 
 export class Login extends Component {
@@ -19,7 +19,8 @@ export class Login extends Component {
     const { email, password } = this.state
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then((result) => {
-        console.log(result)
+        console.log(`${email} logs in successfully`)
+        // console.log(result)
       })
       .catch((err) => {
         console.log(err)
@@ -29,24 +30,54 @@ export class Login extends Component {
   // anytime the state above changes, the screen rerenders
   render() {
     return (
-      <View>
-        <TextInput
-          placeholder='email'
-          onChangeText={(email) => this.setState({ email })}
-        />
-        <TextInput
-          placeholder='password'
-          secureTextEntry={true}
-          onChangeText={(password) => this.setState({ password })}
-        />
-        <Button
-          // customize SignUp function
-          onPress={() => this.onSignIn()}
-          title="Sign In"
-        />
+      <View style={styles.container}>
+        <View style={{ flex: 0.2 }}>
+
+        </View>
+        <View style={{ flex: 0.2 }}>
+          <Text style={{ color: "#fff", fontSize: 30, alignSelf: "center" }}> Login</Text>
+        </View>
+        <View style={{ flex: 0.7 }}>
+          <TextInput
+            autoCorrect={false}
+            style={styles.textInput}
+            placeholder='email'
+            onChangeText={(email) => this.setState({ email })}
+          />
+          <TextInput
+            autoCorrect={false}
+            style={styles.textInput}
+            placeholder='password'
+            secureTextEntry={true}
+            onChangeText={(password) => this.setState({ password })}
+          />
+          <Button
+            // customize SignUp function
+            onPress={() => this.onSignIn()}
+            title="Sign In"
+          />
+        </View>
       </View>
     )
   }
 }
 
 export default Login
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // justifyContent: 'space-around',
+    backgroundColor: "#313A3A"
+  },
+  textInput: {
+    height: 50,
+    backgroundColor: "#fff",
+    paddingHorizontal: 15,
+    borderRadius: 20 ,
+    marginHorizontal: 45,
+    marginBottom: 15,
+    color: "black",
+    fontSize: 20
+  }
+})
