@@ -18,7 +18,6 @@ import MainScreen from "./src/screens/MainScreen"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
-
 // not running firebase
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig)
