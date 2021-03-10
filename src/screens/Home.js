@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image } from "react-native"
+import { View, Text, StyleSheet, Image, Botton } from "react-native"
 
-export default function Home() {
+export default function Home(props) {
   return (
     <View style={styles.container}>
       <View>
@@ -9,6 +9,14 @@ export default function Home() {
           style={styles.profileImage}
           source={{ uri: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fw19-trn-projrock-dj-03-0247-1587740368.jpg" }}
         />
+      </View>
+      <View>
+          {/* <Botton
+            title="Yes"
+            onPress={() => {
+              props.navigation.navigate("PairUp")
+            }}
+          /> */}
       </View>
     </View>
   )

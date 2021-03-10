@@ -140,6 +140,7 @@ export default function Beacon(props) {
           value={valueMS}
           onChange={onChangeMS}
           mainContainerStyle={styles.dropDown}
+          itemContainerStyle={{height: 40}}
         />
 
       </View>

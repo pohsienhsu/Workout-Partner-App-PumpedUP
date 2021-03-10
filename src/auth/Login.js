@@ -39,14 +39,14 @@ export class Login extends Component {
         </View>
         <View style={{ flex: 0.7 }}>
           <TextInput
-            autoCapitalize={false}
+            autoCapitalize="none"
             autoCorrect={false}
             style={styles.textInput}
             placeholder='email'
             onChangeText={(email) => this.setState({ email })}
           />
           <TextInput
-            autoCapitalize={false}
+            autoCapitalize="none"
             autoCorrect={false}
             style={styles.textInput}
             placeholder='password'
