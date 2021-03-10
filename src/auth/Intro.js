@@ -3,13 +3,14 @@ import { View, Text, StyleSheet, Button } from "react-native"
 
 export default function Landing({ navigation }) {
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
-      <Button
+    <View style={styles.container}>
+      <Text style={styles.title} > PumpedUP </Text>
+      {/* <Button
         title="Register"
         onPress={() => { navigation.navigate("Register") }}
-      />
+      /> */}
       <Button
-        title="Login"
+        title="Let's get PUMPED!"
         onPress={() => { navigation.navigate("Login") }}
       />
     </View>
@@ -17,5 +18,15 @@ export default function Landing({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "space-evenly",
+    backgroundColor: "#313A3A"
+  },
+  title: {
+    alignSelf: "center",
+    fontSize: 36,
+    color: "#fff"
+  }
 
 })

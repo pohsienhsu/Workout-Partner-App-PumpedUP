@@ -20,8 +20,8 @@ export default function Beacon() {
     others: false
   })
 
-  console.log(gender)
-  console.log(bodyPart)
+  // console.log(gender)
+  // console.log(bodyPart)
 
   return (
     <ScrollView style={styles.view}>
@@ -67,7 +67,7 @@ export default function Beacon() {
           placeholder="Select workout experience"
           containerStyle={{ height: 50, width: '80%' }}
           dropDownMaxHeight={1500}
-          onChangeItem={item => console.log(item.label, item.value)}
+          // onChangeItem={item => console.log(item.label, item.value)}
         />
       </View>
 
