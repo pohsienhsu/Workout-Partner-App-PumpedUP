@@ -39,12 +39,14 @@ export class Login extends Component {
         </View>
         <View style={{ flex: 0.7 }}>
           <TextInput
+            autoCapitalize="none"
             autoCorrect={false}
             style={styles.textInput}
             placeholder='email'
             onChangeText={(email) => this.setState({ email })}
           />
           <TextInput
+            autoCapitalize="none"
             autoCorrect={false}
             style={styles.textInput}
             placeholder='password'
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#fff",
     paddingHorizontal: 15,
-    borderRadius: 20 ,
+    borderRadius: 20,
     marginHorizontal: 45,
     marginBottom: 15,
     color: "black",

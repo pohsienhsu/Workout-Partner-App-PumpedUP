@@ -15,6 +15,7 @@ import LandingScreen from "./src/auth/Intro"
 import RegisterScreen from "./src/auth/Register"
 import LoginScreen from "./src/auth/Login"
 import MainScreen from "./src/screens/MainScreen"
+import PairUpScreen from "./src/screens/PairUpSuccess"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -68,7 +69,7 @@ export class App extends Component {
           <Stack.Navigator initialRouteName="Landing">
             <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} navigation={this.props.navigation} options={{ headerShown: false }}/>
+            <Stack.Screen name="Login" component={LoginScreen} navigation={this.props.navigation} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       );
@@ -79,6 +80,16 @@ export class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Main">
             <Stack.Screen name="Main" component={MainScreen} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "PumpedUp",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff',
+              }}
+            />
+            <Stack.Screen name="PairUp" component={PairUpScreen} navigation={this.props.navigation}
               options={{
                 headerShown: true,
                 title: "PumpedUp",

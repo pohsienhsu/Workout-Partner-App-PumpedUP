@@ -10,6 +10,7 @@ import firebase from 'firebase'
 import HomeScreen from "./Home";
 import BeaconScreen from "./Beacon";
 import ProfileScreen from "./Profile";
+import PairUpSuccess from "./PairUpSuccess"
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -28,9 +29,9 @@ export class Main extends Component {
     return (
       <Tab.Navigator
         initialRouteName="Home"
-        barStyle={{ backgroundColor: '#313A3A', paddingBottom: 20 }}
+        barStyle={{ backgroundColor: '#313A3A', paddingBottom: 10 }}
       >
-        <Tab.Screen name="Home" component={HomeScreen}
+        <Tab.Screen name="Home" component={HomeScreen} navigation={this.props.navigation}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="home" color={color} size={26} />
@@ -52,12 +53,12 @@ export class Main extends Component {
           }}
         />
         <Tab.Screen name="Profile" component={ProfileScreen}
-          listeners={({ navigation }) => ({
-            tabPress: event => {
-              event.preventDefault();
-              navigation.navigate("Profile", { uid: firebase.auth().currentUser.uid })
-            }
-          })}
+          // listeners={({ navigation }) => ({
+          //   tabPress: event => {
+          //     event.preventDefault();
+          //     navigation.navigate("Profile", { uid: firebase.auth().currentUser.uid })
+          //   }
+          // })}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="user" color={color} size={26} />
