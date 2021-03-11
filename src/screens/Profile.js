@@ -80,7 +80,7 @@ function Profile(props) {
   // }
   return (
     <View style={styles.container}>
-      <View style={styles.containerInfo}>
+      <View>
         {/* <Text>{user.name}</Text>
         <Text>{user.email}</Text> */}
 
@@ -104,10 +104,19 @@ function Profile(props) {
             title="Logout"
             onPress={() => onLogout()}
           />} */}
-        <Button
-          title="Logout"
-          onPress={() => onLogout()}
-        />
+        <View>
+          <Image
+            style={styles.profileImage}
+            source={{ uri: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fw19-trn-projrock-dj-03-0247-1587740368.jpg" }}
+          />
+        </View>
+        <View>
+          <Button
+            title="Logout"
+            onPress={() => onLogout()}
+          />
+        </View>
+
       </View>
 
     </View>
@@ -119,19 +128,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  containerInfo: {
-    margin: 20
-  },
-  containerGallery: {
-    flex: 1
-  },
-  containerImage: {
-    flex: 1 / 3
-
-  },
-  image: {
-    flex: 1,
-    aspectRatio: 1 / 1
+  profileImage: {
+    margin: 10,
+    height: 300,
+    width: 300,
+    borderRadius: 150,
+    alignSelf: "center"
   }
 })
 
