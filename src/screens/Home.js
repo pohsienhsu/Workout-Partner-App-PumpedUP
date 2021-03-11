@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, Botton } from "react-native"
+import { View, Text, StyleSheet, Image, Button } from "react-native"
 
 export default function Home(props) {
   return (
@@ -11,12 +11,10 @@ export default function Home(props) {
         />
       </View>
       <View>
-          {/* <Botton
-            title="Yes"
-            onPress={() => {
-              props.navigation.navigate("PairUp")
-            }}
-          /> */}
+        <Button
+          title="Yes"
+          onPress={() => props.navigation.navigate("PairUp")}
+        />
       </View>
     </View>
   )

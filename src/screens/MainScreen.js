@@ -45,7 +45,7 @@ export class Main extends Component {
             )
           }}
         />
-        <Tab.Screen name="Inbox" component={PairUpSuccess}
+        <Tab.Screen name="Inbox" component={EmptyScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="inbox" color={color} size={26} />
@@ -53,12 +53,12 @@ export class Main extends Component {
           }}
         />
         <Tab.Screen name="Profile" component={ProfileScreen}
-          listeners={({ navigation }) => ({
-            tabPress: event => {
-              event.preventDefault();
-              navigation.navigate("Profile", { uid: firebase.auth().currentUser.uid })
-            }
-          })}
+          // listeners={({ navigation }) => ({
+          //   tabPress: event => {
+          //     event.preventDefault();
+          //     navigation.navigate("Profile", { uid: firebase.auth().currentUser.uid })
+          //   }
+          // })}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="user" color={color} size={26} />
