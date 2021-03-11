@@ -1,7 +1,8 @@
 import React, { cloneElement, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
 import { RadioButton } from 'react-native-paper';
-import BeaconCheckBox from "../components/beaconCheckBox "
+import BeaconCheckBox from "../components/beaconCheckBox"
+import LocationCheckBox from "../components/locationCheckBox"
 
 import ModalDropdown from 'react-native-modal-dropdown';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -12,21 +13,27 @@ import {
   MultiselectDropdown,
 } from 'sharingan-rn-modal-dropdown';
 // https://reactnativeexample.com/a-simple-and-customizable-react-native-dropdown-created-using-react-native-modal/
+import Slider from "react-native-smooth-slider"
 
 
 export default function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
   const [experience, setExperience] = useState([]);
   const [bodyPart, setBodyPart] = useState([]);
+  // const [remote, setRemote] = useState({ remote: false });
+  const [location, setLocation] = useState({ 'Current Location': false, remote: false });
+  const [intensity, setIntensity] = useState('medium');
+  const [distance, setDistance] = useState(1);
 
   bodyPart ? console.log(`Body Data: [${bodyPart}]`) : null;
   experience ? console.log(`Experience Data: [${experience}]`) : null;
+  console.log(`Distance: ${distance}`)
 
   return (
     <ScrollView style={styles.view}>
 
       <View style={styles.container}>
-        <Text style={{ fontSize: 28, alignSelf: "center" }}>Pairing Preference</Text>
+        <Text style={styles.Title}>Pairing Preference</Text>
       </View>
 
       <View style={styles.container}>
@@ -64,7 +71,6 @@ export default function Beacon(props) {
           disableSort
           itemContainerStyle={{ height: 40 }}
           parentDDContainerStyle={{ height: "80%" }}
-
         />
       </View>
 
@@ -81,25 +87,85 @@ export default function Beacon(props) {
         />
       </View>
 
+      <View style={styles.container}>
+        <Text style={styles.title}> WorkOut Intensity </Text>
+        <RadioButton.Group onValueChange={newValue => setIntensity(newValue)} value={intensity}>
+          <RadioButton.Item
+            label="Low"
+            value="low"
+            color="black"
+          />
+          <RadioButton.Item
+            color="black"
+            label="Medium"
+            value="medium"
+          />
+          <RadioButton.Item
+            color="black"
+            label="High"
+            value="high"
+          />
+        </RadioButton.Group>
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}> Mode </Text>
+        <LocationCheckBox
+          option="In-Person"
+          state={location}
+          setState={setLocation}
+          containerStyle={styles.checkbox}
+        />
+        <LocationCheckBox
+          option="Remote"
+          state={location}
+          setState={setLocation}
+          containerStyle={styles.checkbox}
+        />
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}> Location </Text>
+        <Slider
+          value={distance}
+          onValueChange={value => setDistance(value)}
+          minimumValue={1}
+          maximumValue={50}
+          step={1}
+        />
+        <Text>{distance} {distance === 1 ? "mile" : "miles"}</Text>
+      </View>
+
+      <View style={styles.container}>
+      </View>
+
+      <View style={{ height: 300 }}></View>
     </ScrollView >
   )
 }
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#fff",
-    marginVertical: 0
+    marginVertical: 0,
   },
   container: {
     marginTop: 20,
     marginHorizontal: '10%'
   },
+  Title: {
+    fontSize: 28,
+    alignSelf: "center",
+    fontWeight: "bold",
+    color: "#313A3A"
+  },
   title: {
     alignSelf: "center",
     fontSize: 20,
-    color: "#EF9C2E"
-  },
+    color: "#EF9C2E",
+    fontWeight: "bold"
+  }
 })
 
 const bodyData = [
