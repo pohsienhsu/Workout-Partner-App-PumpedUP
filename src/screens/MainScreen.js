@@ -29,7 +29,7 @@ export class Main extends Component {
     return (
       <Tab.Navigator
         initialRouteName="Home"
-        barStyle={{ backgroundColor: '#313A3A', paddingBottom: 20 }}
+        barStyle={{ backgroundColor: '#313A3A', paddingBottom: 10 }}
       >
         <Tab.Screen name="Home" component={HomeScreen} navigation={this.props.navigation}
           options={{
