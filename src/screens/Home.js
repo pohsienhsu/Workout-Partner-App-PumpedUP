@@ -13,8 +13,11 @@ import {
 
 import { Icon } from 'react-native-elements'
 
+import InvitationModal from '../components/InvitationModal';
+
 export default function Home(props) {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState('none');
+  const [show, setShow] = useState(false);
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
 
   
@@ -28,27 +31,39 @@ export default function Home(props) {
         />
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <TouchableOpacity style={styles.Button}>
+        <TouchableOpacity 
+          style={styles.Button}
+          onPress = {() => {
+            show ? setShow(false) : setShow(true);
+          }}>
           <Text style={styles.boxText}>Beacon Match</Text>
           <View style={{ paddingTop: 8}}/>
-          <Text style={styles.ButtonText}>+3</Text>
+          <Text style={styles.ButtonText}>+1</Text>
         </TouchableOpacity>
 
         <View style={{ paddingLeft: 8}}/>
         
         <TouchableOpacity 
           style={styles.Button}
-          // onPress={() => this.setState({show: true})}
+          onPress={() => {
+              console.log(modalVisible)
+              if (modalVisible.localeCompare('none') == 0) {
+                setModalVisible('flex');
+              } else if (modalVisible.localeCompare('flex') == 0) {
+                setModalVisible('none');
+              }
+            }
+          }
         >
           <Text style={styles.boxText}>Invitation</Text>
           <View style={{ paddingTop: 8}}/>
-          <Text style={styles.ButtonText}>+2</Text>
+          <Text style={styles.ButtonText}>+3</Text>
         </TouchableOpacity>
       </View>
 
       <View style={{ paddingTop: 8}}/>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', display: 'none' }}>
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Daily Goal</Text>
           <View style={{ paddingTop: 8}}/>
@@ -64,7 +79,11 @@ export default function Home(props) {
         </TouchableOpacity>
       </View>
 
-      <Modal transparent={true} visible={false}>
+      <InvitationModal
+        modalVisible={modalVisible}
+      />
+
+      <Modal transparent={true} visible={show}>
         <View style={{ backgroundColor: '#000000aa', flex: 1}}>
           <View style={styles.ModalBox}>
             <Image
@@ -94,7 +113,10 @@ export default function Home(props) {
               <View style={styles.IconBoxCheck}>
                 <TouchableOpacity 
                   style={styles.IconButton}
-                  onPress={() => props.navigation.navigate("PairUp")}
+                  onPress={() => {
+                    props.navigation.navigate("PairUp");
+                    setShow(false);
+                  }}
                 >
                   <Icon name='check' color='green'/>
                 </TouchableOpacity>
