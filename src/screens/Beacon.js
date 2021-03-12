@@ -25,9 +25,9 @@ export default function Beacon(props) {
   const [intensity, setIntensity] = useState('medium');
   const [distance, setDistance] = useState(1);
 
-  bodyPart ? console.log(`Body Data: [${bodyPart}]`) : null;
-  experience ? console.log(`Experience Data: [${experience}]`) : null;
-  console.log(`Distance: ${distance}`)
+  // bodyPart ? console.log(`Body Data: [${bodyPart}]`) : null;
+  // experience ? console.log(`Experience Data: [${experience}]`) : null;
+  // console.log(`Distance: ${distance}`)
 
   return (
     <ScrollView style={styles.view}>
