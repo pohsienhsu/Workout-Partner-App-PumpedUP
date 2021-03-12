@@ -1,5 +1,5 @@
 import React, { cloneElement, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import BeaconCheckBox from "../components/beaconCheckBox"
 import LocationCheckBox from "../components/locationCheckBox"
@@ -88,22 +88,22 @@ export default function Beacon(props) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}> WorkOut Intensity </Text>
+        <Text style={styles.title}> Frequency </Text>
         <RadioButton.Group onValueChange={newValue => setIntensity(newValue)} value={intensity}>
           <RadioButton.Item
-            label="Low"
-            value="low"
+            label="1 ~ 2 / week"
+            value="1 ~ 2 / week"
             color="black"
           />
           <RadioButton.Item
             color="black"
-            label="Medium"
-            value="medium"
+            label="3 ~ 5 / week"
+            value="3 ~ 5 / week"
           />
           <RadioButton.Item
             color="black"
-            label="High"
-            value="high"
+            label="6 ~ 7 / week"
+            value="6 ~ 7 / week"
           />
         </RadioButton.Group>
       </View>
@@ -137,6 +137,14 @@ export default function Beacon(props) {
       </View>
 
       <View style={styles.container}>
+        <View style={styles.saveBtn}>
+          <TouchableOpacity
+            style={styles.Button}
+            onPress={() => { props.navigation.navigate("Home") }}
+          >
+            <Text style={styles.ButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={{ height: 300 }}></View>
@@ -165,6 +173,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#EF9C2E",
     fontWeight: "bold"
+  },
+  saveBtn: {
+    marginTop: 20,
+    alignSelf: 'center',
+    width: 100,
+    height: 46,
+    backgroundColor: 'orange',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
   }
 })
 
