@@ -11,7 +11,7 @@ import {
 export default function Landing({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ paddingTop: 80, alignItems: "center" }}>
+      <View style={{ paddingTop: 40, alignItems: "center" }}>
         <Text style={styles.heading} > PumpedUP </Text>
         <View>
           <Image
@@ -19,7 +19,8 @@ export default function Landing({ navigation }) {
             source={require('../image/frontcharacter.png')}
           />
         </View>
-        <View style={{ paddingTop: 100 }} />
+
+        <View style={{ paddingTop: 20}}/>
 
         <View
           style={{
