@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   SafeAreaView, // for iphone XR or later version 
   View,
@@ -14,6 +14,10 @@ import {
 import { Icon } from 'react-native-elements'
 
 export default function Home(props) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
+
+  
 
   return (
     <View style={styles.container}>
