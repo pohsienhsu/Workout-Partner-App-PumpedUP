@@ -7,13 +7,13 @@ require('firebase/firestore')
 import { connect } from "react-redux"
 
 function Profile(props) {
-  const [user, setUser] = useState(props);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const { currentUser } = props;
     setUser(currentUser)
 
-  }, [])
+  })
     // Only re-run the effect if uid changes
   // }, [props.route.params.uid])
 
@@ -21,9 +21,9 @@ function Profile(props) {
     firebase.auth().signOut();
   }
 
-  // if (user === null) {
-  //   return <View />
-  // }
+  if (user === null) {
+    return <View />
+  }
   return (
     <View style={styles.container}>
       <View>
