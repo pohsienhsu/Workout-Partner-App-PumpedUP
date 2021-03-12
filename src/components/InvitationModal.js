@@ -15,12 +15,12 @@ const { width } = Dimensions.get('window');
 const data = [
   {
     name: 'Conan O\'Brien',
-    intro: 'Tallest and Fastest Man on Earth\nNever mess with me!',
-    img: 'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2020/05/Kevin-Hart-Headshot-Kevin-Kwan-High-Res--scaled-e1589926838234.jpg',
+    intro: 'If you can really laugh at yourself loud and hard every time you fail,\nPeople will think you\' drunk',
+    img: 'https://tvline.com/wp-content/uploads/2020/11/conan-ending.jpg?',
     gender: 'Male',
-    age: 40,
-    weight: '150',
-    hobby: 'Cat, Movies, Thug Life'
+    age: 57,
+    weight: '190',
+    hobby: 'Self pity'
   },
   {
     name: 'Kevin Hart',
@@ -33,17 +33,17 @@ const data = [
   },
   {
     name: 'Gordon Ramsay',
-    intro: 'Tallest and Fastest Man on Earth\nNever mess with me!',
-    img: 'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2020/05/Kevin-Hart-Headshot-Kevin-Kwan-High-Res--scaled-e1589926838234.jpg',
+    intro: 'This lamb is so undercooked, it\'s following Mary to school!',
+    img: 'https://www.telegraph.co.uk/content/dam/news/2016/09/29/6455882-ramsay-news_trans_NvBQzQNjv4BqbRF8GMdXQ5UNQkWBrq_MOBxo7k3IcFzOpcVpLpEd-fY.jpg',
     gender: 'Male',
-    age: 40,
-    weight: '150',
-    hobby: 'Cat, Movies, Thug Life'
+    age: 54,
+    weight: '200',
+    hobby: 'Cook, Make adults cry'
   }
 ];
 
 
-const  InvitationModal = (props) => {
+const  InvitationModal = ({modalVisible, navigation}) => {
   const carouselRef = useRef(null);
 
   const renderItem = ({ item, index }) => {
@@ -71,7 +71,7 @@ const  InvitationModal = (props) => {
               <View style={styles.IconBoxCheck}>
                 <TouchableOpacity 
                   style={styles.IconButton}
-                  onPress={() => props.navigation.navigate("PairUp")}
+                  onPress={() => navigation.navigate("PairUp")}
                 >
                   <Icon name='check' color='green'/>
                 </TouchableOpacity>
@@ -96,7 +96,7 @@ const  InvitationModal = (props) => {
         alignSelf: 'center',
         flex: 1,
         backgroundColor: 'transparent', 
-        display: props.modalVisible}}
+        display: modalVisible}}
       initialIndex={1}
       data={data}
       renderItem={renderItem}
@@ -104,7 +104,6 @@ const  InvitationModal = (props) => {
       inActiveOpacity={0.3}
       containerWidth={0.8 * width}
       ref={carouselRef}
-      visible={props.modalVisible}
     />
   );
 }
