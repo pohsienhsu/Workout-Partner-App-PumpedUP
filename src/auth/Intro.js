@@ -1,36 +1,41 @@
 import React from 'react'
 import {
-  SafeAreaView, 
-  View, 
-  Text, 
-  StyleSheet, 
-  Button,
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  Image,
   TouchableOpacity
 } from "react-native"
 
 export default function Landing({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{paddingTop:160, alignItems:"center"}}>
+      <View style={{ paddingTop: 80, alignItems: "center" }}>
         <Text style={styles.heading} > PumpedUP </Text>
+        <View>
+          <Image
+            style={{ height: 400, width: 350, marginTop: 40}}
+            source={require('../image/frontcharacter.png')}
+          />
+        </View>
+        <View style={{ paddingTop: 100 }} />
 
-        <View style={{paddingTop:160}} />
-
-        <View 
+        <View
           style={{
-            width: 200, 
-            height: 46, 
-            backgroundColor:'orange',
+            width: 200,
+            height: 46,
+            backgroundColor: 'orange',
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 10,
           }}
         >
           <TouchableOpacity
-            style={ styles.Button }
+            style={styles.Button}
             onPress={() => { navigation.navigate("Login") }}
           >
-            <Text style={ styles.ButtonText }>Let's get PUMPED!</Text>
+            <Text style={styles.ButtonText}>Let's get PUMPED!</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -48,7 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: "#fff"
   },
-  heading : {
+  heading: {
     fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',

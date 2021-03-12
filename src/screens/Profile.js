@@ -14,7 +14,7 @@ function Profile(props) {
 
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       setUser(currentUser)
-      console.log(user)
+      // console.log(props.currentUser.name)
     }
     else {
       firebase.firestore()
@@ -83,7 +83,7 @@ function Profile(props) {
             style={styles.profileImage}
             source={{ uri: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fw19-trn-projrock-dj-03-0247-1587740368.jpg" }}
           />
-          <Text style={styles.title}> {user.name} </Text>
+          <Text style={styles.title}> {props.currentUser.name} </Text>
         </View>
         <View>
           <Button
