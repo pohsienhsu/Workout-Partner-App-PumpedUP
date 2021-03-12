@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { 
+import {
   SafeAreaView, // for iphone XR or later version 
-  View, 
-  Text, 
+  View,
+  Text,
   TextInput,
-  StyleSheet, 
+  StyleSheet,
   Button,
   Image,
   TouchableOpacity
@@ -65,16 +65,16 @@ export class Login extends Component {
             onChangeText={(password) => this.setState({ password })}
           />
           <TouchableOpacity>
-            <Text style={{color: 'white', fontSize: 10, textAlign: 'center'}}>Forget Password</Text>
+            <Text style={{ color: 'white', fontSize: 10, textAlign: 'center' }}>Forget Password</Text>
           </TouchableOpacity>
 
-          <View style={{paddingTop:10}} />
+          <View style={{ paddingTop: 10 }} />
 
-          <View 
+          <View
             style={{
-              width: 110, 
-              height: 46, 
-              backgroundColor:'orange',
+              width: 110,
+              height: 46,
+              backgroundColor: 'orange',
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 10,
@@ -82,21 +82,21 @@ export class Login extends Component {
             }}
           >
             <TouchableOpacity
-              style={ styles.LoginButton }
+              style={styles.LoginButton}
               onPress={() => this.onSignIn()}
             >
-              <Text style={ styles.ButtonText }>Sign In</Text>
+              <Text style={styles.ButtonText}>Sign In</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{paddingTop:30}} />
+          <View style={{ paddingTop: 30 }} />
 
-          <Text style={{color: 'white', fontSize: 10, textAlign: 'center'}}>Third Party Login</Text>
-          <Text style={{color: 'white', fontSize: 10, textAlign: 'center'}}>
+          <Text style={{ color: 'white', fontSize: 10, textAlign: 'center' }}>Third Party Login</Text>
+          <Text style={{ color: 'white', fontSize: 10, textAlign: 'center' }}>
             -------------------------------------------------------------
           </Text>
 
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <Icon.Button
               name="facebook"
               backgroundColor="#3b5998"
@@ -105,7 +105,7 @@ export class Login extends Component {
               Facebook
             </Icon.Button>
 
-            <View style={{paddingLeft:5}} />
+            <View style={{ paddingLeft: 5 }} />
 
             <Icon.Button
               name="google"
@@ -115,7 +115,7 @@ export class Login extends Component {
               Google
             </Icon.Button>
 
-            <View style={{paddingLeft:5}} />
+            <View style={{ paddingLeft: 5 }} />
 
             <Icon.Button
               name="twitter"
@@ -126,24 +126,24 @@ export class Login extends Component {
             </Icon.Button>
           </View>
 
-          <View style={{paddingTop:70}} />
+          <View style={{ paddingTop: 70 }} />
 
-          <View 
+          <View
             style={{
-              width: 180, 
-              height: 46, 
-              backgroundColor:'orange',
+              width: 180,
+              height: 46,
+              backgroundColor: 'orange',
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 10,
               alignSelf: "center"
             }}
           >
-            <TouchableOpacity 
-              style={ styles.CAButton }
-              onPress={() => { navigation.navigate("Register") }}
+            <TouchableOpacity
+              style={styles.CAButton}
+              onPress={() => { this.props.navigation.navigate("Register") }}
             >
-              <Text style={ styles.ButtonText }>Create Account</Text>
+              <Text style={styles.ButtonText}>Create Account</Text>
             </TouchableOpacity>
           </View>
         </View>

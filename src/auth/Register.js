@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { 
+import {
   SafeAreaView, // for iphone XR or later version 
-  View, 
-  Text, 
+  View,
+  Text,
   TextInput,
-  StyleSheet, 
+  StyleSheet,
   Button,
   Image,
   TouchableOpacity
@@ -46,6 +46,8 @@ export class Register extends Component {
       .catch((err) => {
         console.log(err)
       })
+
+    // this.props.navigation.navigate("Login")
   }
 
   // anytime the state above changes, the screen rerenders
@@ -81,17 +83,18 @@ export class Register extends Component {
             secureTextEntry={true}
             onChangeText={(password) => this.setState({ password: password })}
           />
-          <TouchableOpacity>
-            <Text style={{color: 'white', fontSize: 10, textAlign: 'center'}}>Forget Password</Text>
-          </TouchableOpacity>
 
-          <View style={{paddingTop:10}} />
+          <View style={{ paddingTop: 10 }} />
 
-          <View 
+          <View style={{ paddingTop: 30 }} />
+
+          <View style={{ paddingTop: 70 }} />
+
+          <View
             style={{
-              width: 110, 
-              height: 46, 
-              backgroundColor:'orange',
+              width: 180,
+              height: 46,
+              backgroundColor: 'orange',
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 10,
@@ -99,68 +102,10 @@ export class Register extends Component {
             }}
           >
             <TouchableOpacity
-              style={ styles.LoginButton }
-              onPress={() => this.onSignUp()}
+              style={styles.CAButton}
+              onPress={() => { this.onSignUp() }}
             >
-              <Text style={ styles.ButtonText }>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{paddingTop:30}} />
-
-          <Text style={{color: 'white', fontSize: 10, textAlign: 'center'}}>Third Party Login</Text>
-          <Text style={{color: 'white', fontSize: 10, textAlign: 'center'}}>
-            -------------------------------------------------------------
-          </Text>
-
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Icon.Button
-              name="facebook"
-              backgroundColor="#3b5998"
-              onPress={this.loginWithFacebook}
-            >
-              Facebook
-            </Icon.Button>
-
-            <View style={{paddingLeft:5}} />
-
-            <Icon.Button
-              name="google"
-              backgroundColor="green"
-              onPress={this.loginWithGoogle}
-            >
-              Google
-            </Icon.Button>
-
-            <View style={{paddingLeft:5}} />
-
-            <Icon.Button
-              name="twitter"
-              backgroundColor="steelblue"
-              onPress={this.loginWithTwitter}
-            >
-              Twitter
-            </Icon.Button>
-          </View>
-
-          <View style={{paddingTop:70}} />
-
-          <View 
-            style={{
-              width: 180, 
-              height: 46, 
-              backgroundColor:'orange',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 10,
-              alignSelf: "center"
-            }}
-          >
-            <TouchableOpacity 
-              style={ styles.CAButton }
-              onPress={() => { navigation.navigate("Login") }}
-            >
-              <Text style={ styles.ButtonText }>Login</Text>
+              <Text style={styles.ButtonText}> Sign Up </Text>
             </TouchableOpacity>
           </View>
         </View>
