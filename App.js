@@ -75,7 +75,13 @@ export class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Intro">
             <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={RegisterScreen} navigation={this.props.navigation} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={RegisterScreen} navigation={this.props.navigation} options={{
+              headerShown: true, 
+              title: "Create Account",
+              headerStyle: {
+                backgroundColor: '#313A3A',
+              },
+              headerTintColor: '#fff', }} />
             <Stack.Screen name="Login" component={LoginScreen} navigation={this.props.navigation} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
