@@ -24,6 +24,7 @@ export class Main extends Component {
     this.props.clearData()
     this.props.fetchUser()
   }
+
   render() {
 
     return (
