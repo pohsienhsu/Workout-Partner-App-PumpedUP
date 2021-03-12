@@ -53,7 +53,7 @@ export class Main extends Component {
           }}
         />
         <Tab.Screen name="Profile" component={ProfileScreen}
-          // fetch user data before navigating to the profile page
+          // passing user data to the profile page
           listeners={({ navigation }) => ({
             tabPress: event => {
               event.preventDefault();
