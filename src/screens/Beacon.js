@@ -147,7 +147,7 @@ export default function Beacon(props) {
         </View>
       </View>
 
-      <View style={{ height: 300 }}></View>
+      <View style={{ height: 50 }}></View>
     </ScrollView >
   )
 }
