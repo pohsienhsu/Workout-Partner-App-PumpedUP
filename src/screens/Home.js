@@ -3,12 +3,11 @@ import {
   SafeAreaView, // for iphone XR or later version 
   View,
   Text,
-  TextInput,
   StyleSheet,
   Button,
   Image,
   TouchableOpacity,
-  Modal
+  Modal,
 } from "react-native"
 
 import { Icon } from 'react-native-elements'
@@ -18,9 +17,9 @@ import InvitationModal from '../components/InvitationModal';
 export default function Home(props) {
   const [modalVisible, setModalVisible] = useState('none');
   const [show, setShow] = useState(false);
-  const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
 
-  
+
+
 
   return (
     <View style={styles.container}>
@@ -30,61 +29,67 @@ export default function Home(props) {
           source={{ uri: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fw19-trn-projrock-dj-03-0247-1587740368.jpg" }}
         />
       </View>
+
+      <View style={{ paddingTop: 50 }} />
+
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.Button}
-          onPress = {() => {
+          onPress={() => {
             show ? setShow(false) : setShow(true);
           }}>
           <Text style={styles.boxText}>Beacon Match</Text>
-          <View style={{ paddingTop: 8}}/>
+          <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+1</Text>
         </TouchableOpacity>
 
-        <View style={{ paddingLeft: 8}}/>
-        
-        <TouchableOpacity 
+        <View style={{ paddingLeft: 8 }} />
+
+        <TouchableOpacity
           style={styles.Button}
           onPress={() => {
-              console.log(modalVisible)
-              if (modalVisible.localeCompare('none') == 0) {
-                setModalVisible('flex');
-              } else if (modalVisible.localeCompare('flex') == 0) {
-                setModalVisible('none');
-              }
-            }
+            console.log(modalVisible)
+            // if (modalVisible.localeCompare('none') == 0) {
+            //   setModalVisible('flex');
+            // } else if (modalVisible.localeCompare('flex') == 0) {
+            //   setModalVisible('none');
+            // }
+            props.navigation.navigate("Invitation")
+          }
           }
         >
           <Text style={styles.boxText}>Invitation</Text>
-          <View style={{ paddingTop: 8}}/>
+          <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+3</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={{ paddingTop: 8}}/>
+      <View style={{ paddingTop: 8 }} />
 
-      <View style={{ flexDirection: 'row', justifyContent: 'center', display: 'none' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', diaplay: "flex" }}>
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Daily Goal</Text>
-          <View style={{ paddingTop: 8}}/>
+          <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+2</Text>
         </TouchableOpacity>
 
-        <View style={{ paddingLeft: 8}}/>
-        
+        <View style={{ paddingLeft: 8 }} />
+
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Schedule</Text>
-          <View style={{ paddingTop: 8}}/>
+          <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+0</Text>
         </TouchableOpacity>
       </View>
 
       <InvitationModal
         modalVisible={modalVisible}
+        navigation={props.navigation}
+        nav="PairUp"
       />
 
-      <Modal transparent={true} visible={show}>
-        <View style={{ backgroundColor: '#000000aa', flex: 1}}>
+      {/* <Modal transparent={true} visible={show}>
+        <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
           <View style={styles.ModalBox}>
             <Image
               style={styles.ModalImage}
@@ -104,36 +109,35 @@ export default function Home(props) {
               <Text style={styles.ModalText}>Weight: 150 lb</Text>
               <Text style={styles.ModalText}>Hobby: Cat Car Movies</Text>
             </View>
-            <View style={{ 
-              flexDirection: 'row', 
+            <View style={{
+              flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center', 
+              justifyContent: 'center',
               marginBottom: 20
             }}>
               <View style={styles.IconBoxCheck}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.IconButton}
                   onPress={() => {
                     props.navigation.navigate("PairUp");
                     setShow(false);
                   }}
                 >
-                  <Icon name='check' color='green'/>
+                  <Icon name='check' color='green' />
                 </TouchableOpacity>
               </View>
 
-              <View style={{ paddingLeft: 40}}/>
+              <View style={{ paddingLeft: 40 }} />
 
               <View style={styles.IconBoxClose}>
                 <TouchableOpacity style={styles.IconButton}>
-                  <Icon name='close' color='red'/>
+                  <Icon name='close' color='red' />
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         </View>
-      </Modal>
-
+      </Modal> */}
     </View>
   )
 }
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
     marginTop: 80,
     marginBottom: 80,
     marginLeft: 40,
-    marginRight: 40,    
+    marginRight: 40,
     borderRadius: 10,
     backgroundColor: '#EF9C2E',
     justifyContent: 'space-between',
@@ -216,7 +220,7 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     backgroundColor: 'green',
-    borderRadius: 150,    
+    borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -224,7 +228,7 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     backgroundColor: 'red',
-    borderRadius: 150,    
+    borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
   },

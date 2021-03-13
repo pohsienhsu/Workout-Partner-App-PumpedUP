@@ -16,6 +16,7 @@ import RegisterScreen from "./src/auth/Register"
 import LoginScreen from "./src/auth/Login"
 import MainScreen from "./src/screens/MainScreen"
 import PairUpScreen from "./src/screens/PairUpSuccess"
+import InvitationScreen from "./src/screens/InvitationScreen"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -107,6 +108,16 @@ export class App extends Component {
               options={{
                 headerShown: true,
                 title: "PumpedUp",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff'
+              }}
+            />
+            <Stack.Screen name="Invitation" component={InvitationScreen} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "Invitation",
                 headerStyle: {
                   backgroundColor: '#313A3A',
                 },
