@@ -36,11 +36,11 @@ export default function Home(props) {
         <TouchableOpacity
           style={styles.Button}
           onPress={() => {
-            show ? setShow(false) : setShow(true);
+            props.navigation.navigate("Invitation")
           }}>
           <Text style={styles.boxText}>Beacon Match</Text>
-          <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+1</Text>
+          {/* <View style={{ paddingTop: 8 }} /> */}
+          {/* <Text style={styles.ButtonText}>+1</Text> */}
         </TouchableOpacity>
 
         <View style={{ paddingLeft: 8 }} />
@@ -54,13 +54,13 @@ export default function Home(props) {
             // } else if (modalVisible.localeCompare('flex') == 0) {
             //   setModalVisible('none');
             // }
-            props.navigation.navigate("Invitation")
+            // props.navigation.navigate("Invitation")
           }
           }
         >
           <Text style={styles.boxText}>Invitation</Text>
-          <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+3</Text>
+          {/* <View style={{ paddingTop: 8 }} />
+          <Text style={styles.ButtonText}>+3</Text> */}
         </TouchableOpacity>
       </View>
 
@@ -69,16 +69,16 @@ export default function Home(props) {
       <View style={{ flexDirection: 'row', justifyContent: 'center', diaplay: "flex" }}>
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Daily Goal</Text>
-          <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+2</Text>
+          {/* <View style={{ paddingTop: 8 }} />
+          <Text style={styles.ButtonText}>+2</Text> */}
         </TouchableOpacity>
 
         <View style={{ paddingLeft: 8 }} />
 
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Schedule</Text>
-          <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+0</Text>
+          {/* <View style={{ paddingTop: 8 }} />
+          <Text style={styles.ButtonText}>+0</Text> */}
         </TouchableOpacity>
       </View>
 

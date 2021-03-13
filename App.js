@@ -117,7 +117,7 @@ export class App extends Component {
             <Stack.Screen name="Invitation" component={InvitationScreen} navigation={this.props.navigation}
               options={{
                 headerShown: true,
-                title: "Invitation",
+                title: "Match",
                 headerStyle: {
                   backgroundColor: '#313A3A',
                 },
