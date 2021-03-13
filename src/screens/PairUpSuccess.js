@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, Image, StyleSheet } from "react-native"
 
-export default function PairUpSuccess() {
+export default function PairUpSuccess(props) {
 
   return (
     <View style={styles.container}>

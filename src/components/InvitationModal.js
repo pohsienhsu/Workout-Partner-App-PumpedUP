@@ -43,7 +43,7 @@ const data = [
 ];
 
 
-const  InvitationModal = ({modalVisible, navigation}) => {
+const  InvitationModal = ({modalVisible, nav, navigation}) => {
   const carouselRef = useRef(null);
 
   const renderItem = ({ item, index }) => {
@@ -71,7 +71,7 @@ const  InvitationModal = ({modalVisible, navigation}) => {
               <View style={styles.IconBoxCheck}>
                 <TouchableOpacity 
                   style={styles.IconButton}
-                  onPress={() => navigation.navigate("PairUp")}
+                  onPress={() => {navigation.navigate(nav)}}
                 >
                   <Icon name='check' color='green'/>
                 </TouchableOpacity>
