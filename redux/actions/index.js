@@ -28,9 +28,10 @@ export function fetchUser() {
 export function fetchUserPref() {
   return ((dispatch) => {
     firebase.firestore()
-      .collection("pref")
+      .collection("users")
       .doc(firebase.auth().currentUser.uid)
       .collection("userPref")
+      .doc(firebase.auth().currentUser.uid)
       .get()
       .then((snapshot) => {
         if (snapshot.exists) {
