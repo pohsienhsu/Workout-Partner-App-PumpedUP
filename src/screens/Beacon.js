@@ -12,7 +12,7 @@ import Slider from "react-native-smooth-slider"
 
 import firebase from 'firebase'
 require('firebase/firestore')
-// import { connect } from 'react-redux'
+import { connect } from 'react-redux'
 
 function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
@@ -143,13 +143,13 @@ function Beacon(props) {
 
       <View style={styles.container}>
         <Text style={styles.title}> Mode </Text>
-        <LocationCheckBox
+        <BeaconCheckBox
           option="In-Person"
           state={location}
           setState={setLocation}
           containerStyle={styles.checkbox}
         />
-        <LocationCheckBox
+        <BeaconCheckBox
           option="Remote"
           state={location}
           setState={setLocation}
@@ -189,7 +189,13 @@ function Beacon(props) {
   )
 }
 
-export default Beacon;
+// export default Beacon;
+
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref,
+})
+export default connect(mapStateToProps, null)(Beacon);
 
 const styles = StyleSheet.create({
   view: {

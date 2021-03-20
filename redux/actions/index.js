@@ -4,7 +4,7 @@ import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA } from "../constants/in
 
 export function clearData() {
   return ((dispatch) => {
-    dispatch({type: CLEAR_DATA})
+    dispatch({ type: CLEAR_DATA })
   })
 }
 
@@ -19,7 +19,7 @@ export function fetchUser() {
           //type & payload
           dispatch({ type: USER_STATE_CHANGE, currentUser: snapshot.data() })
         } else {
-          console.log("Does not exist")
+          console.log("FetchUser: does not exist")
         }
       })
   })
@@ -33,13 +33,12 @@ export function fetchUserPref() {
       .collection("userPref")
       .get()
       .then((snapshot) => {
-        let pairingPref = snapshot.docs.map(doc => {
-          const data = doc.data()
-          const id = doc.id
-          return { id, ...data }
-        })
-        // console.log("Pairing Pref: " + pairingPref)
-        dispatch({ type: USER_PREF_CHANGE, pairingPref: pairingPref })
+        if (snapshot.exists) {
+          //type & payload
+          dispatch({ type: USER_PREF_CHANGE, pairingPref: snapshot.data() })
+        } else {
+          console.log("FetchUserPref: does not exist")
+        }
       })
   })
 }

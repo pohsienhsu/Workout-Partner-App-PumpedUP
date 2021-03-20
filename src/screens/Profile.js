@@ -8,11 +8,12 @@ import { connect } from "react-redux"
 
 function Profile(props) {
   const [user, setUser] = useState(null);
+  const [pref, setPref] = useState({});
 
   useEffect(() => {
-    const { currentUser } = props;
-    setUser(currentUser)
-
+    const { currentUser, pairingPref } = props;
+    setUser(currentUser);
+    setPref(pairingPref);
   })
     // Only re-run the effect if uid changes
   // }, [props.route.params.uid])
@@ -33,6 +34,7 @@ function Profile(props) {
             source={{ uri: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fw19-trn-projrock-dj-03-0247-1587740368.jpg" }}
           />
           <Text style={styles.title}> {user.name} </Text>
+
         </View>
         <View>
           <Button
@@ -68,8 +70,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser
-  // posts: store.userState.posts
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref
 })
 
 export default connect(mapStateToProps, null)(Profile)

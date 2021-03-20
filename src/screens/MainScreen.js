@@ -87,7 +87,8 @@ export class Main extends Component {
 }
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData, fetchUserPref }, dispatch)
 
