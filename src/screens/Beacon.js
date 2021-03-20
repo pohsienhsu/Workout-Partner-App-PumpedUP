@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import BeaconCheckBox from "../components/beaconCheckBox"
-import LocationCheckBox from "../components/locationCheckBox"
+
 import {
   Dropdown,
   MultiselectDropdown,
@@ -13,6 +13,8 @@ import Slider from "react-native-smooth-slider"
 import firebase from 'firebase'
 require('firebase/firestore')
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUserPref } from "../../redux/actions/index"
 
 function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
@@ -21,6 +23,7 @@ function Beacon(props) {
   const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
   const [distance, setDistance] = useState(1);
+
 
   useEffect(() => {
     firebase.firestore()
@@ -44,6 +47,8 @@ function Beacon(props) {
       })
   }, [])
 
+  console.log(props.pairingPref);
+
   const pairingPref = {
     gender,
     experience,
@@ -60,6 +65,8 @@ function Beacon(props) {
       .collection("userPref")
       .doc(props.route.params.uid)
       .set(pairingPref)
+
+    props.fetchUserPref()
   }
 
   return (
@@ -176,7 +183,7 @@ function Beacon(props) {
             onPress={() => {
               props.navigation.navigate("Home");
               onSave();
-              console.log(pairingPref);
+              // console.log(pairingPref);
             }}
           >
             <Text style={styles.ButtonText}>Save</Text>
@@ -195,7 +202,9 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   pairingPref: store.userState.pairingPref,
 })
-export default connect(mapStateToProps, null)(Beacon);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserPref }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchProps)(Beacon);
 
 const styles = StyleSheet.create({
   view: {
