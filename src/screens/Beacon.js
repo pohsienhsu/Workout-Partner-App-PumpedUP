@@ -1,33 +1,73 @@
-import React, { cloneElement, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import BeaconCheckBox from "../components/beaconCheckBox"
-import LocationCheckBox from "../components/locationCheckBox"
 
-import ModalDropdown from 'react-native-modal-dropdown';
-import DropDownPicker from 'react-native-dropdown-picker';
-// https://reactnativeexample.com/a-picker-dropdown-component-for-react-native/
 import {
   Dropdown,
-  GroupDropdown,
   MultiselectDropdown,
 } from 'sharingan-rn-modal-dropdown';
 // https://reactnativeexample.com/a-simple-and-customizable-react-native-dropdown-created-using-react-native-modal/
 import Slider from "react-native-smooth-slider"
 
+import firebase from 'firebase'
+require('firebase/firestore')
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUserPref } from "../../redux/actions/index"
 
-export default function Beacon(props) {
+function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
   const [experience, setExperience] = useState([]);
   const [bodyPart, setBodyPart] = useState([]);
-  // const [remote, setRemote] = useState({ remote: false });
-  const [location, setLocation] = useState({ 'Current Location': false, remote: false });
-  const [intensity, setIntensity] = useState('medium');
+  const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
+  const [frequency, setFrequency] = useState('3 ~ 5 / week');
   const [distance, setDistance] = useState(1);
 
-  // bodyPart ? console.log(`Body Data: [${bodyPart}]`) : null;
-  // experience ? console.log(`Experience Data: [${experience}]`) : null;
-  // console.log(`Distance: ${distance}`)
+
+  useEffect(() => {
+    firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userPref")
+      .doc(props.route.params.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot) {
+          const data = snapshot.data();
+          setGender(data.gender);
+          setExperience(data.experience);
+          setBodyPart(data.bodyPart);
+          setLocation(data.location);
+          setFrequency(data.frequency);
+          setDistance(data.distance);
+        } else {
+          console.log("does't exist")
+        }
+      })
+  }, [])
+
+  console.log(props.pairingPref);
+
+  const pairingPref = {
+    gender,
+    experience,
+    bodyPart,
+    location,
+    frequency,
+    distance
+  }
+
+  const onSave = () => {
+    firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userPref")
+      .doc(props.route.params.uid)
+      .set(pairingPref)
+
+    props.fetchUserPref()
+  }
 
   return (
     <ScrollView style={styles.view}>
@@ -89,7 +129,7 @@ export default function Beacon(props) {
 
       <View style={styles.container}>
         <Text style={styles.title}> Frequency </Text>
-        <RadioButton.Group onValueChange={newValue => setIntensity(newValue)} value={intensity}>
+        <RadioButton.Group onValueChange={newValue => setFrequency(newValue)} value={frequency}>
           <RadioButton.Item
             label="1 ~ 2 / week"
             value="1 ~ 2 / week"
@@ -110,13 +150,13 @@ export default function Beacon(props) {
 
       <View style={styles.container}>
         <Text style={styles.title}> Mode </Text>
-        <LocationCheckBox
+        <BeaconCheckBox
           option="In-Person"
           state={location}
           setState={setLocation}
           containerStyle={styles.checkbox}
         />
-        <LocationCheckBox
+        <BeaconCheckBox
           option="Remote"
           state={location}
           setState={setLocation}
@@ -140,7 +180,11 @@ export default function Beacon(props) {
         <View style={styles.saveBtn}>
           <TouchableOpacity
             style={styles.Button}
-            onPress={() => { props.navigation.navigate("Home") }}
+            onPress={() => {
+              props.navigation.navigate("Home");
+              onSave();
+              // console.log(pairingPref);
+            }}
           >
             <Text style={styles.ButtonText}>Save</Text>
           </TouchableOpacity>
@@ -151,6 +195,16 @@ export default function Beacon(props) {
     </ScrollView >
   )
 }
+
+// export default Beacon;
+
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref,
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserPref }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchProps)(Beacon);
 
 const styles = StyleSheet.create({
   view: {

@@ -3,7 +3,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import { Feather } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser, fetchUserPosts, clearData } from '../../redux/actions/index';
+import { fetchUser, fetchUserPref, clearData } from '../../redux/actions/index';
 
 import firebase from 'firebase'
 
@@ -23,6 +23,7 @@ export class Main extends Component {
   componentDidMount() {
     this.props.clearData()
     this.props.fetchUser()
+    this.props.fetchUserPref()
   }
 
   render() {
@@ -40,6 +41,12 @@ export class Main extends Component {
           }}
         />
         <Tab.Screen name="Beacon" component={BeaconScreen} navigation={this.props.navigation}
+          listeners={({ navigation }) => ({
+            tabPress: event => {
+              event.preventDefault();
+              navigation.navigate("Beacon", { uid: firebase.auth().currentUser.uid })
+            }
+          })}
           options={{
             tabBarIcon: ({ color, size }) => (
               <Feather name="search" color={color} size={26} />
@@ -80,9 +87,10 @@ export class Main extends Component {
 }
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch)
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData, fetchUserPref }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchProps)(Main)
 
