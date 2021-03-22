@@ -3,7 +3,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import { Feather } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser, fetchUserPref, clearData } from '../../redux/actions/index';
+import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
 
 import firebase from 'firebase'
 
@@ -24,6 +24,7 @@ export class Main extends Component {
     this.props.clearData()
     this.props.fetchUser()
     this.props.fetchUserPref()
+    this.props.fetchUserProfile()
   }
 
   render() {
@@ -90,7 +91,12 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   pairingPref: store.userState.pairingPref
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData, fetchUserPref }, dispatch)
+const mapDispatchProps = (dispatch) => bindActionCreators({ 
+  fetchUser, 
+  clearData, 
+  fetchUserPref,
+  fetchUserProfile 
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchProps)(Main)
 
