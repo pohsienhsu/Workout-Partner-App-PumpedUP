@@ -47,8 +47,6 @@ function Beacon(props) {
       })
   }, [])
 
-  console.log(props.pairingPref);
-
   const pairingPref = {
     gender,
     experience,
