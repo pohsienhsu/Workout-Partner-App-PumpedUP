@@ -4,8 +4,8 @@ const initialState = {
   currentUser: null,
   pairingPref: {
     gender: { Male: false, Female: false, Others: false },
-    bodypart: [],
-    experience: [],
+    bodyPart: [],
+    experience: "",
     location: { 'In-Person': false, "Remote": false },
     frequency: '3 ~ 5 / week',
     distance: 1
@@ -35,7 +35,7 @@ export const user = (state = initialState, action) => {
         currentUser: null,
         pairingPref: {
           gender: { Male: false, Female: false, Others: false },
-          bodypart: [],
+          bodyPart: [],
           experience: [],
           location: { 'In-Person': false, "Remote": false },
           frequency: '3 ~ 5 / week',

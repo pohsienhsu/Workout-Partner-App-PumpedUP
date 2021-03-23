@@ -14,6 +14,26 @@ import {
 // require('firebase/firestore')
 import { connect } from "react-redux"
 
+const renderImage = (avatar) => {
+  if (avatar) {
+    return (
+      <View>
+        <Image
+          style={styles.profileImage}
+          source={{uri : avatar}}/>
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Image
+          style={styles.profileImage}
+          source={require("../image/default-profile-pic.png")}/>
+      </View>
+    );
+  }
+}
+
 
 function Home(props) {
   const [user, setUser] = useState(null);
@@ -24,12 +44,10 @@ function Home(props) {
     const fetchPic = async () => {
       try {
         const response = await props.profile.pictureURL[0].url
-        const response2  = await "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Fblank-profile-picture-mystery-man-973460%2F&psig=AOvVaw2abDv3-PoqJbyGalTSTF89&ust=1616569010908000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKDO34Hrxe8CFQAAAAAdAAAAABA5"
         if (response) return response
-        return response2
       }
       catch (reject) {
-        
+
       }
     }
     fetchPic().then((data) => setAvatar(data))
@@ -47,15 +65,11 @@ function Home(props) {
     </View>
   }
 
+  // let avatarURL = avatar ? avatar : require()
+
   return (
     <View style={styles.container}>
-      <View>
-        <Image
-          style={styles.profileImage}
-          source={{ uri: avatar }}
-        />
-      </View>
-
+      {renderImage(avatar)}
       <View style={{ paddingTop: 50 }} />
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>

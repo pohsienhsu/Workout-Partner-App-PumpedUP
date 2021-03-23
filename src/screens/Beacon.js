@@ -249,10 +249,10 @@ const bodyData = [
 ]
 
 const experienceData = [
-  { label: 'Less than 3 months', value: 1.25 },
-  { label: 'About 1 year', value: 1 },
-  { label: '1 to 3 years', value: 2.5 },
-  { label: '3 to 5 years', value: 4.5 },
-  { label: '5 to 10 years', value: 7.5 },
-  { label: 'More than 10 years', value: 15 }
+  { label: 'Less than 3 months', value: "Less than 3 months" },
+  { label: 'About 1 year', value: "About 1 year" },
+  { label: '1 to 3 years', value: "1 to 3 years" },
+  { label: '3 to 5 years', value: "3 to 5 years" },
+  { label: '5 to 10 years', value: '5 to 10 years' },
+  { label: 'More than 10 years', value: 'More than 10 years' }
 ]

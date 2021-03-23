@@ -44,6 +44,11 @@ export default class ImageCarousel extends Component {
         return <SliderEntry data={item} even={true} />;
     }
 
+    dataLength = (data) => {
+        if (!data) return 0;
+        else return data.length;
+    }
+
     mainExample (number, title) {
         const { slider1ActiveSlide } = this.state;
 
@@ -73,7 +78,7 @@ export default class ImageCarousel extends Component {
                   layout={"default"}
                 />
                 <Pagination
-                  dotsLength={this.state.data.length}
+                  dotsLength={this.dataLength(this.state.data)}
                   activeDotIndex={slider1ActiveSlide}
                   containerStyle={styles.paginationContainer}
                   dotColor={'rgba(255, 255, 255, 0.92)'}
