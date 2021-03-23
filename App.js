@@ -17,6 +17,7 @@ import LoginScreen from "./src/auth/Login"
 import MainScreen from "./src/screens/MainScreen"
 import PairUpScreen from "./src/screens/PairUpSuccess"
 import InvitationScreen from "./src/screens/InvitationScreen"
+import EditProfile from "./src/screens/EditProfile"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -102,6 +103,16 @@ export class App extends Component {
                   backgroundColor: '#313A3A',
                 },
                 headerTintColor: '#fff',
+              }}
+            />
+            <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "Edit Profile",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff'
               }}
             />
             <Stack.Screen name="PairUp" component={PairUpScreen} navigation={this.props.navigation}
