@@ -75,6 +75,7 @@ export default class SliderEntry extends Component {
 export const colors = {
     black: '#1a1917',
     gray: '#888888',
+    yellow: "#EF9C2E",
     background1: '#B721FF',
     background2: '#21D4FD'
   }
@@ -182,7 +183,7 @@ export const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: colors.background1
+        backgroundColor: colors.yellow
     },
     gradient: {
         ...StyleSheet.absoluteFillObject
@@ -191,33 +192,13 @@ export const styles = StyleSheet.create({
         flex: 1
     },
     exampleContainer: {
-        paddingVertical: 30
+        paddingVertical: 10
     },
     exampleContainerDark: {
         backgroundColor: colors.black
     },
     exampleContainerLight: {
         backgroundColor: 'white'
-    },
-    title: {
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    titleDark: {
-        color: colors.black
-    },
-    subtitle: {
-        marginTop: 5,
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.75)',
-        fontSize: 13,
-        fontStyle: 'italic',
-        textAlign: 'center'
     },
     slider: {
         marginTop: 15,
@@ -227,7 +208,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 10 // for custom animation
     },
     paginationContainer: {
-        paddingVertical: 8
+        paddingVertical: 4
     },
     paginationDot: {
         width: 8,

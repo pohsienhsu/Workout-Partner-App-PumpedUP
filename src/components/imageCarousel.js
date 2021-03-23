@@ -100,7 +100,7 @@ export default class ImageCarousel extends Component {
                   contentContainerCustomStyle={styles.sliderContentContainer}
                   loop={true}
                   loopClonesPerSide={2}
-                  autoplay={true}
+                  autoplay={false}
                   autoplayDelay={500}
                   autoplayInterval={3000}
                   onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
@@ -122,68 +122,8 @@ export default class ImageCarousel extends Component {
         );
     }
 
-    momentumExample (number, title) {
-        return (
-            <View style={styles.exampleContainer}>
-                <Text style={styles.title}>{`Example ${number}`}</Text>
-                <Text style={styles.subtitle}>{title}</Text>
-                <Carousel
-                  data={DATA}
-                  renderItem={this._renderItem}
-                  sliderWidth={slideDimensions.sliderWidth}
-                  itemWidth={slideDimensions.itemWidth}
-                  inactiveSlideScale={0.95}
-                  inactiveSlideOpacity={1}
-                  enableMomentum={true}
-                  activeSlideAlignment={'start'}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  activeAnimationType={'spring'}
-                  activeAnimationOptions={{
-                      friction: 4,
-                      tension: 40
-                  }}
-                />
-            </View>
-        );
-    }
-
-    layoutExample (number, title, type) {
-        const isTinder = type === 'tinder';
-        return (
-            <View style={[styles.exampleContainer, isTinder ? styles.exampleContainerDark : styles.exampleContainerLight]}>
-                <Text style={[styles.title, isTinder ? {} : styles.titleDark]}>{`Example ${number}`}</Text>
-                <Text style={[styles.subtitle, isTinder ? {} : styles.titleDark]}>{title}</Text>
-                <Carousel
-                  data={DATA}
-                  renderItem={isTinder ? this._renderLightItem : this._renderItem}
-                  sliderWidth={slideDimensions.sliderWidth}
-                  itemWidth={slideDimensions.itemWidth}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  layout={type}
-                  loop={true}
-                />
-            </View>
-        );
-    }
-
-    // get gradient () {
-    //     return (
-    //         <LinearGradient
-    //           colors={[colors.background1, colors.background2]}
-    //           startPoint={{ x: 1, y: 0 }}
-    //           endPoint={{ x: 0, y: 1 }}
-    //           style={styles.gradient}
-    //         />
-    //     );
-    // }
-
     render () {
         const example1 = this.mainExample(1, 'Default layout | Loop | Autoplay | Parallax | Scale | Opacity | Pagination with tappable dots');
-        // const example2 = this.momentumExample(2, 'Momentum | Left-aligned | Active animation');
-        // const example3 = this.layoutExample(3, '"Stack of cards" layout | Loop', 'stack');
-        // const example4 = this.layoutExample(4, '"Tinder-like" layout | Loop', 'tinder');
         console.log(this.state.data);
 
         return (
