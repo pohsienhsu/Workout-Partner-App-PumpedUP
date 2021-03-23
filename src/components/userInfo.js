@@ -3,15 +3,11 @@ import { Platform, View, ScrollView, Text, StatusBar, SafeAreaView, StyleSheet} 
 // import LinearGradient from 'react-native-linear-gradient';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import SliderEntry, {styles, colors, slideDimensions} from './sliderEntry';
-// import styles, { colors } from './styles/index.style';
-// import { scrollInterpolators, animatedStyles } from './utils/animations';
-// import { sliderWidth, itemWidth } from './styles/SliderEntry.style';
-// import { ENTRIES1, ENTRIES2 } from './static/entries';
 // const IS_ANDROID = Platform.OS === 'android';
 
 const SLIDER_1_FIRST_ITEM = 1;
 
-export default class ImageCarousel extends Component {
+export default class UserInfo extends Component {
 
     constructor (props) {
         super(props);
@@ -118,6 +114,3 @@ export default class ImageCarousel extends Component {
         );
     }
 }
-
-
-
