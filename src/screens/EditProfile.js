@@ -12,20 +12,21 @@ import firebase from 'firebase'
 require('firebase/firestore')
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
+import { Button } from 'react-native';
 
 
 function EditProfile(props) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState({});
-  const [pref, setPref] = useState({});
+  const [pref, setPref] = useState();
 
   const [intro, setIntro] = useState("");
   const [name, setName] = useState("");
   const [habit, setHabit] = useState("");
-  const [age, setAge] = useState(null);
+  const [age, setAge] = useState("");
   const [pictureURL, setPictureURL] = useState([]);
   const [gender, setGender] = useState("");
-  const [experience, setExperience] = useState(null);
+  const [experience, setExperience] = useState("");
   const [bodyPart, setBodyPart] = useState([]);
   // const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
@@ -40,6 +41,7 @@ function EditProfile(props) {
     const fetchProfile = async () => {
       await profile
     }
+
     fetchProfile().then(() => {
       setGender(profile.gender);
       setExperience(profile.experience);
@@ -50,40 +52,13 @@ function EditProfile(props) {
       setIntro(profile.intro);
       setName(profile.name);
       setPictureURL(profile.pictureURL);
+      setProfile(profile)
     })
   }, [props.profile])
 
-  // useEffect(() => {
-  //   firebase.firestore()
-  //     .collection("users")
-  //     .doc(firebase.auth().currentUser.uid)
-  //     .collection("userProfile")
-  //     .doc(props.route.params.uid)
-  //     .get()
-  //     .then((snapshot) => {
-  //       if (snapshot) {
-  //         const data = snapshot.data();
-  //         setGender(data.gender);
-  //         setExperience(data.experience);
-  //         setBodyPart(data.bodyPart);
-  //         // setLocation(data.location);
-  //         setFrequency(data.frequency);
-  //         setAge(data.age);
-  //         setHabit(data.habit);
-  //         setIntro(data.intro);
-  //         // setDistance(data.distance);
-  //       } else {
-  //         console.log("does't exist")
-  //       }
-  //     })
-  // }, [])
+  console.log(profile)
 
-  // console.log(profile)
-
-
-
-
-  const pairingPref = {
+  const profileDetails = {
     name,
     gender,
     experience,
@@ -92,7 +67,7 @@ function EditProfile(props) {
     age,
     habit,
     intro,
-    pictureURL: []
+    pictureURL
   }
 
   const onSave = () => {
@@ -100,21 +75,31 @@ function EditProfile(props) {
       .collection("users")
       .doc(firebase.auth().currentUser.uid)
       .collection("userProfile")
-      .doc(props.route.params.uid)
-      .set(pairingPref)
-    // props.fetchUserPref()
+      .doc(firebase.auth().currentUser.uid)
+      .set(profileDetails)
+    props.fetchUserProfile()
+    setProfile(profile)
   }
 
   return (
     <ScrollView style={styles.view}>
-
-      {/* <View style={styles.container}>
-      <Text style={styles.Title}>Pairing Preference</Text>
-    </View> */}
+      <View style={styles.container}>
+        <Text style={styles.title}>Upload Profile Picture</Text>
+        <Button
+          title="Picture 1 (Avatar)"
+        />
+        <Button
+          title="Picture 2"
+        />
+        <Button
+          title="Picture 3"
+        />
+      </View>
 
       <View style={styles.container}>
         <Text style={styles.title}>Name</Text>
         <TextInput
+          defaultValue={age}
           style={styles.input}
           onChangeText={setName}
           value={name}
@@ -124,9 +109,10 @@ function EditProfile(props) {
       <View style={styles.container}>
         <Text style={styles.title}>About Me la!</Text>
         <TextInput
-          style={styles.input}
+          style={styles.introInput}
           onChangeText={setIntro}
           value={intro}
+          multiline={true}
         />
       </View>
 
@@ -266,7 +252,7 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
   // fetchUser, 
   // clearData, 
   // fetchUserPref,
-  // fetchUserProfile 
+  fetchUserProfile 
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchProps)(EditProfile)
@@ -308,6 +294,11 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
   },
+  introInput: {
+    height: 120,
+    margin: 12,
+    borderWidth: 1,
+  }
 })
 
 const bodyData = [

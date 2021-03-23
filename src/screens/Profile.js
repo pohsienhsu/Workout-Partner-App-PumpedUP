@@ -24,7 +24,7 @@ function Profile(props) {
     setProfile(profile)
   }, [props.profile])
 
-  // console.log(profile.bodyPart)
+  console.log(profile.bodyPart)
 
   const onLogout = () => {
     firebase.auth().signOut();
@@ -44,9 +44,9 @@ function Profile(props) {
         <ImageCarousel data={profile.pictureURL} />
       </View>
       <View>
-        <Text style={styles.title}> {user.name} </Text>
+        <Text style={styles.title}> {profile.name} </Text>
         <Text style={styles.title}> {profile.intro} </Text>
-        <Text style={styles.title}> {profile.bodyPart[0]} </Text>
+        {/* <Text style={styles.title}> {profile.bodyPart[0]} </Text> */}
         <Text style={styles.title}> {profile.gender} </Text>
         <FAB
           style={styles.fab}

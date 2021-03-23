@@ -10,7 +10,17 @@ const initialState = {
     frequency: '3 ~ 5 / week',
     distance: 1
   },
-  profile: {}
+  profile: {
+    name: "",
+    gender: "",
+    age: "",
+    bodyPart: [],
+    habit: "",
+    intro: "",
+    pictureURL: [],
+    frequency: "",
+    experience: ""
+  }
 }
 
 export const user = (state = initialState, action) => {
@@ -31,18 +41,7 @@ export const user = (state = initialState, action) => {
         profile: action.profile
       }
     case CLEAR_DATA:
-      return {
-        currentUser: null,
-        pairingPref: {
-          gender: { Male: false, Female: false, Others: false },
-          bodyPart: [],
-          experience: [],
-          location: { 'In-Person': false, "Remote": false },
-          frequency: '3 ~ 5 / week',
-          distance: 1
-        },
-        profile: {}
-      }
+      return initialState;
     default:
       return state
   }
