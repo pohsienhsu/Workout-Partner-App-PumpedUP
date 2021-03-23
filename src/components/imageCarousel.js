@@ -11,40 +11,6 @@ import SliderEntry, {styles, colors, slideDimensions} from './sliderEntry';
 
 const SLIDER_1_FIRST_ITEM = 1;
 
-
-const DATA = [
-  {
-      title: 'Beautiful and dramatic Antelope Canyon',
-      subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-      illustration: 'https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F1.jpeg?alt=media&token=794d62d0-4982-401b-ae6d-2f28e6c4bef6'
-  },
-  {
-      title: 'Earlier this morning, NYC',
-      subtitle: 'Lorem ipsum dolor sit amet',
-      illustration: 'https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F2.jpeg?alt=media&token=7492cf04-8e04-4452-af27-a014834d182f'
-  },
-  {
-      title: 'White Pocket Sunset',
-      subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
-      illustration: 'https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F3.jpeg?alt=media&token=7218f584-19f9-425f-a096-cc8f02b44394'
-  },
-  {
-      title: 'Acrocorinth, Greece',
-      subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-      illustration: 'https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F1.jpeg?alt=media&token=794d62d0-4982-401b-ae6d-2f28e6c4bef6'
-  },
-  {
-      title: 'The lone tree, majestic landscape of New Zealand',
-      subtitle: 'Lorem ipsum dolor sit amet',
-      illustration: 'https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F2.jpeg?alt=media&token=7492cf04-8e04-4452-af27-a014834d182f'
-  },
-  {
-      title: 'Middle Earth, Germany',
-      subtitle: 'Lorem ipsum dolor sit amet',
-      illustration: 'https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F3.jpeg?alt=media&token=7218f584-19f9-425f-a096-cc8f02b44394'
-  }
-];
-
 export default class ImageCarousel extends Component {
 
     constructor (props) {
@@ -107,7 +73,7 @@ export default class ImageCarousel extends Component {
                   layout={"default"}
                 />
                 <Pagination
-                  dotsLength={DATA.length}
+                  dotsLength={this.state.data.length}
                   activeDotIndex={slider1ActiveSlide}
                   containerStyle={styles.paginationContainer}
                   dotColor={'rgba(255, 255, 255, 0.92)'}
