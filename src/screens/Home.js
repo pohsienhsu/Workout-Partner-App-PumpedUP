@@ -24,10 +24,12 @@ function Home(props) {
     const fetchPic = async () => {
       try {
         const response = await props.profile.pictureURL[0].url
-        return response
+        const response2  = await "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Fblank-profile-picture-mystery-man-973460%2F&psig=AOvVaw2abDv3-PoqJbyGalTSTF89&ust=1616569010908000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKDO34Hrxe8CFQAAAAAdAAAAABA5"
+        if (response) return response
+        return response2
       }
       catch (reject) {
-        console.log(reject)
+        
       }
     }
     fetchPic().then((data) => setAvatar(data))
@@ -39,7 +41,7 @@ function Home(props) {
   }, [props.currentUser, props.profile, avatar])
 
 
-  if (user === null || avatar === null || profile === {}) {
+  if (user === null || avatar === null) {
     return <View style={styles.textContent}>
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
@@ -72,7 +74,7 @@ function Home(props) {
         <TouchableOpacity
           style={styles.Button}
           onPress={() => {
-            console.log(modalVisible)
+            // console.log(modalVisible)
             // if (modalVisible.localeCompare('none') == 0) {
             //   setModalVisible('flex');
             // } else if (modalVisible.localeCompare('flex') == 0) {

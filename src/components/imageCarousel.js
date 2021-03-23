@@ -90,7 +90,7 @@ export default class ImageCarousel extends Component {
 
     render () {
         const example1 = this.mainExample(1, 'Default layout | Loop | Autoplay | Parallax | Scale | Opacity | Pagination with tappable dots');
-        console.log(this.state.data);
+        // console.log(this.state.data);
 
         return (
             <SafeAreaView style={styles.safeArea}>

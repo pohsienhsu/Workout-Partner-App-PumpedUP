@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Button, ScrollView } from "react-native"
+import { FAB } from "react-native-paper"
+import { FloatingAction } from "react-native-floating-action";
 
 import firebase from 'firebase'
 require('firebase/firestore')
@@ -30,12 +32,14 @@ function Profile(props) {
 
   if (user === null || profile.pictureURL === null) {
     return <View style={styles.textContent}>
-      <Text style={{fontSize: 18}}>Loading...</Text>
+      <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
   }
 
   return (
     <ScrollView style={styles.container}>
+      <View>
+      </View>
       <View style={{ flex: 1 }}>
         <ImageCarousel data={profile.pictureURL} />
       </View>
@@ -44,6 +48,14 @@ function Profile(props) {
         <Text style={styles.title}> {profile.intro} </Text>
         <Text style={styles.title}> {profile.bodyPart[0]} </Text>
         <Text style={styles.title}> {profile.gender} </Text>
+        <FAB
+          style={styles.fab}
+          small
+          icon="pen"
+          onPress={() => {
+            props.navigation.navigate("EditProfile");
+          }}
+        />
       </View>
       <View>
         <Button
@@ -76,7 +88,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     flex: 1
-  }
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: -100
+  },
 })
 
 const mapStateToProps = (store) => ({
