@@ -9,9 +9,9 @@ import {
   Modal,
   addons,
 } from "react-native"
+import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
 
-// import firebase from 'firebase'
-// require('firebase/firestore')
+import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
 
 const renderImage = (avatar) => {
@@ -52,7 +52,7 @@ function Home(props) {
     // fetchPic().then((data) => setAvatar(data))
     const fetchData = async () => {
       try {
-        await props;
+        await props
       }
       catch (reject) { }
     }
@@ -140,8 +140,13 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   profile: store.userState.profile
 })
-
-export default connect(mapStateToProps, null)(Home)
+const mapDispatchProps = (dispatch) => bindActionCreators({
+  fetchUser, 
+  // clearData, 
+  // fetchUserPref,
+  // fetchUserProfile 
+}, dispatch)
+export default connect(mapStateToProps, mapDispatchProps)(Home)
 
 const styles = StyleSheet.create({
   container: {

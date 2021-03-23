@@ -26,25 +26,37 @@ function Beacon(props) {
 
 
   useEffect(() => {
-    firebase.firestore()
-      .collection("users")
-      .doc(firebase.auth().currentUser.uid)
-      .collection("userPref")
-      .doc(props.route.params.uid)
-      .get()
-      .then((snapshot) => {
-        if (snapshot) {
-          const data = snapshot.data();
-          setGender(data.gender);
-          setExperience(data.experience);
-          setBodyPart(data.bodyPart);
-          setLocation(data.location);
-          setFrequency(data.frequency);
-          setDistance(data.distance);
-        } else {
-          console.log("does't exist")
-        }
-      })
+    // firebase.firestore()
+    //   .collection("users")
+    //   .doc(firebase.auth().currentUser.uid)
+    //   .collection("userPref")
+    //   .doc(props.route.params.uid)
+    //   .get()
+    //   .then((snapshot) => {
+    //     if (snapshot) {
+    //       const data = snapshot.data();
+    //       setGender(data.gender);
+    //       setExperience(data.experience);
+    //       setBodyPart(data.bodyPart);
+    //       setLocation(data.location);
+    //       setFrequency(data.frequency);
+    //       setDistance(data.distance);
+    //     } else {
+    //       console.log("does't exist")
+    //     }
+    //   })
+
+    const getProfileData = async () => {
+      await props.pairingPref
+    }
+    getProfileData().then(() => {
+      setGender(props.pairingPref.gender);
+      setExperience(props.pairingPref.experience);
+      setBodyPart(props.pairingPref.bodyPart);
+      setLocation(props.pairingPref.location);
+      setFrequency(props.pairingPref.frequency);
+      setDistance(props.pairingPref.distance);
+    })
   }, [])
 
   const pairingPref = {

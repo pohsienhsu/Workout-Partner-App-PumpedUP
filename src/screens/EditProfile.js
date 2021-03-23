@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Button } from "react-native"
 import {
   Dropdown,
   MultiselectDropdown,
@@ -12,7 +12,7 @@ import firebase from 'firebase'
 require('firebase/firestore')
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
-import { Button } from 'react-native';
+
 
 
 function EditProfile(props) {

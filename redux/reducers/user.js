@@ -17,7 +17,7 @@ const initialState = {
     bodyPart: [],
     habit: "",
     intro: "",
-    pictureURL: [],
+    pictureURL: [{url: null}, {url: null}, {url: null}],
     frequency: "",
     experience: ""
   }
