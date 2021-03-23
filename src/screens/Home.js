@@ -12,8 +12,6 @@ import {
 
 import { Icon } from 'react-native-elements'
 
-import InvitationModal from '../components/InvitationModal';
-
 export default function Home(props) {
   const [modalVisible, setModalVisible] = useState('none');
   const [show, setShow] = useState(false);
@@ -82,11 +80,6 @@ export default function Home(props) {
         </TouchableOpacity>
       </View>
 
-      <InvitationModal
-        modalVisible={modalVisible}
-        navigation={props.navigation}
-        nav="PairUp"
-      />
 
       {/* <Modal transparent={true} visible={show}>
         <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
