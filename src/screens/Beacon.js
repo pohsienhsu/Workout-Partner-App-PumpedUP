@@ -1,32 +1,77 @@
-import React, { cloneElement, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
-import BeaconCheckBox from "../components/beaconCheckBox "
+import BeaconCheckBox from "../components/beaconCheckBox"
 
-import ModalDropdown from 'react-native-modal-dropdown';
-import DropDownPicker from 'react-native-dropdown-picker';
-// https://reactnativeexample.com/a-picker-dropdown-component-for-react-native/
 import {
   Dropdown,
-  GroupDropdown,
   MultiselectDropdown,
 } from 'sharingan-rn-modal-dropdown';
 // https://reactnativeexample.com/a-simple-and-customizable-react-native-dropdown-created-using-react-native-modal/
+import Slider from "react-native-smooth-slider"
 
+import firebase from 'firebase'
+require('firebase/firestore')
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUserPref } from "../../redux/actions/index"
 
-export default function Beacon(props) {
+function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
   const [experience, setExperience] = useState([]);
   const [bodyPart, setBodyPart] = useState([]);
+  const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
+  const [frequency, setFrequency] = useState('3 ~ 5 / week');
+  const [distance, setDistance] = useState(1);
 
-  bodyPart ? console.log(`Body Data: [${bodyPart}]`) : null;
-  experience ? console.log(`Experience Data: [${experience}]`) : null;
+
+  useEffect(() => {
+    firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userPref")
+      .doc(props.route.params.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot) {
+          const data = snapshot.data();
+          setGender(data.gender);
+          setExperience(data.experience);
+          setBodyPart(data.bodyPart);
+          setLocation(data.location);
+          setFrequency(data.frequency);
+          setDistance(data.distance);
+        } else {
+          console.log("does't exist")
+        }
+      })
+  }, [])
+
+  const pairingPref = {
+    gender,
+    experience,
+    bodyPart,
+    location,
+    frequency,
+    distance
+  }
+
+  const onSave = () => {
+    firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userPref")
+      .doc(props.route.params.uid)
+      .set(pairingPref)
+
+    props.fetchUserPref()
+  }
 
   return (
     <ScrollView style={styles.view}>
 
       <View style={styles.container}>
-        <Text style={{ fontSize: 28, alignSelf: "center" }}>Pairing Preference</Text>
+        <Text style={styles.Title}>Pairing Preference</Text>
       </View>
 
       <View style={styles.container}>
@@ -64,7 +109,6 @@ export default function Beacon(props) {
           disableSort
           itemContainerStyle={{ height: 40 }}
           parentDDContainerStyle={{ height: "80%" }}
-
         />
       </View>
 
@@ -81,25 +125,117 @@ export default function Beacon(props) {
         />
       </View>
 
+      <View style={styles.container}>
+        <Text style={styles.title}> Frequency </Text>
+        <RadioButton.Group onValueChange={newValue => setFrequency(newValue)} value={frequency}>
+          <RadioButton.Item
+            label="1 ~ 2 / week"
+            value="1 ~ 2 / week"
+            color="black"
+          />
+          <RadioButton.Item
+            color="black"
+            label="3 ~ 5 / week"
+            value="3 ~ 5 / week"
+          />
+          <RadioButton.Item
+            color="black"
+            label="6 ~ 7 / week"
+            value="6 ~ 7 / week"
+          />
+        </RadioButton.Group>
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}> Mode </Text>
+        <BeaconCheckBox
+          option="In-Person"
+          state={location}
+          setState={setLocation}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="Remote"
+          state={location}
+          setState={setLocation}
+          containerStyle={styles.checkbox}
+        />
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}> Location </Text>
+        <Slider
+          value={distance}
+          onValueChange={value => setDistance(value)}
+          minimumValue={1}
+          maximumValue={50}
+          step={1}
+        />
+        <Text>{distance} {distance === 1 ? "mile" : "miles"}</Text>
+      </View>
+
+      <View style={styles.container}>
+        <View style={styles.saveBtn}>
+          <TouchableOpacity
+            style={styles.Button}
+            onPress={() => {
+              props.navigation.navigate("Home");
+              onSave();
+              // console.log(pairingPref);
+            }}
+          >
+            <Text style={styles.ButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={{ height: 50 }}></View>
     </ScrollView >
   )
 }
 
+// export default Beacon;
+
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref,
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserPref }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchProps)(Beacon);
+
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#fff",
-    marginVertical: 0
+    marginVertical: 0,
   },
   container: {
     marginTop: 20,
     marginHorizontal: '10%'
   },
+  Title: {
+    fontSize: 28,
+    alignSelf: "center",
+    fontWeight: "bold",
+    color: "#313A3A"
+  },
   title: {
     alignSelf: "center",
     fontSize: 20,
-    color: "#EF9C2E"
+    color: "#EF9C2E",
+    fontWeight: "bold"
   },
+  saveBtn: {
+    marginTop: 20,
+    alignSelf: 'center',
+    width: 100,
+    height: 46,
+    backgroundColor: 'orange',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  }
 })
 
 const bodyData = [

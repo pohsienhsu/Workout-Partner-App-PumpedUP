@@ -1,116 +1,61 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, Button } from "react-native"
+import { View, Text, Image, FlatList, StyleSheet, Button, ScrollView } from "react-native"
 
 import firebase from 'firebase'
 require('firebase/firestore')
-
+import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
 
+import { fetchUserProfile, curr } from "../../redux/actions/index"
+
+import ImageCarousel from '../components/imageCarousel'
+
 function Profile(props) {
-  const [userPosts, setUserPosts] = useState([]);
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState({})
+  const [pref, setPref] = useState({});
 
-  // useEffect(() => {
-  //   const { currentUser, posts } = props;
+  useEffect(() => {
+    const { currentUser, pairingPref, profile } = props;
+    setUser(currentUser);
+    setPref(pairingPref);
+    setProfile(profile)
+  }, [props.profile])
 
-  //   if (props.route.params.uid === firebase.auth().currentUser.uid) {
-  //     setUser(currentUser)
-  //     setUserPosts(posts)
-  //   }
-  //   else {
-  //     firebase.firestore()
-  //       .collection("users")
-  //       .doc(props.route.params.uid)
-  //       .get()
-  //       .then((snapshot) => {
-  //         if (snapshot.exists) {
-  //           setUser(snapshot.data());
-  //         }
-  //         else {
-  //           console.log('does not exist')
-  //         }
-  //       })
-  //     firebase.firestore()
-  //       .collection("posts")
-  //       .doc(props.route.params.uid)
-  //       .collection("userPosts")
-  //       .orderBy("creation", "asc")
-  //       .get()
-  //       .then((snapshot) => {
-  //         let posts = snapshot.docs.map(doc => {
-  //           const data = doc.data();
-  //           const id = doc.id;
-  //           return { id, ...data }
-  //         })
-  //         setUserPosts(posts)
-  //       })
-  //   }
-
-  //   // if (props.following.indexOf(props.route.params.uid) > -1) {
-  //   //   setFollowing(true);
-  //   // } else {
-  //   //   setFollowing(false);
-  //   // }
-
-  // }, [props.route.params.uid, props.following])
-
-  // const onFollow = () => {
-  //   firebase.firestore()
-  //     .collection("following")
-  //     .doc(firebase.auth().currentUser.uid)
-  //     .collection("userFollowing")
-  //     .doc(props.route.params.uid)
-  //     .set({})
-  // }
-  // const onUnfollow = () => {
-  //   firebase.firestore()
-  //     .collection("following")
-  //     .doc(firebase.auth().currentUser.uid)
-  //     .collection("userFollowing")
-  //     .doc(props.route.params.uid)
-  //     .delete()
-  // }
+  console.log(profile.pictureURL)
 
   const onLogout = () => {
     firebase.auth().signOut();
   }
 
-  // if (user === null) {
-  //   return <View />
-  // }
-  return (
-    <View style={styles.container}>
-      <View style={styles.containerInfo}>
-        {/* <Text>{user.name}</Text>
-        <Text>{user.email}</Text> */}
+  if (user === null || profile.pictureURL === null) {
+    return <View />
+  }
 
-        {/* {props.route.params.uid !== firebase.auth().currentUser.uid ? (
-          <View>
-            {following ? (
-              <Button
-                title="Following"
-                onPress={() => onUnfollow()}
-              />
-            ) :
-              (
-                <Button
-                  title="Follow"
-                  onPress={() => onFollow()}
-                />
-              )}
-          </View>
-        ) :
+  return (
+    <ScrollView style={styles.container}>
+      <View>
+        <View>
+          <ImageCarousel data={profile.pictureURL}/>
+          {/* <Image
+            style={styles.profileImage}
+            source={{ uri: profile.pictureURL[0] }}
+          /> */}
+          <Text style={styles.title}> {user.name} </Text>
+          <Text style={styles.title}> {profile.intro} </Text>
+          <Text style={styles.title}> {profile.bodyPart} </Text>
+          <Text style={styles.title}> {profile.gender} </Text>
+        </View>
+        <View>
           <Button
             title="Logout"
             onPress={() => onLogout()}
-          />} */}
-        <Button
-          title="Logout"
-          onPress={() => onLogout()}
-        />
+          />
+        </View>
+
       </View>
 
-    </View>
+    </ScrollView>
 
   )
 }
@@ -118,28 +63,28 @@ function Profile(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // alignItems: "center"
   },
-  containerInfo: {
-    margin: 20
+  profileImage: {
+    margin: 10,
+    height: 400,
+    width: 400,
+    // borderRadius: 150,
   },
-  containerGallery: {
-    flex: 1
-  },
-  containerImage: {
-    flex: 1 / 3
-
-  },
-  image: {
-    flex: 1,
-    aspectRatio: 1 / 1
+  title: {
+    fontSize: 28,
+    alignSelf: "center",
+    fontWeight: "bold",
+    color: "#313A3A"
   }
 })
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser
-  // posts: store.userState.posts
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref,
+  profile: store.userState.profile
 })
-
-export default connect(mapStateToProps, null)(Profile)
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Profile)
 
 // export default Profile

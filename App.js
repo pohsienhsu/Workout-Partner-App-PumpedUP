@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput } from "react-native"
+import { View, Text, StyleSheet, Image } from "react-native"
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -11,11 +11,12 @@ import { createStore, applyMiddleware } from "redux"
 import rootReducer from "./redux/reducers"
 import thunk from "redux-thunk"
 
-import LandingScreen from "./src/auth/Intro"
+import IntroScreen from "./src/auth/Intro"
 import RegisterScreen from "./src/auth/Register"
 import LoginScreen from "./src/auth/Login"
 import MainScreen from "./src/screens/MainScreen"
 import PairUpScreen from "./src/screens/PairUpSuccess"
+import InvitationScreen from "./src/screens/InvitationScreen"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -31,7 +32,7 @@ export class App extends Component {
     super(props)
     this.state = {
       loaded: false,
-      loggedIn: false
+      loggedIn: false,
     }
   }
 
@@ -48,7 +49,6 @@ export class App extends Component {
           loaded: true
         })
       }
-
     })
   }
 
@@ -57,8 +57,17 @@ export class App extends Component {
 
     if (!loaded) {
       return (
-        <View style={{ justifyContent: "center", flex: 1, alignItems: 'center' }}>
-          <Text >Loading...</Text>
+        // <View style={{ justifyContent: "center", flex: 1, alignItems: 'center', backgroundColor: "#313A3A" }}>
+        //   <Text style={{color: "#fff"}} >Loading...</Text>
+        // </View>
+        <View style={{ flex:1, paddingTop: 80, alignItems: "center", backgroundColor: "#313A3A" }}>
+          <Text style={styles.heading} > PumpedUP </Text>
+          <View>
+            <Image
+              style={{ height: 400, width: 350, marginTop: 40 }}
+              source={require('./src/image/frontcharacter.png')}
+            />
+          </View>
         </View>
       )
     }
@@ -66,9 +75,15 @@ export class App extends Component {
     if (!loggedIn) {
       return (
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Landing">
-            <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Navigator initialRouteName="Intro">
+            <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={RegisterScreen} navigation={this.props.navigation} options={{
+              headerShown: true, 
+              title: "Create Account",
+              headerStyle: {
+                backgroundColor: '#313A3A',
+              },
+              headerTintColor: '#fff', }} />
             <Stack.Screen name="Login" component={LoginScreen} navigation={this.props.navigation} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
@@ -96,7 +111,17 @@ export class App extends Component {
                 headerStyle: {
                   backgroundColor: '#313A3A',
                 },
-                headerTintColor: '#fff',
+                headerTintColor: '#fff'
+              }}
+            />
+            <Stack.Screen name="Invitation" component={InvitationScreen} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "Match",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff'
               }}
             />
           </Stack.Navigator>
@@ -107,6 +132,29 @@ export class App extends Component {
 }
 
 export default App
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#313A3A"
+  },
+  title: {
+    alignSelf: "center",
+    fontSize: 36,
+    color: "#fff"
+  },
+  heading: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'orange',
+    textShadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    textShadowColor: 'black',
+  }
+})
 
 
 

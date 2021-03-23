@@ -1,8 +1,16 @@
-import { USER_STATE_CHANGE, USER_POSTS_CHANGE, CLEAR_DATA } from "../constants"
+import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE } from "../constants"
 
 const initialState = {
   currentUser: null,
-  posts: []
+  pairingPref: {
+    gender: { Male: false, Female: false, Others: false },
+    bodypart: [],
+    experience: [],
+    location: { 'In-Person': false, "Remote": false },
+    frequency: '3 ~ 5 / week',
+    distance: 1
+  },
+  profile: {}
 }
 
 export const user = (state = initialState, action) => {
@@ -12,15 +20,28 @@ export const user = (state = initialState, action) => {
         ...state,
         currentUser: action.currentUser
       }
-    case USER_POSTS_CHANGE:
+    case USER_PREF_CHANGE:
       return {
         ...state,
-        posts: action.posts
+        pairingPref: action.pairingPref
+      }
+    case USER_PROFILE_CHANGE:
+      return {
+        ...state,
+        profile: action.profile
       }
     case CLEAR_DATA:
       return {
         currentUser: null,
-        posts: []
+        pairingPref: {
+          gender: { Male: false, Female: false, Others: false },
+          bodypart: [],
+          experience: [],
+          location: { 'In-Person': false, "Remote": false },
+          frequency: '3 ~ 5 / week',
+          distance: 1
+        },
+        profile: {}
       }
     default:
       return state
