@@ -22,41 +22,36 @@ function Profile(props) {
     setProfile(profile)
   }, [props.profile])
 
-  console.log(profile.pictureURL)
+  // console.log(profile.bodyPart)
 
   const onLogout = () => {
     firebase.auth().signOut();
   }
 
   if (user === null || profile.pictureURL === null) {
-    return <View />
+    return <View style={styles.textContent}>
+      <Text style={{fontSize: 18}}>Loading...</Text>
+    </View>
   }
 
   return (
     <ScrollView style={styles.container}>
-      <View>
-        <View>
-          <ImageCarousel data={profile.pictureURL}/>
-          {/* <Image
-            style={styles.profileImage}
-            source={{ uri: profile.pictureURL[0] }}
-          /> */}
-          <Text style={styles.title}> {user.name} </Text>
-          <Text style={styles.title}> {profile.intro} </Text>
-          <Text style={styles.title}> {profile.bodyPart} </Text>
-          <Text style={styles.title}> {profile.gender} </Text>
-        </View>
-        <View>
-          <Button
-            title="Logout"
-            onPress={() => onLogout()}
-          />
-        </View>
-
+      <View style={{ flex: 1 }}>
+        <ImageCarousel data={profile.pictureURL} />
       </View>
-
+      <View>
+        <Text style={styles.title}> {user.name} </Text>
+        <Text style={styles.title}> {profile.intro} </Text>
+        <Text style={styles.title}> {profile.bodyPart[0]} </Text>
+        <Text style={styles.title}> {profile.gender} </Text>
+      </View>
+      <View>
+        <Button
+          title="Logout"
+          onPress={() => onLogout()}
+        />
+      </View>
     </ScrollView>
-
   )
 }
 
@@ -76,6 +71,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontWeight: "bold",
     color: "#313A3A"
+  },
+  textContent: {
+    alignSelf: "center",
+    justifyContent: "center",
+    flex: 1
   }
 })
 
