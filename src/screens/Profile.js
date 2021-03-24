@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Image, FlatList, StyleSheet, Button, ScrollView } from "react-native"
+import { View, Text, FlatList, StyleSheet, Button, ScrollView } from "react-native"
 import { FAB } from "react-native-paper"
-import { FloatingAction } from "react-native-floating-action";
 
 import firebase from 'firebase'
 require('firebase/firestore')
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
 
-import { fetchUserProfile, curr } from "../../redux/actions/index"
+import { fetchUserProfile, fetchUser } from "../../redux/actions/index"
 
 import ImageCarousel from '../components/imageCarousel'
 
@@ -18,6 +17,14 @@ function Profile(props) {
   const [pref, setPref] = useState({});
 
   useEffect(() => {
+
+    if (props.currentUser === undefined) {
+      props.fetchUser().then(() => {
+        const { currentUser } = props;
+        setUser(currentUser);
+      })
+    }
+
     const { currentUser, pairingPref, profile } = props;
     setUser(currentUser);
     setPref(pairingPref);
@@ -90,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   fab: {
-    position: 'absolute',
+    position: "absolute",
     margin: 16,
     right: 0,
     bottom: -100
@@ -102,7 +109,7 @@ const mapStateToProps = (store) => ({
   pairingPref: store.userState.pairingPref,
   profile: store.userState.profile
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile, fetchUser }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Profile)
 
 // export default Profile
