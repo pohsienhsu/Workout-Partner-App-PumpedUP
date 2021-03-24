@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -12,8 +12,12 @@ import { Icon } from 'react-native-elements'
 
 import { ListItem, Avatar, SearchBar } from "react-native-elements"
 
+import firebase from 'firebase'
+require('firebase/firestore')
+
 export default function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View>
       <SearchBar
@@ -72,7 +76,12 @@ export default function InvitationScreen(props) {
                     <View style={{ paddingLeft: 40 }} />
 
                     <View style={styles.IconBoxClose}>
-                      <TouchableOpacity style={styles.IconButton}>
+                      <TouchableOpacity
+                        style={styles.IconButton}
+                          onPress={() => {
+                            setModalVisible(false);
+                          }}
+                      >
                         <Icon name='close' color='red' />
                       </TouchableOpacity>
                     </View>
@@ -86,7 +95,6 @@ export default function InvitationScreen(props) {
     </View>
   )
 }
-
 
 const data = [
   {
