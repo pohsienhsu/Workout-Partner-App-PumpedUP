@@ -1,10 +1,10 @@
 import firebase from "firebase"
 require("firebase/firestore")
-import { USER_STATE_CHANGE, USER_POSTS_CHANGE, CLEAR_DATA } from "../constants/index"
+import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE } from "../constants/index"
 
 export function clearData() {
   return ((dispatch) => {
-    dispatch({type: CLEAR_DATA})
+    dispatch({ type: CLEAR_DATA })
   })
 }
 
@@ -19,28 +19,46 @@ export function fetchUser() {
           //type & payload
           dispatch({ type: USER_STATE_CHANGE, currentUser: snapshot.data() })
         } else {
-          console.log("Does not exist")
+          console.log("FetchUser: does not exist")
         }
       })
   })
 }
 
-export function fetchUserPosts() {
+export function fetchUserPref() {
   return ((dispatch) => {
     firebase.firestore()
-      .collection("post")
+      .collection("users")
       .doc(firebase.auth().currentUser.uid)
-      .collection("userPosts")
-      .orderBy("creation", "asc") // orderby timestamp
+      .collection("userPref")
+      .doc(firebase.auth().currentUser.uid)
       .get()
       .then((snapshot) => {
-        let posts = snapshot.docs.map(doc => {
-          const data = doc.data()
-          const id = doc.id
-          return { id, ...data }
-        })
-        // console.log(posts)
-        dispatch({ type: USER_POSTS_CHANGE, posts: posts })
+        if (snapshot.exists) {
+          //type & payload
+          dispatch({ type: USER_PREF_CHANGE, pairingPref: snapshot.data() })
+        } else {
+          console.log("FetchUserPref: does not exist")
+        }
+      })
+  })
+}
+
+export function fetchUserProfile() {
+  return ((dispatch) => {
+    firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userProfile")
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists) {
+          //type & payload
+          dispatch({ type: USER_PROFILE_CHANGE, profile: snapshot.data() })
+        } else {
+          console.log("FetchUserProfile: does not exist")
+        }
       })
   })
 }
