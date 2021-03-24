@@ -70,8 +70,8 @@ function EditProfile(props) {
     pictureURL
   }
 
-  const onSave = () => {
-    firebase.firestore()
+  const onSave = async () => {
+    await firebase.firestore()
       .collection("users")
       .doc(firebase.auth().currentUser.uid)
       .collection("userProfile")

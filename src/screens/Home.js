@@ -11,6 +11,8 @@ import {
 } from "react-native"
 import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
 
+import firebase from 'firebase'
+require('firebase/firestore')
 import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
 
@@ -85,8 +87,36 @@ return (
     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
       <TouchableOpacity
         style={styles.Button}
-        onPress={() => {
+        onPress={async () => {
+          // Open Navigation menu
           props.navigation.navigate("Invitation")
+
+          const currUserPref = await firebase.firestore()
+            .collection("users")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("userPref")
+            .doc(firebase.auth().currentUser.uid)
+            .get()
+
+          // Get all users
+          const users = await firebase.firestore()
+            .collection("users")
+            .where('name', '==', 'Kevin Hart')
+            .get();
+
+          const total = 5;
+          
+          users.forEach(async user => {
+            const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
+            if (info.exists && user.id != firebase.auth().currentUser.uid) {
+              if (info.get("age") == "42") {
+                console.log('User id: ', user.id, ' Data:', info.data());
+                // Load
+
+              }
+            }
+          })
+
         }}>
         <Text style={styles.boxText}>Beacon Match</Text>
         {/* <View style={{ paddingTop: 8 }} /> */}
