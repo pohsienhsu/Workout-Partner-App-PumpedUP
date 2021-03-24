@@ -41,21 +41,20 @@ function Home(props) {
   const [avatar, setAvatar] = useState(null)
 
   useEffect(() => {
-    // const fetchPic = async () => {
-    //   try {
-    //     const response = await props.profile.pictureURL[0].url
-    //     if (response) return response
-    //   }
-    //   catch (reject) {
-    //   }
-    // }
-    // fetchPic().then((data) => setAvatar(data))
     const fetchData = async () => {
       try {
         await props
       }
       catch (reject) { }
     }
+
+    if (props.currentUser === undefined) {
+      props.fetchUser().then(() => {
+        const { currentUser } = props;
+        setUser(currentUser);
+      })
+    }
+
     fetchData().then(() => {
       const { currentUser, profile } = props;
       setUser(currentUser);
