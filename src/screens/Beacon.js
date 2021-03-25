@@ -26,25 +26,37 @@ function Beacon(props) {
 
 
   useEffect(() => {
-    firebase.firestore()
-      .collection("users")
-      .doc(firebase.auth().currentUser.uid)
-      .collection("userPref")
-      .doc(props.route.params.uid)
-      .get()
-      .then((snapshot) => {
-        if (snapshot) {
-          const data = snapshot.data();
-          setGender(data.gender);
-          setExperience(data.experience);
-          setBodyPart(data.bodyPart);
-          setLocation(data.location);
-          setFrequency(data.frequency);
-          setDistance(data.distance);
-        } else {
-          console.log("does't exist")
-        }
-      })
+    // firebase.firestore()
+    //   .collection("users")
+    //   .doc(firebase.auth().currentUser.uid)
+    //   .collection("userPref")
+    //   .doc(props.route.params.uid)
+    //   .get()
+    //   .then((snapshot) => {
+    //     if (snapshot) {
+    //       const data = snapshot.data();
+    //       setGender(data.gender);
+    //       setExperience(data.experience);
+    //       setBodyPart(data.bodyPart);
+    //       setLocation(data.location);
+    //       setFrequency(data.frequency);
+    //       setDistance(data.distance);
+    //     } else {
+    //       console.log("does't exist")
+    //     }
+    //   })
+
+    const getProfileData = async () => {
+      await props.pairingPref
+    }
+    getProfileData().then(() => {
+      setGender(props.pairingPref.gender);
+      setExperience(props.pairingPref.experience);
+      setBodyPart(props.pairingPref.bodyPart);
+      setLocation(props.pairingPref.location);
+      setFrequency(props.pairingPref.frequency);
+      setDistance(props.pairingPref.distance);
+    })
   }, [])
 
   const pairingPref = {
@@ -249,10 +261,10 @@ const bodyData = [
 ]
 
 const experienceData = [
-  { label: 'Less than 3 months', value: 1.25 },
-  { label: 'About 1 year', value: 1 },
-  { label: '1 to 3 years', value: 2.5 },
-  { label: '3 to 5 years', value: 4.5 },
-  { label: '5 to 10 years', value: 7.5 },
-  { label: 'More than 10 years', value: 15 }
+  { label: 'Less than 3 months', value: "Less than 3 months" },
+  { label: 'About 1 year', value: "About 1 year" },
+  { label: '1 to 3 years', value: "1 to 3 years" },
+  { label: '3 to 5 years', value: "3 to 5 years" },
+  { label: '5 to 10 years', value: '5 to 10 years' },
+  { label: 'More than 10 years', value: 'More than 10 years' }
 ]
