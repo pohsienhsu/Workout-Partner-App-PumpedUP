@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUserPref } from "../../redux/actions/index"
 
+
 function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
   const [experience, setExperience] = useState([]);
@@ -68,14 +69,13 @@ function Beacon(props) {
     distance
   }
 
-  const onSave = () => {
-    firebase.firestore()
+  const onSave = async () => {
+    await firebase.firestore()
       .collection("users")
       .doc(firebase.auth().currentUser.uid)
       .collection("userPref")
       .doc(props.route.params.uid)
       .set(pairingPref)
-
     props.fetchUserPref()
   }
 

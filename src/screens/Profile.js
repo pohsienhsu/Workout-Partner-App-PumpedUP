@@ -29,7 +29,7 @@ function Profile(props) {
     setUser(currentUser);
     setPref(pairingPref);
     setProfile(profile)
-  }, [props.profile])
+  }, [props.profile, props.profile.pictureURL[0].url, props.profile.pictureURL[0].url])
 
   console.log(profile.bodyPart)
 
