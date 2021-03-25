@@ -173,7 +173,7 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
   fetchUser, 
   // clearData, 
   // fetchUserPref,
-  // fetchUserProfile 
+  // fetchUserProfile
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchProps)(Home)
 

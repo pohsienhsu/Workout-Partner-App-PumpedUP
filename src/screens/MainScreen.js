@@ -92,6 +92,7 @@ const mapStateToProps = (store) => ({
   pairingPref: store.userState.pairingPref,
   profile: store.userState.profile
 })
+
 const mapDispatchProps = (dispatch) => bindActionCreators({ 
   fetchUser, 
   clearData, 

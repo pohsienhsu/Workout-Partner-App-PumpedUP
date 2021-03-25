@@ -10,6 +10,7 @@ import { connect } from "react-redux"
 import { fetchUserProfile, fetchUser } from "../../redux/actions/index"
 
 import ImageCarousel from '../components/imageCarousel'
+import UserInfo from '../components/userInfo'
 
 function Profile(props) {
   const [user, setUser] = useState(null);
@@ -25,11 +26,11 @@ function Profile(props) {
       })
     }
 
-    const { currentUser, pairingPref, profile } = props;
+    const { currentUser, profile } = props;
     setUser(currentUser);
-    setPref(pairingPref);
     setProfile(profile)
-  }, [props.profile, props.profile.pictureURL[0].url, props.profile.pictureURL[0].url])
+
+  }, [props.profile, props.profile.pictureURL[0].url, props.profile.pictureURL[1].url, props.profile.pictureURL[2].url])
 
   console.log(profile.bodyPart)
 
@@ -51,10 +52,11 @@ function Profile(props) {
         <ImageCarousel data={profile.pictureURL} />
       </View>
       <View>
-        <Text style={styles.title}> {profile.name} </Text>
+        {/* <Text style={styles.title}> {profile.name} </Text>
         <Text style={styles.title}> {profile.intro} </Text>
         {/* <Text style={styles.title}> {profile.bodyPart[0]} </Text> */}
-        <Text style={styles.title}> {profile.gender} </Text>
+        {/* <Text style={styles.title}> {profile.gender} </Text> */}
+        <UserInfo />
         <FAB
           style={styles.fab}
           small
@@ -70,6 +72,7 @@ function Profile(props) {
           onPress={() => onLogout()}
         />
       </View>
+      <View style={{ marginTop: 100 }} />
     </ScrollView>
   )
 }
@@ -106,7 +109,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
-  pairingPref: store.userState.pairingPref,
   profile: store.userState.profile
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile, fetchUser }, dispatch);
