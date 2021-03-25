@@ -32,6 +32,10 @@ function EditProfile(props) {
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
   // const [distance, setDistance] = useState(1);
 
+  const [pic1, setPic1] = useState("")
+  const [pic2, setPic2] = useState("")
+  const [pic3, setPic3] = useState("")
+
   useEffect(() => {
     const { currentUser, pairingPref, profile } = props;
 
@@ -39,22 +43,29 @@ function EditProfile(props) {
     setPref(pairingPref);
 
     const fetchProfile = async () => {
-      await profile
+      await profile;
     }
 
-    fetchProfile().then(() => {
-      setGender(profile.gender);
-      setExperience(profile.experience);
-      setBodyPart(profile.bodyPart);
-      setFrequency(profile.frequency);
-      setAge(profile.age);
-      setHabit(profile.habit);
-      setIntro(profile.intro);
-      setName(profile.name);
-      setPictureURL(profile.pictureURL);
-      setProfile(profile)
-    })
-  }, [props.profile])
+    fetchProfile()
+      .then(() => {
+        setGender(profile.gender);
+        setExperience(profile.experience);
+        setBodyPart(profile.bodyPart);
+        setFrequency(profile.frequency);
+        setAge(profile.age);
+        setHabit(profile.habit);
+        setIntro(profile.intro);
+        setName(profile.name);
+        setPictureURL(profile.pictureURL);
+        setProfile(profile)
+        setPic1(profile.pictureURL[0].url);
+        setPic2(profile.pictureURL[1].url);
+        setPic3(profile.pictureURL[2].url);
+      })
+      .catch((e) => {
+
+      })
+  }, [])
 
   console.log(profile)
 
@@ -70,36 +81,61 @@ function EditProfile(props) {
     pictureURL
   }
 
-  const onSave = () => {
-    firebase.firestore()
+  const onSave = async () => {
+    await firebase.firestore()
       .collection("users")
       .doc(firebase.auth().currentUser.uid)
       .collection("userProfile")
       .doc(firebase.auth().currentUser.uid)
       .set(profileDetails)
-    props.fetchUserProfile()
-    setProfile(profile)
+      .then(() => {
+        props.fetchUserProfile()
+        setProfile(profileDetails)
+      })
   }
 
   return (
     <ScrollView style={styles.view}>
       <View style={styles.container}>
-        <Text style={styles.title}>Upload Profile Picture</Text>
-        <Button
-          title="Picture 1 (Avatar)"
+        <Text style={styles.title}>Upload Profile Picture URL</Text>
+        <Text>Pic1 (Avatar)</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={(input) => {
+            let newArr = [...pictureURL];
+            newArr[0] = { url: input };
+            setPic1(input);
+            setPictureURL(newArr)
+          }}
+          value={pic1}
         />
-        <Button
-          title="Picture 2"
+        <Text>Pic2</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={(input) => {
+            let newArr = [...pictureURL];
+            newArr[1] = { url: input };
+            setPic2(input);
+            setPictureURL(newArr)
+          }}
+          value={pic2}
         />
-        <Button
-          title="Picture 3"
+        <Text>Pic3</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={(input) => {
+            let newArr = [...pictureURL];
+            newArr[2] = { url: input };
+            setPic3(input);
+            setPictureURL(newArr)
+          }}
+          value={pic3}
         />
       </View>
 
       <View style={styles.container}>
         <Text style={styles.title}>Name</Text>
         <TextInput
-          defaultValue={age}
           style={styles.input}
           onChangeText={setName}
           value={name}
@@ -116,13 +152,34 @@ function EditProfile(props) {
         />
       </View>
 
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
         <Text style={styles.title}>Gender</Text>
         <TextInput
           style={styles.input}
           onChangeText={setGender}
           value={gender}
         />
+      </View> */}
+
+      <View style={styles.container}>
+        <Text style={styles.title}> Gender </Text>
+        <RadioButton.Group onValueChange={newValue => setGender(newValue)} value={gender}>
+          <RadioButton.Item
+            label="Male"
+            value="Male"
+            color="black"
+          />
+          <RadioButton.Item
+            color="black"
+            label="Female"
+            value="Female"
+          />
+          <RadioButton.Item
+            color="black"
+            label="Others"
+            value="Others"
+          />
+        </RadioButton.Group>
       </View>
 
       <View style={styles.container}>
@@ -252,7 +309,7 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
   // fetchUser, 
   // clearData, 
   // fetchUserPref,
-  fetchUserProfile 
+  fetchUserProfile
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchProps)(EditProfile)
