@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import BeaconCheckBox from "../components/beaconCheckBox"
@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUserPref } from "../../redux/actions/index"
 
+
 function Beacon(props) {
   const [gender, setGender] = useState({ Male: false, Female: false, Others: false });
   const [experience, setExperience] = useState([]);
@@ -26,26 +27,6 @@ function Beacon(props) {
 
 
   useEffect(() => {
-    // firebase.firestore()
-    //   .collection("users")
-    //   .doc(firebase.auth().currentUser.uid)
-    //   .collection("userPref")
-    //   .doc(props.route.params.uid)
-    //   .get()
-    //   .then((snapshot) => {
-    //     if (snapshot) {
-    //       const data = snapshot.data();
-    //       setGender(data.gender);
-    //       setExperience(data.experience);
-    //       setBodyPart(data.bodyPart);
-    //       setLocation(data.location);
-    //       setFrequency(data.frequency);
-    //       setDistance(data.distance);
-    //     } else {
-    //       console.log("does't exist")
-    //     }
-    //   })
-
     const getProfileData = async () => {
       await props.pairingPref
     }
@@ -68,15 +49,16 @@ function Beacon(props) {
     distance
   }
 
-  const onSave = () => {
-    firebase.firestore()
+  const onSave = async () => {
+    await firebase.firestore()
       .collection("users")
       .doc(firebase.auth().currentUser.uid)
       .collection("userPref")
       .doc(props.route.params.uid)
       .set(pairingPref)
-
-    props.fetchUserPref()
+      .then(() => {
+        props.fetchUserPref()
+    })
   }
 
   return (
@@ -191,9 +173,8 @@ function Beacon(props) {
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
-              props.navigation.navigate("Home");
               onSave();
-              // console.log(pairingPref);
+              props.navigation.navigate("Home");
             }}
           >
             <Text style={styles.ButtonText}>Save</Text>
