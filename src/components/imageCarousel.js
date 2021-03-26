@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { Platform, View, ScrollView, Text, StatusBar, SafeAreaView, StyleSheet} from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
+
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import SliderEntry, {styles, colors, slideDimensions} from './sliderEntry';
-// import styles, { colors } from './styles/index.style';
-// import { scrollInterpolators, animatedStyles } from './utils/animations';
-// import { sliderWidth, itemWidth } from './styles/SliderEntry.style';
-// import { ENTRIES1, ENTRIES2 } from './static/entries';
+
 // const IS_ANDROID = Platform.OS === 'android';
 
 const SLIDER_1_FIRST_ITEM = 1;
@@ -19,6 +16,14 @@ export default class ImageCarousel extends Component {
             slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
             data: props.data
         };
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+      console.log('[imageCarousel.js] componentDidUpdate');
+
+      if (this.props.data == null || this.props.data.length != prevState.data.length) {
+        this.setState({...prevState, [data]: this.props.data});
+      }
     }
 
     _renderItem ({item, index}) {
@@ -34,14 +39,6 @@ export default class ImageCarousel extends Component {
               parallaxProps={parallaxProps}
             />
         );
-    }
-
-    _renderLightItem ({item, index}) {
-        return <SliderEntry data={item} even={false} />;
-    }
-
-    _renderDarkItem ({item, index}) {
-        return <SliderEntry data={item} even={true} />;
     }
 
     dataLength = (data) => {
