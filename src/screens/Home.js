@@ -89,8 +89,6 @@ return (
         style={styles.Button}
         onPress={async () => {
           // Open Navigation menu
-          props.navigation.navigate("Invitation")
-
           const currUserPref = await firebase.firestore()
             .collection("users")
             .doc(firebase.auth().currentUser.uid)
@@ -134,7 +132,8 @@ return (
           // } else if (modalVisible.localeCompare('flex') == 0) {
           //   setModalVisible('none');
           // }
-          // props.navigation.navigate("Invitation")
+
+          props.navigation.navigate("Invitation")
         }
         }
       >
