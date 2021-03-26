@@ -67,10 +67,6 @@ function Profile(props) {
         <ImageCarousel data={picURL} />
       </View>
       <View>
-        {/* <Text style={styles.title}> {profile.name} </Text>
-        <Text style={styles.title}> {profile.intro} </Text>
-        {/* <Text style={styles.title}> {profile.bodyPart[0]} </Text> */}
-        {/* <Text style={styles.title}> {profile.gender} </Text> */}
         <UserInfo />
         <FAB
           style={styles.fab}

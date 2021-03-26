@@ -25,7 +25,6 @@ function UserInfo(props) {
   const [habit, setHabit] = useState("");
   const [intro, setIntro] = useState("");
   const [name, setName] = useState("");
-  const [pics, setPics] = useState([]);
 
 
   useEffect(() => {
@@ -45,6 +44,13 @@ function UserInfo(props) {
     })
   }, [props.profile])
 
+  let workoutBody = "";
+  let arr = bodyPart;
+  arr.forEach((bp) => {
+    workoutBody += `${bp.charAt(0).toUpperCase() + bp.slice(1)}\n`
+  })
+  workoutBody = workoutBody.trim()
+
   return (
     <ScrollView style={styles.view}>
 
@@ -52,33 +58,48 @@ function UserInfo(props) {
         <Text style={styles.Title}>Profile</Text>
       </View>
 
-      <View style={styles.container}>
-        <Text ></Text>
-        <Text style={styles.title}>{name}</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Name</Text>
+        <Text style={styles.content}>{name}</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Age</Text>
+        <Text style={styles.content}>{age}</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Gender</Text>
+        <Text style={styles.content}>{gender}</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>About Me</Text>
+        <Text style={styles.content}>{intro}</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Habit</Text>
+        <Text style={styles.content}>{habit}</Text>
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}>{age}, {gender}</Text>
+        <Text style={styles.Title}>Workout Info</Text>
       </View>
 
-      <View style={styles.container}>
-        <Text style={styles.title}>Intro: {intro}</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>BodyPart</Text>
+        <Text style={styles.content}>{workoutBody}</Text>
       </View>
 
-      <View style={styles.container}>
-        <Text style={styles.title}>Workout Body Part: {bodyPart}</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Experience</Text>
+        <Text style={styles.content}>{experience}</Text>
       </View>
 
-      <View style={styles.container}>
-        <Text style={styles.title}>Experience: {experience}</Text>
-      </View>
-
-      <View style={styles.container}>
-        <Text style={styles.title}>Frequency: {frequency}</Text>
-      </View>
-
-      <View style={styles.container}>
-        <Text style={styles.title}>Habit: {habit}</Text>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Frequency</Text>
+        <Text style={styles.content}>{frequency}</Text>
       </View>
 
       <View style={{ height: 50 }}></View>
@@ -111,20 +132,32 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginVertical: 0,
   },
+  contentContainer: {
+    marginTop: 20,
+    marginHorizontal: '10%',
+    // backgroundColor: "red",
+    borderRadius: 10,
+    // padding: 5
+  },
   container: {
     marginTop: 20,
-    marginHorizontal: '10%'
+    marginHorizontal: '10%',
   },
   Title: {
     fontSize: 28,
-    alignSelf: "center",
+    alignSelf: "stretch",
     fontWeight: "bold",
     color: "#313A3A"
   },
   title: {
-    alignSelf: "center",
+    alignSelf: "stretch",
     fontSize: 20,
     color: "#EF9C2E",
     fontWeight: "bold"
+  },
+  content: {
+    fontSize: 20,
+    color: "black",
+    // marginRight: "10%"
   }
 })
