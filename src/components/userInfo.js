@@ -54,9 +54,9 @@ function UserInfo(props) {
   return (
     <ScrollView style={styles.view}>
 
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
         <Text style={styles.Title}>Profile</Text>
-      </View>
+      </View> */}
 
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Name</Text>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     marginVertical: 0,
   },
   contentContainer: {
-    marginTop: 20,
+    marginBottom: 20,
     marginHorizontal: '10%',
     // backgroundColor: "red",
     borderRadius: 10,
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
     alignSelf: "stretch",
     fontWeight: "bold",
-    color: "#313A3A"
+    color: "#313A3A",
+    marginBottom: '3%'
   },
   title: {
     alignSelf: "stretch",

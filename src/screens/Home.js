@@ -71,8 +71,8 @@ function Home(props) {
 
 }, [props.currentUser, props.profile, avatar])
 
-console.log("###################  HOME PAGE  ####################")
-console.log(profile.pictureURL);
+// console.log("###################  HOME PAGE  ####################")
+// console.log(profile.pictureURL);
 
 
 if (user === null) {

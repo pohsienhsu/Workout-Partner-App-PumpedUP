@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, FlatList, StyleSheet, Button, ScrollView } from "react-native"
+import { View, Text, FlatList, StyleSheet, Button, ScrollView, TouchableOpacity } from "react-native"
 import { FAB } from "react-native-paper"
 
 import firebase from 'firebase'
@@ -11,6 +11,7 @@ import { fetchUserProfile, fetchUser } from "../../redux/actions/index"
 
 import ImageCarousel from '../components/imageCarousel'
 import UserInfo from '../components/userInfo'
+import { colors } from "../styles/index.styles"
 
 function Profile(props) {
   const [user, setUser] = useState(null);
@@ -31,7 +32,7 @@ function Profile(props) {
         await props.profile;
         await props.profile.pictureURL;
       }
-      catch (r) {}
+      catch (r) { }
     }
 
     fetchProfile().then(() => {
@@ -45,9 +46,9 @@ function Profile(props) {
 
   }, [props.profile, picURL])
 
-  console.log("###################  Profile Page  ###################")
-  console.log(picURL);
-  console.log("Frequency:" + profile.frequency);
+  // console.log("###################  Profile Page  ###################")
+  // console.log(picURL);
+  // console.log("Frequency:" + profile.frequency);
 
   const onLogout = () => {
     firebase.auth().signOut();
@@ -66,8 +67,9 @@ function Profile(props) {
       <View style={{ flex: 1 }}>
         <ImageCarousel data={picURL} />
       </View>
-      <View>
-        <UserInfo />
+
+      <View style={styles.fabContainer}>
+        <Text style={styles.Title}>Profile</Text>
         <FAB
           style={styles.fab}
           small
@@ -77,13 +79,19 @@ function Profile(props) {
           }}
         />
       </View>
+
       <View>
-        <Button
-          title="Logout"
-          onPress={() => onLogout()}
-        />
+        <UserInfo />
       </View>
-      <View style={{ marginTop: 100 }} />
+
+      <View style={styles.logOutBtn}>
+        <TouchableOpacity
+          onPress={() => onLogout()}
+        >
+          <Text style={{fontSize: 18, color: "#fff", fontWeight: "500"}}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ marginTop: 100, backgroundColor: "#fff" }} />
     </ScrollView>
   )
 }
@@ -91,19 +99,7 @@ function Profile(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center"
-  },
-  profileImage: {
-    margin: 10,
-    height: 400,
-    width: 400,
-    // borderRadius: 150,
-  },
-  title: {
-    fontSize: 28,
-    alignSelf: "center",
-    fontWeight: "bold",
-    color: "#313A3A"
+    backgroundColor: "#fff"
   },
   textContent: {
     alignSelf: "center",
@@ -111,11 +107,33 @@ const styles = StyleSheet.create({
     flex: 1
   },
   fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: -100
+    backgroundColor: colors.uiGray,
+    shadowOpacity: 0
+    // alignSelf: "flex-end"
   },
+  Title: {
+    fontSize: 28,
+    alignSelf: "stretch",
+    fontWeight: "bold",
+    color: "#313A3A"
+  },
+  fabContainer: {
+    flexDirection: "row",
+    width: '100%',
+    justifyContent: "space-between",
+    paddingHorizontal: "10%",
+    paddingVertical: '3%',
+    backgroundColor: "#fff"
+  },
+  logOutBtn: {
+    alignSelf: 'center',
+    width: 100,
+    height: 46,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  }
 })
 
 const mapStateToProps = (store) => ({
