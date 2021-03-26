@@ -43,7 +43,10 @@ function EditProfile(props) {
     setPref(pairingPref);
 
     const fetchProfile = async () => {
-      await profile;
+      try {
+        await profile;
+      }
+      catch (r) {}
     }
 
     fetchProfile()
@@ -62,12 +65,10 @@ function EditProfile(props) {
         setPic2(profile.pictureURL[1].url);
         setPic3(profile.pictureURL[2].url);
       })
-      .catch((e) => {
-
-      })
   }, [])
 
-  console.log(profile)
+  console.log("#####################  Edit Profile  ######################")
+  console.log(props.profile.pictureURL)
 
   const profileDetails = {
     name,
@@ -285,9 +286,9 @@ function EditProfile(props) {
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
-              props.navigation.navigate("Home");
-              onSave();
-              // console.log(pairingPref);
+              onSave().then(() => {
+                props.navigation.navigate("Main");
+              })
             }}
           >
             <Text style={styles.ButtonText}>Save</Text>

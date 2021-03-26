@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -12,10 +12,44 @@ import { Icon } from 'react-native-elements'
 
 import { ListItem, Avatar, SearchBar } from "react-native-elements"
 
-export default function InvitationScreen(props) {
+import firebase from 'firebase'
+require('firebase/firestore')
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUserPref } from "../../redux/actions/index"
+
+function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [allUser, setAllUser] = useState([])
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        await firebase.firestore()
+        .collection("users")
+        .get()
+        .then((snapshot) => {
+          let usersData = snapshot.docs.map(doc => {
+            const id = doc.id;
+            return { id: id }
+          })
+          setAllUser(usersData);
+        })
+        console.log("###########################################")
+        console.log(allUser);
+      }
+      catch(r) {};   
+    }
+
+    fetchAllUsers()
+
+  }, [])
+
+
   return (
     <View>
+      <Text>Number of Users {allUser.length}</Text>
+      
       <SearchBar
         placeholder="Type Here..."
       />
@@ -86,6 +120,15 @@ export default function InvitationScreen(props) {
     </View>
   )
 }
+
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser,
+  pairingPref: store.userState.pairingPref,
+  profile: store.userState.profile
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({}, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(InvitationScreen)
+
 
 
 const data = [

@@ -10,11 +10,12 @@ import { connect } from "react-redux"
 import { fetchUserProfile, fetchUser } from "../../redux/actions/index"
 
 import ImageCarousel from '../components/imageCarousel'
+import UserInfo from '../components/userInfo'
 
 function Profile(props) {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState({})
-  const [pref, setPref] = useState({});
+  const [profile, setProfile] = useState({});
+  const [picURL, setPicURL] = useState([]);
 
   useEffect(() => {
 
@@ -25,19 +26,34 @@ function Profile(props) {
       })
     }
 
-    const { currentUser, pairingPref, profile } = props;
-    setUser(currentUser);
-    setPref(pairingPref);
-    setProfile(profile)
-  }, [props.profile, props.profile.pictureURL[0].url, props.profile.pictureURL[0].url])
+    const fetchProfile = async () => {
+      try {
+        await props.profile;
+        await props.profile.pictureURL;
+      }
+      catch (r) {}
+    }
 
-  console.log(profile.bodyPart)
+    fetchProfile().then(() => {
+      setUser(props.currentUser);
+      setProfile(props.profile);
+      setPicURL(props.profile.pictureURL);
+    })
+    // const { currentUser, profile } = props;
+    // setUser(currentUser);
+    // setProfile(profile);
+
+  }, [props.profile, picURL])
+
+  console.log("###################  Profile Page  ###################")
+  console.log(picURL);
+  console.log("Frequency:" + profile.frequency);
 
   const onLogout = () => {
     firebase.auth().signOut();
   }
 
-  if (user === null || profile.pictureURL === null) {
+  if (user === null || picURL.length === 0) {
     return <View style={styles.textContent}>
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
@@ -48,13 +64,10 @@ function Profile(props) {
       <View>
       </View>
       <View style={{ flex: 1 }}>
-        <ImageCarousel data={profile.pictureURL} />
+        <ImageCarousel data={picURL} />
       </View>
       <View>
-        <Text style={styles.title}> {profile.name} </Text>
-        <Text style={styles.title}> {profile.intro} </Text>
-        {/* <Text style={styles.title}> {profile.bodyPart[0]} </Text> */}
-        <Text style={styles.title}> {profile.gender} </Text>
+        <UserInfo />
         <FAB
           style={styles.fab}
           small
@@ -70,6 +83,7 @@ function Profile(props) {
           onPress={() => onLogout()}
         />
       </View>
+      <View style={{ marginTop: 100 }} />
     </ScrollView>
   )
 }
@@ -106,7 +120,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
-  pairingPref: store.userState.pairingPref,
   profile: store.userState.profile
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile, fetchUser }, dispatch);

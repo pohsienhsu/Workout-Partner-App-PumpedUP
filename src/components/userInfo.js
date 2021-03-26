@@ -1,116 +1,163 @@
-import React, { Component } from 'react';
-import { Platform, View, ScrollView, Text, StatusBar, SafeAreaView, StyleSheet} from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-import SliderEntry, {styles, colors, slideDimensions} from './sliderEntry';
-// const IS_ANDROID = Platform.OS === 'android';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { RadioButton } from 'react-native-paper';
+import BeaconCheckBox from "../components/beaconCheckBox"
 
-const SLIDER_1_FIRST_ITEM = 1;
+import {
+  Dropdown,
+  MultiselectDropdown,
+} from 'sharingan-rn-modal-dropdown';
+// https://reactnativeexample.com/a-simple-and-customizable-react-native-dropdown-created-using-react-native-modal/
 
-export default class UserInfo extends Component {
+import firebase from 'firebase'
+require('firebase/firestore')
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUserProfile } from "../../redux/actions/index"
 
-    constructor (props) {
-        super(props);
-        this.state = {
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
-            data: props.data
-        };
+
+function UserInfo(props) {
+  const [age, setAge] = useState(0);
+  const [bodyPart, setBodyPart] = useState([]);
+  const [experience, setExperience] = useState("");
+  const [frequency, setFrequency] = useState("");
+  const [gender, setGender] = useState("Male");
+  const [habit, setHabit] = useState("");
+  const [intro, setIntro] = useState("");
+  const [name, setName] = useState("");
+
+
+  useEffect(() => {
+    const getProfileData = async () => {
+      await props.profile;
     }
 
-    _renderItem ({item, index}) {
-        return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
-    }
+    getProfileData().then(() => {
+      setAge(props.profile.age);
+      setGender(props.profile.gender);
+      setBodyPart(props.profile.bodyPart);
+      setExperience(props.profile.experience);
+      setFrequency(props.profile.frequency);
+      setHabit(props.profile.habit);
+      setIntro(props.profile.intro);
+      setName(props.profile.name);
+    })
+  }, [props.profile])
 
-    _renderItemWithParallax ({item, index}, parallaxProps) {
-        return (
-            <SliderEntry
-              data={item}
-              even={(index + 1) % 2 === 0}
-              parallax={true}
-              parallaxProps={parallaxProps}
-            />
-        );
-    }
+  let workoutBody = "";
+  let arr = bodyPart;
+  arr.forEach((bp) => {
+    workoutBody += `${bp.charAt(0).toUpperCase() + bp.slice(1)}\n`
+  })
+  workoutBody = workoutBody.trim()
 
-    _renderLightItem ({item, index}) {
-        return <SliderEntry data={item} even={false} />;
-    }
+  return (
+    <ScrollView style={styles.view}>
 
-    _renderDarkItem ({item, index}) {
-        return <SliderEntry data={item} even={true} />;
-    }
+      <View style={styles.container}>
+        <Text style={styles.Title}>Profile</Text>
+      </View>
 
-    dataLength = (data) => {
-        if (!data) return 0;
-        else return data.length;
-    }
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Name</Text>
+        <Text style={styles.content}>{name}</Text>
+      </View>
 
-    mainExample (number, title) {
-        const { slider1ActiveSlide } = this.state;
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Age</Text>
+        <Text style={styles.content}>{age}</Text>
+      </View>
 
-        return (
-            <View style={styles.exampleContainer}>
-                {/* <Text style={styles.title}>{`Example ${number}`}</Text>
-                <Text style={styles.subtitle}>{title}</Text> */}
-                <Carousel
-                  ref={c => this._slider1Ref = c}
-                  data={this.state.data}
-                  renderItem={this._renderItemWithParallax}
-                  sliderWidth={slideDimensions.sliderWidth}
-                  itemWidth={slideDimensions.itemWidth}
-                  hasParallaxImages={true}
-                  firstItem={SLIDER_1_FIRST_ITEM}
-                  inactiveSlideScale={0.94}
-                  inactiveSlideOpacity={0.7}
-                  // inactiveSlideShift={20}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  loop={true}
-                  loopClonesPerSide={2}
-                  autoplay={false}
-                  autoplayDelay={500}
-                  autoplayInterval={3000}
-                  onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
-                  layout={"default"}
-                />
-                <Pagination
-                  dotsLength={this.dataLength(this.state.data)}
-                  activeDotIndex={slider1ActiveSlide}
-                  containerStyle={styles.paginationContainer}
-                  dotColor={'rgba(255, 255, 255, 0.92)'}
-                  dotStyle={styles.paginationDot}
-                  inactiveDotColor={colors.black}
-                  inactiveDotOpacity={0.4}
-                  inactiveDotScale={0.6}
-                  carouselRef={this._slider1Ref}
-                  tappableDots={!!this._slider1Ref}
-                />
-            </View>
-        );
-    }
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Gender</Text>
+        <Text style={styles.content}>{gender}</Text>
+      </View>
 
-    render () {
-        const example1 = this.mainExample(1, 'Default layout | Loop | Autoplay | Parallax | Scale | Opacity | Pagination with tappable dots');
-        // console.log(this.state.data);
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>About Me</Text>
+        <Text style={styles.content}>{intro}</Text>
+      </View>
 
-        return (
-            <SafeAreaView style={styles.safeArea}>
-                <View style={styles.container}>
-                    <StatusBar
-                      translucent={true}
-                      backgroundColor={'rgba(0, 0, 0, 0.3)'}
-                      barStyle={'light-content'}
-                    />
-                    { this.gradient }
-                    <ScrollView
-                      style={styles.scrollview}
-                      scrollEventThrottle={200}
-                      directionalLockEnabled={true}
-                    >
-                        { example1 }
-                    </ScrollView>
-                </View>
-            </SafeAreaView>
-        );
-    }
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Habit</Text>
+        <Text style={styles.content}>{habit}</Text>
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.Title}>Workout Info</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>BodyPart</Text>
+        <Text style={styles.content}>{workoutBody}</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Experience</Text>
+        <Text style={styles.content}>{experience}</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Frequency</Text>
+        <Text style={styles.content}>{frequency}</Text>
+      </View>
+
+      <View style={{ height: 50 }}></View>
+    </ScrollView >
+  )
 }
+
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser,
+  profile: store.userState.profile,
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchProps)(UserInfo);
+
+const colors = {
+  uiGray: '#313A3A',
+  black: '#1a1917',
+  gray: '#888888',
+  uiYellow: "#EF9C2E",
+  background1: '#B721FF',
+  background2: '#21D4FD'
+}
+
+
+// StyleSheet
+const styles = StyleSheet.create({
+  view: {
+    // flex: 1,
+    backgroundColor: "#fff",
+    marginVertical: 0,
+  },
+  contentContainer: {
+    marginTop: 20,
+    marginHorizontal: '10%',
+    // backgroundColor: "red",
+    borderRadius: 10,
+    // padding: 5
+  },
+  container: {
+    marginTop: 20,
+    marginHorizontal: '10%',
+  },
+  Title: {
+    fontSize: 28,
+    alignSelf: "stretch",
+    fontWeight: "bold",
+    color: "#313A3A"
+  },
+  title: {
+    alignSelf: "stretch",
+    fontSize: 20,
+    color: "#EF9C2E",
+    fontWeight: "bold"
+  },
+  content: {
+    fontSize: 20,
+    color: "black",
+    // marginRight: "10%"
+  }
+})
