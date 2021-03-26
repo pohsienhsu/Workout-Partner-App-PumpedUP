@@ -351,11 +351,13 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
+    paddingLeft : 5
   },
   introInput: {
     height: 120,
     margin: 12,
     borderWidth: 1,
+    paddingLeft : 5
   }
 })
 
