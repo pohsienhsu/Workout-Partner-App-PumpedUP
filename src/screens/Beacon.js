@@ -173,9 +173,8 @@ function Beacon(props) {
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
-              props.navigation.navigate("Home");
               onSave();
-              // console.log(pairingPref);
+              props.navigation.navigate("Home");
             }}
           >
             <Text style={styles.ButtonText}>Save</Text>

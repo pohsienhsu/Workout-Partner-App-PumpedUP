@@ -14,8 +14,8 @@ import UserInfo from '../components/userInfo'
 
 function Profile(props) {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState({})
-  const [pref, setPref] = useState({});
+  const [profile, setProfile] = useState({});
+  const [picURL, setPicURL] = useState([]);
 
   useEffect(() => {
 
@@ -26,19 +26,34 @@ function Profile(props) {
       })
     }
 
-    const { currentUser, profile } = props;
-    setUser(currentUser);
-    setProfile(profile)
+    const fetchProfile = async () => {
+      try {
+        await props.profile;
+        await props.profile.pictureURL;
+      }
+      catch (r) {}
+    }
 
-  }, [props.profile, props.profile.pictureURL[0].url, props.profile.pictureURL[1].url, props.profile.pictureURL[2].url])
+    fetchProfile().then(() => {
+      setUser(props.currentUser);
+      setProfile(props.profile);
+      setPicURL(props.profile.pictureURL);
+    })
+    // const { currentUser, profile } = props;
+    // setUser(currentUser);
+    // setProfile(profile);
 
-  console.log(profile.bodyPart)
+  }, [props.profile, picURL])
+
+  console.log("###################  Profile Page  ###################")
+  console.log(picURL);
+  console.log("Frequency:" + profile.frequency);
 
   const onLogout = () => {
     firebase.auth().signOut();
   }
 
-  if (user === null || profile.pictureURL === null) {
+  if (user === null || picURL.length === 0) {
     return <View style={styles.textContent}>
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
@@ -49,7 +64,7 @@ function Profile(props) {
       <View>
       </View>
       <View style={{ flex: 1 }}>
-        <ImageCarousel data={profile.pictureURL} />
+        <ImageCarousel data={picURL} />
       </View>
       <View>
         {/* <Text style={styles.title}> {profile.name} </Text>
