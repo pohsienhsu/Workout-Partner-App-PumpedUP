@@ -74,7 +74,7 @@ function UserInfo(props) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}>Frequency: {experience}</Text>
+        <Text style={styles.title}>Frequency: {frequency}</Text>
       </View>
 
       <View style={styles.container}>
