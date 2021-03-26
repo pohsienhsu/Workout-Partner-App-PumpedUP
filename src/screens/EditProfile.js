@@ -67,8 +67,8 @@ function EditProfile(props) {
       })
   }, [])
 
-  console.log("#####################  Edit Profile  ######################")
-  console.log(props.profile.pictureURL)
+  // console.log("#####################  Edit Profile  ######################")
+  // console.log(props.profile.pictureURL)
 
   const profileDetails = {
     name,

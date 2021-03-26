@@ -45,9 +45,9 @@ function Profile(props) {
 
   }, [props.profile, picURL])
 
-  console.log("###################  Profile Page  ###################")
-  console.log(picURL);
-  console.log("Frequency:" + profile.frequency);
+  // console.log("###################  Profile Page  ###################")
+  // console.log(picURL);
+  // console.log("Frequency:" + profile.frequency);
 
   const onLogout = () => {
     firebase.auth().signOut();

@@ -18,10 +18,6 @@ export default class ImageCarousel extends Component {
         };
     }
 
-    // shouldComponentUpdate() {
-    //   return true
-    // }
-
     /**
      * The Rock Alternative Image
      * 1.
