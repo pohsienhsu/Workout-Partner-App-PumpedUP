@@ -22,7 +22,7 @@ function EditProfile(props) {
 
   const [intro, setIntro] = useState("");
   const [name, setName] = useState("");
-  const [habit, setHabit] = useState("");
+  const [hobbies, setHobbies] = useState("");
   const [age, setAge] = useState("");
   const [pictureURL, setPictureURL] = useState([]);
   const [gender, setGender] = useState("");
@@ -56,7 +56,7 @@ function EditProfile(props) {
         setBodyPart(profile.bodyPart);
         setFrequency(profile.frequency);
         setAge(profile.age);
-        setHabit(profile.habit);
+        setHobbies(profile.hobbies);
         setIntro(profile.intro);
         setName(profile.name);
         setPictureURL(profile.pictureURL);
@@ -67,8 +67,8 @@ function EditProfile(props) {
       })
   }, [])
 
-  console.log("#####################  Edit Profile  ######################")
-  console.log(props.profile.pictureURL)
+  // console.log("#####################  Edit Profile  ######################")
+  // console.log(props.profile.pictureURL)
 
   const profileDetails = {
     name,
@@ -77,7 +77,7 @@ function EditProfile(props) {
     bodyPart,
     frequency,
     age,
-    habit,
+    hobbies,
     intro,
     pictureURL
   }
@@ -99,7 +99,7 @@ function EditProfile(props) {
     <ScrollView style={styles.view}>
       <View style={styles.container}>
         <Text style={styles.title}>Upload Profile Picture URL</Text>
-        <Text>Pic1 (Avatar)</Text>
+        <Text style={{marginHorizontal: 12, marginTop: 10}}>Pic1 (Avatar)</Text>
         <TextInput
           style={styles.input}
           onChangeText={(input) => {
@@ -110,7 +110,7 @@ function EditProfile(props) {
           }}
           value={pic1}
         />
-        <Text>Pic2</Text>
+        <Text style={{marginHorizontal: 12}}>Pic2</Text>
         <TextInput
           style={styles.input}
           onChangeText={(input) => {
@@ -121,7 +121,7 @@ function EditProfile(props) {
           }}
           value={pic2}
         />
-        <Text>Pic3</Text>
+        <Text style={{marginHorizontal: 12}}>Pic3</Text>
         <TextInput
           style={styles.input}
           onChangeText={(input) => {
@@ -144,7 +144,7 @@ function EditProfile(props) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}>About Me la!</Text>
+        <Text style={styles.title}>About Me</Text>
         <TextInput
           style={styles.introInput}
           onChangeText={setIntro}
@@ -194,11 +194,11 @@ function EditProfile(props) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}>Habit</Text>
+        <Text style={styles.title}>Hobbies</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setHabit}
-          value={habit}
+          onChangeText={setHobbies}
+          value={hobbies}
         />
       </View>
 
@@ -351,11 +351,13 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
+    paddingLeft : 5
   },
   introInput: {
     height: 120,
     margin: 12,
     borderWidth: 1,
+    paddingLeft : 5
   }
 })
 

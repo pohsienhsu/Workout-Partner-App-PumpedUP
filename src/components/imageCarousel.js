@@ -18,11 +18,30 @@ export default class ImageCarousel extends Component {
         };
     }
 
+    /**
+     * The Rock Alternative Image
+     * 1.
+     * https://firebasestorage.googleapis.com/v0/b/pumpedup-97f58.appspot.com/o/pictures%2F5zM3ILa60TQb2c4Tuv3OywtP9rT2%2F3.jpeg?alt=media&token=6753a791-a48c-421a-999b-1609c79f884b
+     * 2.
+     * https://www.bosshunting.com.au/wp-content/uploads/2020/03/rock-workout-2.jpg
+     */
+
+
+    updatePic(prevData, nextData) {
+      for (let i=0; i<prevData.length; i++) {
+        if (prevData[i].url != nextData[i].url) return true;
+      }
+      return false;
+    }
+
     componentDidUpdate(prevProps, prevState) {
       console.log('[imageCarousel.js] componentDidUpdate');
-
-      if (this.props.data == null || this.props.data.length != prevState.data.length) {
-        this.setState({...prevState, [data]: this.props.data});
+      // console.log(prevProps);
+      // console.log(this.props);
+      let picChanged = this.updatePic(prevProps.data, this.props.data);
+      console.log(picChanged);
+      if (this.props.data == null || this.props.data.length != prevState.data.length || picChanged) {
+        this.setState({...prevState, data: this.props.data});
       }
     }
 
