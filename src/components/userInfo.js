@@ -22,7 +22,7 @@ function UserInfo(props) {
   const [experience, setExperience] = useState("");
   const [frequency, setFrequency] = useState("");
   const [gender, setGender] = useState("Male");
-  const [habit, setHabit] = useState("");
+  const [hobbies, setHobbies] = useState("");
   const [intro, setIntro] = useState("");
   const [name, setName] = useState("");
 
@@ -38,7 +38,7 @@ function UserInfo(props) {
       setBodyPart(props.profile.bodyPart);
       setExperience(props.profile.experience);
       setFrequency(props.profile.frequency);
-      setHabit(props.profile.habit);
+      setHobbies(props.profile.hobbies);
       setIntro(props.profile.intro);
       setName(props.profile.name);
     })
@@ -79,8 +79,8 @@ function UserInfo(props) {
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>Habit</Text>
-        <Text style={styles.content}>{habit}</Text>
+        <Text style={styles.title}>Hobbies</Text>
+        <Text style={styles.content}>{hobbies}</Text>
       </View>
 
       <View style={styles.container}>
