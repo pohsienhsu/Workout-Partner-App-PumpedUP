@@ -1,4 +1,4 @@
-import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE } from "../constants"
+import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE, USER_PARTNER_CHANGE } from "../constants"
 
 const initialState = {
   currentUser: null,
@@ -13,14 +13,15 @@ const initialState = {
   profile: {
     name: "",
     gender: "",
-    age: "",
+    age:"",
     bodyPart: [],
     hobbies: "",
     intro: "",
     pictureURL: [{url: null}, {url: null}, {url: null}],
     frequency: "",
     experience: ""
-  }
+  },
+  partners: [{name: "", uid: "", img: "", chatID: ""}]
 }
 
 export const user = (state = initialState, action) => {
@@ -39,6 +40,11 @@ export const user = (state = initialState, action) => {
       return {
         ...state,
         profile: action.profile
+      }
+    case USER_PARTNER_CHANGE:
+      return {
+        ...state,
+        partners: action.partners
       }
     case CLEAR_DATA:
       return initialState;

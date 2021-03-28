@@ -9,7 +9,7 @@ import {
   Modal,
   addons,
 } from "react-native"
-import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
+import { fetchUser, fetchUserPref, fetchUserProfile, fetchUserPartner, clearData } from '../../redux/actions/index';
 
 import firebase from 'firebase'
 require('firebase/firestore')
@@ -46,7 +46,7 @@ function Home(props) {
     const fetchData = async () => {
       try {
         await props
-        // await props.fetchUserProfile();
+        // await props.fetchUserPartner();
       }
       catch (reject) { }
     }
@@ -69,10 +69,11 @@ function Home(props) {
       }
     })
 
-}, [props.currentUser, props.profile, avatar])
+}, [props.currentUser, props.profile, avatar, props.partners])
 
-// console.log("###################  HOME PAGE  ####################")
-// console.log(profile.pictureURL);
+console.log("###################  HOME PAGE  ####################")
+console.log(props.currentUser);
+console.log(props.partners)
 
 
 if (user === null) {
@@ -171,10 +172,12 @@ return (
 
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
-  profile: store.userState.profile
+  profile: store.userState.profile,
+  partners: store.userState.partners
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({
-  fetchUser, 
+  fetchUser,
+  fetchUserPartner 
   // clearData, 
   // fetchUserPref,
   // fetchUserProfile

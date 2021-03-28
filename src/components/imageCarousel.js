@@ -26,7 +26,6 @@ export default class ImageCarousel extends Component {
      * https://www.bosshunting.com.au/wp-content/uploads/2020/03/rock-workout-2.jpg
      */
 
-
     updatePic(prevData, nextData) {
       for (let i=0; i<prevData.length; i++) {
         if (prevData[i].url != nextData[i].url) return true;
