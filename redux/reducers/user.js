@@ -8,27 +8,29 @@ const initialState = {
     experience: "",
     location: { 'In-Person': false, "Remote": false },
     frequency: '3 ~ 5 / week',
-    distance: 1
+    distance: 1,
+    age: { "18 ~ 25": false, "26 ~ 35": false, "36 ~ 45": false, "46 ~ 60": false, "> 60": false }
   },
   profile: {
     name: "",
     gender: "",
-    age:"",
+    age: "",
     bodyPart: [],
     hobbies: "",
     intro: "",
     pictureURL: [
-      {url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"}, 
-      {url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"}, 
-      {url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"}],
+      { url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640" },
+      { url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640" },
+      { url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640" }],
     frequency: "",
-    experience: ""
+    experience: "",
+    location: { 'In-Person': false, "Remote": false },
   },
-  partners: [{name: "", uid: "", img: "", chatID: ""}]
+  partners: [{ name: "", uid: "", img: "", chatID: "" }]
 }
 
 export const user = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case USER_STATE_CHANGE:
       return {
         ...state,

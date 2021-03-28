@@ -24,6 +24,7 @@ function Beacon(props) {
   const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
   const [distance, setDistance] = useState(1);
+  const [age, setAge] = useState({ "18 ~ 25": false, "26 ~ 35": false, "36 ~ 45": false, "46 ~ 60": false, "> 60": false })
 
 
   useEffect(() => {
@@ -37,6 +38,7 @@ function Beacon(props) {
       setLocation(props.pairingPref.location);
       setFrequency(props.pairingPref.frequency);
       setDistance(props.pairingPref.distance);
+      setAge(props.pairingPref.age);
     })
   }, [])
 
@@ -46,7 +48,8 @@ function Beacon(props) {
     bodyPart,
     location,
     frequency,
-    distance
+    distance,
+    age
   }
 
   const onSave = async () => {
@@ -86,6 +89,40 @@ function Beacon(props) {
           option="Others"
           state={gender}
           setState={setGender}
+          containerStyle={styles.checkbox}
+        />
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}>Age</Text>
+        <BeaconCheckBox
+          option="18 ~ 25"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="26 ~ 35"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="36 ~ 45"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="46 ~ 60"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="> 60"
+          state={age}
+          setState={setAge}
           containerStyle={styles.checkbox}
         />
       </View>

@@ -17,40 +17,41 @@ import { bindActionCreators } from 'redux'
 import { connect } from "react-redux"
 
 const renderImage = (avatar) => {
+  console.log("Avatar: ", avatar);
   if (avatar) {
-    return (
-      <View>
-        <Image
-          style={styles.profileImage}
-          source={{ uri: avatar }} />
-      </View>
-    );
+    <View>
+      <Image
+        style={styles.profileImage}
+        source={{ uri: avatar }} />
+    </View>
   } else {
-    return (
-      <View>
-        <Image
-          style={styles.profileImage}
-          source={require("../image/default-profile-pic.png")} />
-      </View>
-    );
+    <View>
+      <Image
+        style={styles.profileImage}
+        source={require("../image/default-profile-pic.png")} />
+    </View>
   }
 }
+
+// const defaultUserAvatar = "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640";
 
 
 function Home(props) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState({})
-  const [avatar, setAvatar] = useState(null)
+  const [avatar, setAvatar] = useState(null);
+  const [pref, setPref] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await props;
         // await props.fetchUserPartner();
-        const { currentUser, profile } = props;
+        const { currentUser, profile, pairingPref } = props;
         setUser(currentUser);
         setProfile(profile);
-        setAvatar(profile.pictureURL[0].url)
+        setPref(pairingPref);
+        setAvatar(profile.pictureURL[0].url);
       }
       catch (reject) { }
     }
@@ -74,7 +75,7 @@ function Home(props) {
       console.log("currentUser: ", props.currentUser);
       fetchData();
     }
-  }, [props.currentUser, props.profile, avatar, props.partners])
+  }, [props.currentUser, props.profile, avatar, props.partners, props.pairingPref])
 
   // console.log("###################  HOME PAGE  ####################")
   // console.log(props.currentUser);
@@ -94,7 +95,12 @@ function Home(props) {
 
   return (
     <View style={styles.container}>
-      {renderImage(avatar)}
+      {/* {renderImage(avatar)}   */}
+      <View>
+        <Image
+          style={styles.profileImage}
+          source={{ uri: avatar }} />
+      </View>
       <View style={{ paddingTop: 50 }} />
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -114,7 +120,7 @@ function Home(props) {
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
-              // .where('name', '==', 'Kevin Hart')
+              .where('name', '==', 'Kevin Hart')
               .get();
 
             const total = 5;
@@ -122,53 +128,56 @@ function Home(props) {
             users.forEach(async user => {
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
               if (info.exists && user.id != firebase.auth().currentUser.uid) {
-                if (info.get("age") == "42") {
-                  console.log('User id: ', user.id, ' Data:', info.data());
-                  // Load
-                }
+                // if (info.get("age") == "42") {
+                //   console.log('User id: ', user.id, ' Data:', info.data());
+                //   // Load
+                // }
 
                 // 3/28 15:00 Paste on start
                 const score = 0;
-
-                if (info.exists && user.id != firebase.auth().currentUser.uid) {
-                  // BodyPart is an array
-                  console.log(info.get("bodyPart"))
-                  info.get("bodyPart").forEach(async eachInfo => {
-                    try {
-                      if (eachInfo.get("bodyPart").includes(pref.get("bodyPart")[0])) {
-                        score += 2.75;
-                      }
+                
+                // BodyPart is an array
+                console.log("#############  users.forEach --> info  #############")
+                console.log("Current User: ", user);
+                console.log("Current UserPref: ", pref.bodyPart);
+                console.log("Potential Partner: ", info.data().name)
+                console.log("Potential Partner's Body Part", info.data().bodyPart);
+                info.data().bodyPart.forEach(async bodyInfo => {
+                  try {
+                    if (pref.bodyPart.includes(bodyInfo)){
+                      console.log(`Algorithm BodyPart Successful: ${eachInfo} / Score: ${score}`)
+                      score += 2.75;
                     }
-                    catch (e) {
-                      console.log(`Algorithm BodyPart Error: ${eachInfo}`)
-                    }
-                  })
-
-                  if (eachInfo.get("experience") == pref.get("experience")) {
-                    score += 2.5;
                   }
-
-                  if (eachInfo.get("frequency") == pref.get("frequency")) {
-                    score += 2.25;
+                  catch (e) {
+                    console.log(`Algorithm BodyPart Error: ${eachInfo}`)
                   }
+                })
 
-                  if (pref.get("gender")[eachInfo.get("gender")]) {
-                    score += 2;
-                  }
+                // if (info.data().experience) == pref.get("experience")) {
+                //   score += 2.5;
+                // }
 
-                  if (score >= total) {
-                    MatchPPL = eachInfo.get("name");
-                    console.log('User name: ', MatchPPL);
-                  }
+                // if (info.data().frequency) == pref.get("frequency")) {
+                //   score += 2.25;
+                // }
 
-                  // 3/28 15:00 Paste on end
+                // if (info.data().gender)[eachInfo.get("gender")]) {
+                //   score += 2;
+                // }
 
-                  // For testing check
-                  if (info.get("age") == "42") {
-                    console.log('User id: ', user.id, ' Data:', info.data());
-                    // Load
-                  }
-                }
+                // if (score >= total) {
+                //   MatchPPL = eachInfo.get("name");
+                  // console.log('User name: ', MatchPPL);
+                // }
+
+                // 3/28 15:00 Paste on end
+
+                // For testing check
+                // if (info.get("age") == "42") {
+                  // console.log('User id: ', user.id, ' Data:', info.data());
+                  // Load
+                // }
               }
             })
 
@@ -223,6 +232,7 @@ function Home(props) {
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   profile: store.userState.profile,
+  pairingPref: store.userState.profile,
   partners: store.userState.partners
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({
