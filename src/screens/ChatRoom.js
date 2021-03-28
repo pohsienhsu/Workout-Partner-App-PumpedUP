@@ -11,9 +11,6 @@ import { fetchUserProfile } from "../../redux/actions/index"
 
 // YellowBox.ignoreWarnings(['Setting a timer for a long period of time'])
 
-
-
-
 function ChatRoom(props) {
   const [user, setUser] = useState({})
   // const [name, setName] = useState('')
