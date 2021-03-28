@@ -14,6 +14,7 @@ import { ListItem, Avatar, SearchBar } from "react-native-elements"
 
 import firebase from 'firebase'
 require('firebase/firestore')
+<<<<<<< HEAD
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUserPref } from "../../redux/actions/index"
@@ -45,6 +46,11 @@ function InvitationScreen(props) {
 
   }, [])
 
+=======
+
+export default function InvitationScreen(props) {
+  const [modalVisible, setModalVisible] = useState(false);
+>>>>>>> edcca1b464e3ba20e084d65fe721e0fefa46a308
 
   return (
     <View>
@@ -106,10 +112,18 @@ function InvitationScreen(props) {
                     <View style={{ paddingLeft: 40 }} />
 
                     <View style={styles.IconBoxClose}>
+<<<<<<< HEAD
                       <TouchableOpacity style={styles.IconButton}
                         onPress={() => {
                           setModalVisible(false)
                         }}
+=======
+                      <TouchableOpacity
+                        style={styles.IconButton}
+                          onPress={() => {
+                            setModalVisible(false);
+                          }}
+>>>>>>> edcca1b464e3ba20e084d65fe721e0fefa46a308
                       >
                         <Icon name='close' color='red' />
                       </TouchableOpacity>
@@ -125,6 +139,7 @@ function InvitationScreen(props) {
   )
 }
 
+<<<<<<< HEAD
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   pairingPref: store.userState.pairingPref,
@@ -135,6 +150,8 @@ export default connect(mapStateToProps, mapDispatchProps)(InvitationScreen)
 
 
 
+=======
+>>>>>>> edcca1b464e3ba20e084d65fe721e0fefa46a308
 const data = [
   {
     name: 'Conan O\'Brien',
