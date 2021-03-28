@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
-import BeaconCheckBox from "../components/beaconCheckBox"
+import BeaconCheckBox from "../components/BeaconCheckBox"
 
 import {
   Dropdown,
@@ -194,7 +194,7 @@ function Beacon(props) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}> Location </Text>
+        <Text style={styles.title}> Distance </Text>
         <Slider
           value={distance}
           onValueChange={value => setDistance(value)}

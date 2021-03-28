@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
-import BeaconCheckBox from "../components/beaconCheckBox"
+import BeaconCheckBox from "./BeaconCheckBox"
 
 import {
   Dropdown,
@@ -25,6 +25,7 @@ function UserInfo(props) {
   const [hobbies, setHobbies] = useState("");
   const [intro, setIntro] = useState("");
   const [name, setName] = useState("");
+
 
 
   useEffect(() => {

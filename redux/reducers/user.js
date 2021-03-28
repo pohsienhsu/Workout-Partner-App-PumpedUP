@@ -26,7 +26,7 @@ const initialState = {
     experience: "",
     location: { 'In-Person': false, "Remote": false },
   },
-  partners: [{ name: "", uid: "", img: "", chatID: "" }]
+  partners: []
 }
 
 export const user = (state = initialState, action) => {

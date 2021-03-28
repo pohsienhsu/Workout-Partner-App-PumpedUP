@@ -1,7 +1,7 @@
 import React from 'react'
 import { CheckBox } from "react-native-elements"
 
-const beaconCheckBox = ({ option, state, setState, containerStyle}) => {
+const BeaconCheckBox = ({ option, state, setState, containerStyle}) => {
   return (
     <CheckBox
       title={option}
@@ -17,4 +17,4 @@ const beaconCheckBox = ({ option, state, setState, containerStyle}) => {
   )
 }
 
-export default beaconCheckBox 
+export default BeaconCheckBox 
