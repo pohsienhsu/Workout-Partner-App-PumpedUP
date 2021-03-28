@@ -15,8 +15,8 @@ function ChatRoom(props) {
   const [user, setUser] = useState({})
   // const [name, setName] = useState('')
   const [messages, setMessages] = useState([])
-  console.log("############  chat room  ############")
-  console.log(props);
+  // console.log("############  chat room  ############")
+  // console.log(props);
 
   const db = firebase.firestore()
   const chatsRef = db.collection('userChat').doc(props.route.params.chatID).collection("chat")

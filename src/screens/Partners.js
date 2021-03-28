@@ -14,9 +14,8 @@ import { bindActionCreators } from 'redux'
 import { fetchUserPartner } from "../../redux/actions/index"
 
 function Partners(props) {
-
   const [partners, setPartners] = useState([]);
-  console.log(partners)
+  // console.log(partners)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,9 +52,9 @@ function Partners(props) {
         partners.map((l, i) => (
           <ListItem key={i} bottomDivider
           onPress={() => {
-            console.log("######## chat List########")
-            console.log(l.chatID)
-            props.navigation.navigate("ChatRoom", {chatID: l.chatID})
+            // console.log("######## chat List########")
+            // console.log(l.chatID)
+            props.navigation.navigate("ChatRoom", {chatID: l.chatID, avatar: l.img})
           }}
           >
             <Avatar source={{ uri: l.img }} />

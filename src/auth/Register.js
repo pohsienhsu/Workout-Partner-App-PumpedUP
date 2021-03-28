@@ -40,7 +40,7 @@ export class Register extends Component {
             name,
             email
           })
-
+        console.log("#################  Register  #################")
         console.log(result)
       })
       .catch((err) => {

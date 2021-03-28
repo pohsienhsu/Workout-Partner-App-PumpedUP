@@ -34,7 +34,7 @@ export default class ImageCarousel extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-      console.log('[imageCarousel.js] componentDidUpdate');
+      // console.log('[imageCarousel.js] componentDidUpdate');
       // console.log(prevProps);
       // console.log(this.props);
       let picChanged = this.updatePic(prevProps.data, this.props.data);
@@ -42,6 +42,8 @@ export default class ImageCarousel extends Component {
       if (this.props.data == null || this.props.data.length != prevState.data.length || picChanged) {
         this.setState({...prevState, data: this.props.data});
       }
+
+      // this.setState({...prevState, data: this.props.data});
     }
 
     _renderItem ({item, index}) {

@@ -45,129 +45,137 @@ function Home(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await props
+        await props;
         // await props.fetchUserPartner();
+        const { currentUser, profile } = props;
+        setUser(currentUser);
+        setProfile(profile);
+        setAvatar(profile.pictureURL[0].url)
       }
       catch (reject) { }
     }
 
-    if (props.currentUser === undefined) {
-      props.fetchUser().then(() => {
-        const { currentUser } = props;
-        setUser(currentUser);
-      })
-    }
-
-    fetchData().then(() => {
-      const { currentUser, profile } = props;
-      setUser(currentUser);
-      setProfile(profile);
-      try {
-        setAvatar(profile.pictureURL[0].url)
-      }
-      catch (reject) {
-      }
-    })
-
-}, [props.currentUser, props.profile, avatar, props.partners])
-
-console.log("###################  HOME PAGE  ####################")
-console.log(props.currentUser);
-console.log(props.partners)
-
-
-if (user === null) {
-  return <View style={styles.textContent}>
-    <Text style={{ fontSize: 18 }}>Loading...</Text>
-  </View>
-}
-
-// let avatarURL = avatar ? avatar : require()
-
-return (
-  <View style={styles.container}>
-    {renderImage(avatar)}
-    <View style={{ paddingTop: 50 }} />
-
-    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-      <TouchableOpacity
-        style={styles.Button}
-        onPress={async () => {
-          // Open Navigation menu
-          props.navigation.navigate("Invitation")
-
-          const currUserPref = await firebase.firestore()
-            .collection("users")
-            .doc(firebase.auth().currentUser.uid)
-            .collection("userPref")
-            .doc(firebase.auth().currentUser.uid)
-            .get()
-
-          // Get all users
-          const users = await firebase.firestore()
-            .collection("users")
-            .where('name', '==', 'Kevin Hart')
-            .get();
-
-          const total = 5;
-          
-          users.forEach(async user => {
-            const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
-            if (info.exists && user.id != firebase.auth().currentUser.uid) {
-              if (info.get("age") == "42") {
-                console.log('User id: ', user.id, ' Data:', info.data());
-                // Load
-
-              }
-            }
+    // null or undefined
+    if (props.currentUser == null) {
+      const fetchUserData = async () => {
+        try {
+          await props.fetchUser().then(() => {
+            setUser(props.currentUser);
+            console.log("currentUser: ", props.currentUser);
+          }).catch(reject => {
+            console.log("Reject");
           })
-
-        }}>
-        <Text style={styles.boxText}>Beacon Match</Text>
-        {/* <View style={{ paddingTop: 8 }} /> */}
-        {/* <Text style={styles.ButtonText}>+1</Text> */}
-      </TouchableOpacity>
-
-      <View style={{ paddingLeft: 8 }} />
-
-      <TouchableOpacity
-        style={styles.Button}
-        onPress={() => {
-          // console.log(modalVisible)
-          // if (modalVisible.localeCompare('none') == 0) {
-          //   setModalVisible('flex');
-          // } else if (modalVisible.localeCompare('flex') == 0) {
-          //   setModalVisible('none');
-          // }
-          // props.navigation.navigate("Invitation")
         }
+        catch (e) {
+          console.log(e);
         }
-      >
-        <Text style={styles.boxText}>Invitation</Text>
-        {/* <View style={{ paddingTop: 8 }} />
+      }
+      fetchUserData();
+    }
+    // if user exists
+    else {
+      console.log("currentUser: ", props.currentUser);
+      fetchData();
+    }
+  }, [props.currentUser, props.profile, avatar, props.partners])
+
+  // console.log("###################  HOME PAGE  ####################")
+  // console.log(props.currentUser);
+  // console.log(props.partners)
+
+
+  if (user === null) {
+    return <View style={styles.textContent}>
+      <Text style={{ fontSize: 18 }}>Loading...</Text>
+    </View>
+  }
+
+  // let avatarURL = avatar ? avatar : require()
+
+  return (
+    <View style={styles.container}>
+      {renderImage(avatar)}
+      <View style={{ paddingTop: 50 }} />
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={async () => {
+            // Open Navigation menu
+            props.navigation.navigate("Invitation")
+
+            const currUserPref = await firebase.firestore()
+              .collection("users")
+              .doc(firebase.auth().currentUser.uid)
+              .collection("userPref")
+              .doc(firebase.auth().currentUser.uid)
+              .get()
+
+            // Get all users
+            const users = await firebase.firestore()
+              .collection("users")
+              .where('name', '==', 'Kevin Hart')
+              .get();
+
+            const total = 5;
+
+            users.forEach(async user => {
+              const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
+              if (info.exists && user.id != firebase.auth().currentUser.uid) {
+                if (info.get("age") == "42") {
+                  console.log('User id: ', user.id, ' Data:', info.data());
+                  // Load
+
+                }
+              }
+            })
+
+          }}>
+          <Text style={styles.boxText}>Beacon Match</Text>
+          {/* <View style={{ paddingTop: 8 }} /> */}
+          {/* <Text style={styles.ButtonText}>+1</Text> */}
+        </TouchableOpacity>
+
+        <View style={{ paddingLeft: 8 }} />
+
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={() => {
+            // console.log(modalVisible)
+            // if (modalVisible.localeCompare('none') == 0) {
+            //   setModalVisible('flex');
+            // } else if (modalVisible.localeCompare('flex') == 0) {
+            //   setModalVisible('none');
+            // }
+            // props.navigation.navigate("Invitation")
+          }
+          }
+        >
+          <Text style={styles.boxText}>Invitation</Text>
+          {/* <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+3</Text> */}
-      </TouchableOpacity>
-    </View>
+        </TouchableOpacity>
+      </View>
 
-    <View style={{ paddingTop: 8 }} />
+      <View style={{ paddingTop: 8 }} />
 
-    <View style={{ flexDirection: 'row', justifyContent: 'center', diaplay: "flex" }}>
-      <TouchableOpacity style={styles.Button}>
-        <Text style={styles.boxText}>Daily Goal</Text>
-        {/* <View style={{ paddingTop: 8 }} />
+      <View style={{ flexDirection: 'row', justifyContent: 'center', diaplay: "flex" }}>
+        <TouchableOpacity style={styles.Button}>
+          <Text style={styles.boxText}>Daily Goal</Text>
+          {/* <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+2</Text> */}
-      </TouchableOpacity>
+        </TouchableOpacity>
 
-      <View style={{ paddingLeft: 8 }} />
+        <View style={{ paddingLeft: 8 }} />
 
-      <TouchableOpacity style={styles.Button}>
-        <Text style={styles.boxText}>Schedule</Text>
-        {/* <View style={{ paddingTop: 8 }} />
+        <TouchableOpacity style={styles.Button}>
+          <Text style={styles.boxText}>Schedule</Text>
+          {/* <View style={{ paddingTop: 8 }} />
           <Text style={styles.ButtonText}>+0</Text> */}
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-)
+  )
 }
 
 const mapStateToProps = (store) => ({
@@ -177,7 +185,7 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({
   fetchUser,
-  fetchUserPartner 
+  fetchUserPartner
   // clearData, 
   // fetchUserPref,
   // fetchUserProfile
