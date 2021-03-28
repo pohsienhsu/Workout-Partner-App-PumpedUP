@@ -17,7 +17,10 @@ const initialState = {
     bodyPart: [],
     hobbies: "",
     intro: "",
-    pictureURL: [{url: null}, {url: null}, {url: null}],
+    pictureURL: [
+      {url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"}, 
+      {url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"}, 
+      {url: "https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"}],
     frequency: "",
     experience: ""
   },

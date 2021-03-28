@@ -59,12 +59,9 @@ function Home(props) {
     if (props.currentUser == null) {
       const fetchUserData = async () => {
         try {
-          await props.fetchUser().then(() => {
-            setUser(props.currentUser);
-            console.log("currentUser: ", props.currentUser);
-          }).catch(reject => {
-            console.log("Reject");
-          })
+          await props.fetchUser();
+          setUser(props.currentUser);
+          console.log("currentUser: ", props.currentUser);
         }
         catch (e) {
           console.log(e);
@@ -92,6 +89,9 @@ function Home(props) {
 
   // let avatarURL = avatar ? avatar : require()
 
+  // For testing fetch data
+  const MatchPPL = 'Kevin Hart';
+
   return (
     <View style={styles.container}>
       {renderImage(avatar)}
@@ -114,7 +114,7 @@ function Home(props) {
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
-              .where('name', '==', 'Kevin Hart')
+              // .where('name', '==', 'Kevin Hart')
               .get();
 
             const total = 5;
@@ -125,7 +125,49 @@ function Home(props) {
                 if (info.get("age") == "42") {
                   console.log('User id: ', user.id, ' Data:', info.data());
                   // Load
+                }
 
+                // 3/28 15:00 Paste on start
+                const score = 0;
+
+                if (info.exists && user.id != firebase.auth().currentUser.uid) {
+                  // BodyPart is an array
+                  console.log(info.get("bodyPart"))
+                  info.get("bodyPart").forEach(async eachInfo => {
+                    try {
+                      if (eachInfo.get("bodyPart").includes(pref.get("bodyPart")[0])) {
+                        score += 2.75;
+                      }
+                    }
+                    catch (e) {
+                      console.log(`Algorithm BodyPart Error: ${eachInfo}`)
+                    }
+                  })
+
+                  if (eachInfo.get("experience") == pref.get("experience")) {
+                    score += 2.5;
+                  }
+
+                  if (eachInfo.get("frequency") == pref.get("frequency")) {
+                    score += 2.25;
+                  }
+
+                  if (pref.get("gender")[eachInfo.get("gender")]) {
+                    score += 2;
+                  }
+
+                  if (score >= total) {
+                    MatchPPL = eachInfo.get("name");
+                    console.log('User name: ', MatchPPL);
+                  }
+
+                  // 3/28 15:00 Paste on end
+
+                  // For testing check
+                  if (info.get("age") == "42") {
+                    console.log('User id: ', user.id, ' Data:', info.data());
+                    // Load
+                  }
                 }
               }
             })

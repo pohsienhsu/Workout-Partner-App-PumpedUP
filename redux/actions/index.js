@@ -15,8 +15,8 @@ export function fetchUser() {
       .doc(firebase.auth().currentUser.uid)
       .get()
       .then((snapshot) => {
-        console.log("Snapshot: ", snapshot);
-        console.log("Does snapshot exists: ", snapshot.exists);
+        // console.log("Snapshot: ", snapshot);
+        // console.log("Does snapshot exists: ", snapshot.exists);
         // console.log("Snapshot val(): ", snapshot.user.val());
         if (snapshot) {
           //type & payload

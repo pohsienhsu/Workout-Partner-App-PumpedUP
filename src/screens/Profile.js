@@ -46,12 +46,9 @@ function Profile(props) {
     if (props.currentUser == null) {
       const fetchUserData = async () => {
         try {
-          await props.fetchUser().then(() => {
-            setUser(props.currentUser);
-            console.log("currentUser: ", props.currentUser);
-          }).catch(reject => {
-            console.log("Reject");
-          })
+          await props.fetchUser()
+          setUser(props.currentUser);
+          console.log("currentUser: ", props.currentUser);
         }
         catch (e) {
           console.log(e);
@@ -62,9 +59,6 @@ function Profile(props) {
     // if user exists
     else {
       fetchProfile()
-      // const { currentUser, profile } = props;
-      // setUser(currentUser);
-      // setProfile(profile);
     }
 
   }, [props.profile, picURL])
@@ -82,6 +76,8 @@ function Profile(props) {
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
   }
+
+  console.log(profile);
 
   return (
     <ScrollView style={styles.container}>

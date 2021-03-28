@@ -7,6 +7,11 @@ import SliderEntry, {styles, colors, slideDimensions} from './sliderEntry';
 // const IS_ANDROID = Platform.OS === 'android';
 
 const SLIDER_1_FIRST_ITEM = 1;
+// const defatul_pics = [
+//   {},
+//   {},
+//   {},
+// ]
 
 export default class ImageCarousel extends Component {
 
