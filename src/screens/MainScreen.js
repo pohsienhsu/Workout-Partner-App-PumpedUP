@@ -3,14 +3,14 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import { Feather } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
+import { fetchUser, fetchUserPref, fetchUserProfile, clearData, fetchUserPartner } from '../../redux/actions/index';
 
 import firebase from 'firebase'
 
 import HomeScreen from "./Home";
 import BeaconScreen from "./Beacon";
 import ProfileScreen from "./Profile";
-import PairUpSuccess from "./PairUpSuccess"
+import Partners from "./Partners"
 
 const Tab = createMaterialBottomTabNavigator()
 
@@ -25,6 +25,7 @@ export class Main extends Component {
     this.props.fetchUser()
     this.props.fetchUserPref()
     this.props.fetchUserProfile()
+    this.props.fetchUserPartner()
   }
 
   render() {
@@ -54,10 +55,10 @@ export class Main extends Component {
             )
           }}
         />
-        <Tab.Screen name="Inbox" component={EmptyScreen}
+        <Tab.Screen name="Partners" component={Partners}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Feather name="inbox" color={color} size={26} />
+              <Feather name="users" color={color} size={26} />
             )
           }}
         />
@@ -92,11 +93,13 @@ const mapStateToProps = (store) => ({
   pairingPref: store.userState.pairingPref,
   profile: store.userState.profile
 })
+
 const mapDispatchProps = (dispatch) => bindActionCreators({ 
   fetchUser, 
   clearData, 
   fetchUserPref,
-  fetchUserProfile 
+  fetchUserProfile,
+  fetchUserPartner
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchProps)(Main)

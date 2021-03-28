@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, FlatList, StyleSheet, Button, ScrollView } from "react-native"
+import { View, Text, FlatList, StyleSheet, Button, ScrollView, TouchableOpacity } from "react-native"
 import { FAB } from "react-native-paper"
 
 import firebase from 'firebase'
@@ -10,51 +10,85 @@ import { connect } from "react-redux"
 import { fetchUserProfile, fetchUser } from "../../redux/actions/index"
 
 import ImageCarousel from '../components/imageCarousel'
+import UserInfo from '../components/userInfo'
+import { colors } from "../styles/index.styles"
 
 function Profile(props) {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState({})
-  const [pref, setPref] = useState({});
+  const [profile, setProfile] = useState({});
+  const [picURL, setPicURL] = useState([]);
 
   useEffect(() => {
 
-    if (props.currentUser === undefined) {
-      props.fetchUser().then(() => {
-        const { currentUser } = props;
+    const fetchData = async () => {
+      try {
+        await props;
+        // await props.fetchUserPartner();
+        const { currentUser, profile } = props;
         setUser(currentUser);
-      })
+        setProfile(profile);
+        setAvatar(profile.pictureURL[0].url)
+      }
+      catch (reject) { }
     }
 
-    const { currentUser, pairingPref, profile } = props;
-    setUser(currentUser);
-    setPref(pairingPref);
-    setProfile(profile)
-  }, [props.profile, props.profile.pictureURL[0].url, props.profile.pictureURL[0].url])
+    const fetchProfile = async () => {
+      try {
+        await props.profile;
+        await props.profile.pictureURL;
+        setUser(props.currentUser);
+        setProfile(props.profile);
+        setPicURL(props.profile.pictureURL);
+      }
+      catch (r) { }
+    }
+    // null or undefined
+    if (props.currentUser == null) {
+      const fetchUserData = async () => {
+        try {
+          await props.fetchUser()
+          setUser(props.currentUser);
+          console.log("currentUser: ", props.currentUser);
+        }
+        catch (e) {
+          console.log(e);
+        }
+      }
+      fetchUserData();
+    }
+    // if user exists
+    else {
+      fetchProfile()
+    }
 
-  console.log(profile.bodyPart)
+  }, [props.profile, picURL])
+
+  // console.log("###################  Profile Page  ###################")
+  // console.log(picURL);
+  // console.log("Frequency:" + profile.frequency);
 
   const onLogout = () => {
     firebase.auth().signOut();
   }
 
-  if (user === null || profile.pictureURL === null) {
+  if (user === null || picURL.length === 0) {
     return <View style={styles.textContent}>
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
   }
+
+  console.log(profile);
 
   return (
     <ScrollView style={styles.container}>
       <View>
       </View>
       <View style={{ flex: 1 }}>
-        <ImageCarousel data={profile.pictureURL} />
+        <ImageCarousel data={picURL} />
       </View>
-      <View>
-        <Text style={styles.title}> {profile.name} </Text>
-        <Text style={styles.title}> {profile.intro} </Text>
-        {/* <Text style={styles.title}> {profile.bodyPart[0]} </Text> */}
-        <Text style={styles.title}> {profile.gender} </Text>
+
+      <View style={styles.fabContainer}>
+        <Text style={styles.Title}>Profile</Text>
         <FAB
           style={styles.fab}
           small
@@ -64,12 +98,19 @@ function Profile(props) {
           }}
         />
       </View>
+
       <View>
-        <Button
-          title="Logout"
-          onPress={() => onLogout()}
-        />
+        <UserInfo />
       </View>
+
+      <View style={styles.logOutBtn}>
+        <TouchableOpacity
+          onPress={() => onLogout()}
+        >
+          <Text style={{ fontSize: 18, color: "#fff", fontWeight: "500" }}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ marginTop: 100, backgroundColor: "#fff" }} />
     </ScrollView>
   )
 }
@@ -77,19 +118,7 @@ function Profile(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center"
-  },
-  profileImage: {
-    margin: 10,
-    height: 400,
-    width: 400,
-    // borderRadius: 150,
-  },
-  title: {
-    fontSize: 28,
-    alignSelf: "center",
-    fontWeight: "bold",
-    color: "#313A3A"
+    backgroundColor: "#fff"
   },
   textContent: {
     alignSelf: "center",
@@ -97,16 +126,37 @@ const styles = StyleSheet.create({
     flex: 1
   },
   fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: -100
+    backgroundColor: colors.uiGray,
+    shadowOpacity: 0
+    // alignSelf: "flex-end"
   },
+  Title: {
+    fontSize: 28,
+    alignSelf: "stretch",
+    fontWeight: "bold",
+    color: "#313A3A"
+  },
+  fabContainer: {
+    flexDirection: "row",
+    width: '100%',
+    justifyContent: "space-between",
+    paddingHorizontal: "10%",
+    paddingVertical: '3%',
+    backgroundColor: "#fff"
+  },
+  logOutBtn: {
+    alignSelf: 'center',
+    width: 100,
+    height: 46,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  }
 })
 
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
-  pairingPref: store.userState.pairingPref,
   profile: store.userState.profile
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile, fetchUser }, dispatch);

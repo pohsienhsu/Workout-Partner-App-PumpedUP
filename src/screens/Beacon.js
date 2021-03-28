@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
-import BeaconCheckBox from "../components/beaconCheckBox"
+import BeaconCheckBox from "../components/BeaconCheckBox"
 
 import {
   Dropdown,
@@ -24,29 +24,10 @@ function Beacon(props) {
   const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
   const [distance, setDistance] = useState(1);
+  const [age, setAge] = useState({ "18 ~ 25": false, "26 ~ 35": false, "36 ~ 45": false, "46 ~ 60": false, "> 60": false })
 
 
   useEffect(() => {
-    // firebase.firestore()
-    //   .collection("users")
-    //   .doc(firebase.auth().currentUser.uid)
-    //   .collection("userPref")
-    //   .doc(props.route.params.uid)
-    //   .get()
-    //   .then((snapshot) => {
-    //     if (snapshot) {
-    //       const data = snapshot.data();
-    //       setGender(data.gender);
-    //       setExperience(data.experience);
-    //       setBodyPart(data.bodyPart);
-    //       setLocation(data.location);
-    //       setFrequency(data.frequency);
-    //       setDistance(data.distance);
-    //     } else {
-    //       console.log("does't exist")
-    //     }
-    //   })
-
     const getProfileData = async () => {
       await props.pairingPref
     }
@@ -57,6 +38,7 @@ function Beacon(props) {
       setLocation(props.pairingPref.location);
       setFrequency(props.pairingPref.frequency);
       setDistance(props.pairingPref.distance);
+      setAge(props.pairingPref.age);
     })
   }, [])
 
@@ -66,7 +48,8 @@ function Beacon(props) {
     bodyPart,
     location,
     frequency,
-    distance
+    distance,
+    age
   }
 
   const onSave = async () => {
@@ -76,7 +59,9 @@ function Beacon(props) {
       .collection("userPref")
       .doc(props.route.params.uid)
       .set(pairingPref)
-    props.fetchUserPref()
+      .then(() => {
+        props.fetchUserPref()
+    })
   }
 
   return (
@@ -104,6 +89,40 @@ function Beacon(props) {
           option="Others"
           state={gender}
           setState={setGender}
+          containerStyle={styles.checkbox}
+        />
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}>Age</Text>
+        <BeaconCheckBox
+          option="18 ~ 25"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="26 ~ 35"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="36 ~ 45"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="46 ~ 60"
+          state={age}
+          setState={setAge}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="> 60"
+          state={age}
+          setState={setAge}
           containerStyle={styles.checkbox}
         />
       </View>
@@ -175,7 +194,7 @@ function Beacon(props) {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}> Location </Text>
+        <Text style={styles.title}> Distance </Text>
         <Slider
           value={distance}
           onValueChange={value => setDistance(value)}
@@ -191,9 +210,8 @@ function Beacon(props) {
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
-              props.navigation.navigate("Home");
               onSave();
-              // console.log(pairingPref);
+              props.navigation.navigate("Home");
             }}
           >
             <Text style={styles.ButtonText}>Save</Text>
