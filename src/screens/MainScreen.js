@@ -98,7 +98,7 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
   fetchUser, 
   clearData, 
   fetchUserPref,
-  fetchUserProfile ,
+  fetchUserProfile,
   fetchUserPartner
 }, dispatch)
 
