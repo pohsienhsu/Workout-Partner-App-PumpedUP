@@ -5,6 +5,7 @@ import {
   MultiselectDropdown,
 } from 'sharingan-rn-modal-dropdown';
 import { RadioButton } from 'react-native-paper';
+import BeaconCheckBox from "../components/BeaconCheckBox";
 
 import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
 
@@ -28,7 +29,7 @@ function EditProfile(props) {
   const [gender, setGender] = useState("");
   const [experience, setExperience] = useState("");
   const [bodyPart, setBodyPart] = useState([]);
-  // const [location, setLocation] = useState({ 'In-Person': false, "Remote": false });
+  const [location, setLocation] = useState({ "In-Person": false, "Remote": false });
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
   // const [distance, setDistance] = useState(1);
 
@@ -46,7 +47,7 @@ function EditProfile(props) {
       try {
         await profile;
       }
-      catch (r) {}
+      catch (r) { }
     }
 
     fetchProfile()
@@ -60,7 +61,8 @@ function EditProfile(props) {
         setIntro(profile.intro);
         setName(profile.name);
         setPictureURL(profile.pictureURL);
-        setProfile(profile)
+        setProfile(profile);
+        setLocation(profile.location);
         setPic1(profile.pictureURL[0].url);
         setPic2(profile.pictureURL[1].url);
         setPic3(profile.pictureURL[2].url);
@@ -79,7 +81,8 @@ function EditProfile(props) {
     age,
     hobbies,
     intro,
-    pictureURL
+    pictureURL,
+    location
   }
 
   const onSave = async () => {
@@ -99,7 +102,7 @@ function EditProfile(props) {
     <ScrollView style={styles.view}>
       <View style={styles.container}>
         <Text style={styles.title}>Upload Profile Picture URL</Text>
-        <Text style={{marginHorizontal: 12, marginTop: 10}}>Pic1 (Avatar)</Text>
+        <Text style={{ marginHorizontal: 12, marginTop: 10 }}>Pic1 (Avatar)</Text>
         <TextInput
           style={styles.input}
           onChangeText={(input) => {
@@ -110,7 +113,7 @@ function EditProfile(props) {
           }}
           value={pic1}
         />
-        <Text style={{marginHorizontal: 12}}>Pic2</Text>
+        <Text style={{ marginHorizontal: 12 }}>Pic2</Text>
         <TextInput
           style={styles.input}
           onChangeText={(input) => {
@@ -121,7 +124,7 @@ function EditProfile(props) {
           }}
           value={pic2}
         />
-        <Text style={{marginHorizontal: 12}}>Pic3</Text>
+        <Text style={{ marginHorizontal: 12 }}>Pic3</Text>
         <TextInput
           style={styles.input}
           onChangeText={(input) => {
@@ -253,33 +256,21 @@ function EditProfile(props) {
         </RadioButton.Group>
       </View>
 
-      {/* <View style={styles.container}>
-      <Text style={styles.title}> Mode </Text>
-      <BeaconCheckBox
-        option="In-Person"
-        state={location}
-        setState={setLocation}
-        containerStyle={styles.checkbox}
-      />
-      <BeaconCheckBox
-        option="Remote"
-        state={location}
-        setState={setLocation}
-        containerStyle={styles.checkbox}
-      />
-    </View> */}
-
-      {/* <View style={styles.container}>
-      <Text style={styles.title}> Location </Text>
-      <Slider
-        value={distance}
-        onValueChange={value => setDistance(value)}
-        minimumValue={1}
-        maximumValue={50}
-        step={1}
-      />
-      <Text>{distance} {distance === 1 ? "mile" : "miles"}</Text>
-    </View> */}
+      <View style={styles.container}>
+        <Text style={styles.title}> Mode </Text>
+        <BeaconCheckBox
+          option="In-Person"
+          state={location}
+          setState={setLocation}
+          containerStyle={styles.checkbox}
+        />
+        <BeaconCheckBox
+          option="Remote"
+          state={location}
+          setState={setLocation}
+          containerStyle={styles.checkbox}
+        />
+      </View>
 
       <View style={styles.container}>
         <View style={styles.saveBtn}>
@@ -351,13 +342,13 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
-    paddingLeft : 5
+    paddingLeft: 5
   },
   introInput: {
     height: 120,
     margin: 12,
     borderWidth: 1,
-    paddingLeft : 5
+    paddingLeft: 5
   }
 })
 
