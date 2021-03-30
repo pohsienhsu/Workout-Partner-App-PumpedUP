@@ -43,6 +43,19 @@ function Home(props) {
   const [profile, setProfile] = useState({})
   const [avatar, setAvatar] = useState(null);
   const [pref, setPref] = useState({});
+  const [beaconMatch, setBeaconMatch] = useState(BeaconMatchDefaultData);
+
+  const BeaconMatchDefaultData = [
+    {
+      uid: '',
+      name: '',
+      intro: '',
+      img: '',
+      gender: '',
+      age: 20,
+      hobby: ''
+    }
+  ]
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -51,13 +64,42 @@ function Home(props) {
       try {
         await props;
         // await props.fetchUserPartner();
-        const { currentUser, profile, pairingPref } = props;
+
+        const { currentUser, profile} = props;
         setUser(currentUser);
         setProfile(profile);
-        setPref(pairingPref);
+
+        const currUserPref = await firebase.firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("userPref")
+          .doc(firebase.auth().currentUser.uid)
+          .get()
+  
+        console.log("***************************************");
+        if (currUserPref.exists) {
+          console.log(currUserPref.data());
+          setPref(currUserPref.data());
+        }
         setAvatar(profile.pictureURL[0].url);
       }
       catch (reject) { }
+    }
+
+    const onSentInvitation = async () => {
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("invitations")
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          uid: beaconMatch.uid,
+          name: beaconMatch.name
+        })
+        .then(() => {
+          props.fetchUserProfile()
+          setProfile(profileDetails)
+        })
     }
 
     // null or undefined
@@ -95,10 +137,15 @@ function Home(props) {
   // let avatarURL = avatar ? avatar : require()
 
   // For testing fetch data
-  var MatchPPL = '';
+  let MatchPPL = '';
+  const showMatchPPL = (matchPPL) => {
+    console.log("Showing");
+    console.log(matchPPL);
+    return matchPPL;
+  }
 
   // For Matching algorithm
-  const total = 5;
+  const total = 7;
 
   return (
     <View style={styles.container}>
@@ -136,21 +183,22 @@ function Home(props) {
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
               if (info.exists && user.id != firebase.auth().currentUser.uid) {
                 // For testing check No.1
+                console.log("For testing check No.1 : ")
                 if (info.get("age") == "42") {
                   MatchPPL += info.get("name")
-                  console.log('User id: ', user.id, ' Data:', info.data());
+                  console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
                 }
 
                 let score = 0;
                 
                 // BodyPart is an array
                 console.log("#############  users.forEach --> info  #############")
-                console.log("Current User: ", user);
-                console.log("Current UserPref: ", pref.bodyPart);
-                console.log("Potential Partner: ", info.data().name)
-                console.log("Potential Partner's Body Part", info.data().bodyPart);
+                // console.log("Current User: ", user);
+                // console.log("Current UserPref: ", pref.bodyPart);
+                // console.log("Potential Partner: ", info.data().name)
+                // console.log("Potential Partner's Body Part", info.data().bodyPart);
                 info.data().bodyPart.forEach(bodyInfo => {
-                  const bodyScore = 2.75 / pref.bodyPart.length();
+                  const bodyScore = 2.75 / pref.bodyPart.length;
                   try {
                     if (pref.bodyPart.includes(bodyInfo)){
                       console.log(`Algorithm BodyPart Successful: ${bodyInfo} / Score: ${score}`)
@@ -164,73 +212,78 @@ function Home(props) {
 
                 // 3/29 update matching algorithm
                 // If testing check No.1 pass, check the following (testing check No.2)
-                // for (const [range, boolean] of Object.entries(pref.age)) {
-                //   if ((range == "18 ~ 25") && boolean) {
-                //     if ((info.data().age >= 18) && (info.data().age <= 25)) {
-                //       score += 1.5;
-                //       break;
-                //     }
-                //   }
+                console.log(pref.age);
+                console.log(profile.age);
+                for (const [range, boolean] of Object.entries(pref.age)) {
+                  console.log("range: ", range, "boolean: ", boolean);
+                  if ((range == "18 ~ 25") && boolean) {
+                    if ((info.data().age >= 18) && (info.data().age <= 25)) {
+                      score += 1.5;
+                      break;
+                    }
+                  }
 
-                //   if ((range == "26 ~ 35") && boolean) {
-                //     if ((info.data().age >= 26) && (info.data().age <= 35)) {
-                //       score += 1.5;
-                //       break;
-                //     }
-                //   }
+                  if ((range == "26 ~ 35") && boolean) {
+                    if ((info.data().age >= 26) && (info.data().age <= 35)) {
+                      score += 1.5;
+                      break;
+                    }
+                  }
 
-                //   if ((range == "36 ~ 45") && boolean) {
-                //     if ((info.data().age >= 36) && (info.data().age <= 45)) {
-                //       score += 1.5;
-                //       break;
-                //     }
-                //   }
+                  if ((range == "36 ~ 45") && boolean) {
+                    if ((info.data().age >= 36) && (info.data().age <= 45)) {
+                      score += 1.5;
+                      break;
+                    }
+                  }
 
-                //   if ((range == "46 ~ 60") && boolean) {
-                //     if ((info.data().age >= 46) && (info.data().age <= 60)) {
-                //       score += 1.5;
-                //       break;
-                //     }
-                //   }
+                  if ((range == "46 ~ 60") && boolean) {
+                    if ((info.data().age >= 46) && (info.data().age <= 60)) {
+                      score += 1.5;
+                      break;
+                    }
+                  }
 
-                //   if ((range == "> 60") && boolean) {
-                //     if (info.data().age > 60) {
-                //       score += 1.5;
-                //       break;
-                //     }
-                //   }
-                // }
+                  if ((range == "> 60") && boolean) {
+                    if (info.data().age > 60) {
+                      score += 1.5;
+                      break;
+                    }
+                  }
+                }
 
-                // if (info.data().experience) == pref.experience) {
-                //   score += 2.5;
-                // }
+                if ((info.data().experience) == pref.experience) {
+                  score += 2.5;
+                }
 
-                // if (info.data().frequency) == pref.frequency) {
-                //   score += 2.25;
-                // }
+                if ((info.data().frequency) == pref.frequency) {
+                  score += 2.25;
+                }
 
-                // if (pref.gender[info.data().gender]) {
-                //   score += 2;
-                // }
+                if (pref.gender[info.data().gender]) {
+                  score += 2;
+                }
 
-                // if (score >= total) {
-                //   MatchPPL = info.data().name;
-                //   console.log('User name: ', MatchPPL);
+                if (score >= total) {
+                  MatchPPL = info.data().name;
+                  console.log('User name: ', MatchPPL);
 
-                //   data.uid = user.id
-                //   data.name = info.data().name
-                //   data.age = info.data().age
-                //   data.gender = info.data().gender
-                //   data.img = info.data().pictureURL[1]
-                //   data.intro = info.data().intro
-                //   data.hobby = info.data().hobbies
-                // }
+                  setBeaconMatch({
+                    uid: user.id,
+                    name: info.data().name,
+                    age: info.data().age,
+                    gender: info.data().gender,
+                    img: info.data().pictureURL[1],
+                    intro: info.data().intro,
+                    hobby: info.data().hobbies
+                  })
+
+                  console.log(beaconMatch);
+                }
 
                 // 3/30 Add the current user's uid to the match person's database
 
                 // 3/30 check the routing of Home -> beaconMatch -> Home -> Invitation
-
-
               }
             })
 
@@ -245,20 +298,20 @@ function Home(props) {
                 <View style={styles.ModalBox}>
                   <Image
                     style={styles.ModalImage}
-                    source={{ uri: data[1].img }}
+                    source={{ uri: beaconMatch.img.url }}
                   />
 
-                  <Text style={styles.ModalName}>{MatchPPL}</Text>
+                  <Text style={styles.ModalName}>{beaconMatch.name}</Text>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>{data[1].intro}</Text>
+                    <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
                   </View>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>Gender: {data[1].gender}</Text>
-                    <Text style={styles.ModalText}>Age: {data[1].age}</Text>
-                    <Text style={styles.ModalText}>Weight: {data[1].weight} lb</Text>
-                    <Text style={styles.ModalText}>Hobby: {data[1].hobby}</Text>
+                    <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
+                    <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
+                    {/* <Text style={styles.ModalText}>Weight: {beaconMatch.weight} lb</Text> */}
+                    <Text style={styles.ModalText}>Hobby: {beaconMatch.hobby}</Text>
                   </View>
                   <View style={{
                     flexDirection: 'row',
@@ -351,18 +404,7 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchProps)(Home)
 
-// const data = [
-//   {
-//     uid: '',
-//     name: '',
-//     intro: '',
-//     img: '',
-//     gender: '',
-//     age: 20,
-//     weight: '190',
-//     hobby: ''
-//   }
-// ]
+
 
 const data = [
   {
