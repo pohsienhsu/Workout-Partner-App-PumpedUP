@@ -106,7 +106,11 @@ function InvitationScreen(props) {
                     <View style={{ paddingLeft: 40 }} />
 
                     <View style={styles.IconBoxClose}>
-                      <TouchableOpacity style={styles.IconButton}>
+                      <TouchableOpacity style={styles.IconButton}
+                        onPress={() => {
+                          setModalVisible(false)
+                        }}
+                      >
                         <Icon name='close' color='red' />
                       </TouchableOpacity>
                     </View>
