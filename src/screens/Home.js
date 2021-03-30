@@ -69,6 +69,8 @@ function Home(props) {
       }
     })
 
+    
+
 }, [props.currentUser, props.profile, avatar])
 
 // console.log("###################  HOME PAGE  ####################")
@@ -98,23 +100,20 @@ return (
             .doc(firebase.auth().currentUser.uid)
             .collection("userPref")
             .doc(firebase.auth().currentUser.uid)
-            .get()
+            .get();
 
           // Get all users
           const users = await firebase.firestore()
             .collection("users")
-            .where('name', '==', 'Kevin Hart')
-            .get();
+            .get(); 
 
-          const total = 5;
+          const total = 7;
           
           users.forEach(async user => {
             const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
             if (info.exists && user.id != firebase.auth().currentUser.uid) {
               if (info.get("age") == "42") {
                 console.log('User id: ', user.id, ' Data:', info.data());
-                // Load
-
               }
             }
           })
