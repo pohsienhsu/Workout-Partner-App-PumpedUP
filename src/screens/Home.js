@@ -86,21 +86,21 @@ function Home(props) {
       catch (reject) { }
     }
 
-    const onSentInvitation = async () => {
-      await firebase.firestore()
-        .collection("users")
-        .doc(firebase.auth().currentUser.uid)
-        .collection("invitations")
-        .doc(firebase.auth().currentUser.uid)
-        .set({
-          uid: beaconMatch.uid,
-          name: beaconMatch.name
-        })
-        .then(() => {
-          props.fetchUserProfile()
-          setProfile(profileDetails)
-        })
-    }
+    // const onSentInvitation = async () => {
+    //   await firebase.firestore()
+    //     .collection("users")
+    //     .doc(firebase.auth().currentUser.uid)
+    //     .collection("invitations")
+    //     .doc(firebase.auth().currentUser.uid)
+    //     .set({
+    //       uid: beaconMatch.uid,
+    //       name: beaconMatch.name
+    //     })
+    //     .then(() => {
+    //       props.fetchUserProfile()
+    //       setProfile(profileDetails)
+    //     })
+    // }
 
     // null or undefined
     if (props.currentUser == null) {
@@ -121,7 +121,7 @@ function Home(props) {
       console.log("currentUser: ", props.currentUser);
       fetchData();
     }
-  }, [props.currentUser, props.profile, avatar, props.partners, props.pairingPref])
+  }, [props.currentUser, props.profile, avatar, props.partners, props.pairingPref, beaconMatch])
 
   // console.log("###################  HOME PAGE  ####################")
   // console.log(props.currentUser);
@@ -278,7 +278,7 @@ function Home(props) {
                     hobby: info.data().hobbies
                   })
 
-                  console.log(beaconMatch);
+                  console.log("BeaconMatch: ", beaconMatch);
                 }
 
                 // 3/30 Add the current user's uid to the match person's database
