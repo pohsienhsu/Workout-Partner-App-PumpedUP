@@ -11,6 +11,8 @@ import {
 } from "react-native"
 import { fetchUser, fetchUserPref, fetchUserProfile, fetchUserPartner, clearData } from '../../redux/actions/index';
 
+import { Icon } from 'react-native-elements'
+
 import firebase from 'firebase'
 require('firebase/firestore')
 import { bindActionCreators } from 'redux'
@@ -41,6 +43,8 @@ function Home(props) {
   const [profile, setProfile] = useState({})
   const [avatar, setAvatar] = useState(null);
   const [pref, setPref] = useState({});
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,7 +95,10 @@ function Home(props) {
   // let avatarURL = avatar ? avatar : require()
 
   // For testing fetch data
-  const MatchPPL = 'Kevin Hart';
+  var MatchPPL = '';
+
+  // For Matching algorithm
+  const total = 5;
 
   return (
     <View style={styles.container}>
@@ -108,7 +115,9 @@ function Home(props) {
           style={styles.Button}
           onPress={async () => {
             // Open Navigation menu
-            props.navigation.navigate("Invitation")
+            // props.navigation.navigate("Invitation")
+
+            modalVisible ? setModalVisible(false) : setModalVisible(true)
 
             const currUserPref = await firebase.firestore()
               .collection("users")
@@ -123,18 +132,16 @@ function Home(props) {
               .where('name', '==', 'Kevin Hart')
               .get();
 
-            const total = 5;
-
             users.forEach(async user => {
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
               if (info.exists && user.id != firebase.auth().currentUser.uid) {
-                // if (info.get("age") == "42") {
-                //   console.log('User id: ', user.id, ' Data:', info.data());
-                //   // Load
-                // }
+                // For testing check No.1
+                if (info.get("age") == "42") {
+                  MatchPPL += info.get("name")
+                  console.log('User id: ', user.id, ' Data:', info.data());
+                }
 
-                // 3/28 15:00 Paste on start
-                const score = 0;
+                let score = 0;
                 
                 // BodyPart is an array
                 console.log("#############  users.forEach --> info  #############")
@@ -142,42 +149,88 @@ function Home(props) {
                 console.log("Current UserPref: ", pref.bodyPart);
                 console.log("Potential Partner: ", info.data().name)
                 console.log("Potential Partner's Body Part", info.data().bodyPart);
-                info.data().bodyPart.forEach(async bodyInfo => {
+                info.data().bodyPart.forEach(bodyInfo => {
+                  const bodyScore = 2.75 / pref.bodyPart.length();
                   try {
                     if (pref.bodyPart.includes(bodyInfo)){
-                      console.log(`Algorithm BodyPart Successful: ${eachInfo} / Score: ${score}`)
-                      score += 2.75;
+                      console.log(`Algorithm BodyPart Successful: ${bodyInfo} / Score: ${score}`)
+                      score += bodyScore;
                     }
                   }
                   catch (e) {
-                    console.log(`Algorithm BodyPart Error: ${eachInfo}`)
+                    console.log(`Algorithm BodyPart Error: ${bodyInfo}`)
                   }
                 })
 
-                // if (info.data().experience) == pref.get("experience")) {
+                // 3/29 update matching algorithm
+                // If testing check No.1 pass, check the following (testing check No.2)
+                // for (const [range, boolean] of Object.entries(pref.age)) {
+                //   if ((range == "18 ~ 25") && boolean) {
+                //     if ((info.data().age >= 18) && (info.data().age <= 25)) {
+                //       score += 1.5;
+                //       break;
+                //     }
+                //   }
+
+                //   if ((range == "26 ~ 35") && boolean) {
+                //     if ((info.data().age >= 26) && (info.data().age <= 35)) {
+                //       score += 1.5;
+                //       break;
+                //     }
+                //   }
+
+                //   if ((range == "36 ~ 45") && boolean) {
+                //     if ((info.data().age >= 36) && (info.data().age <= 45)) {
+                //       score += 1.5;
+                //       break;
+                //     }
+                //   }
+
+                //   if ((range == "46 ~ 60") && boolean) {
+                //     if ((info.data().age >= 46) && (info.data().age <= 60)) {
+                //       score += 1.5;
+                //       break;
+                //     }
+                //   }
+
+                //   if ((range == "> 60") && boolean) {
+                //     if (info.data().age > 60) {
+                //       score += 1.5;
+                //       break;
+                //     }
+                //   }
+                // }
+
+                // if (info.data().experience) == pref.experience) {
                 //   score += 2.5;
                 // }
 
-                // if (info.data().frequency) == pref.get("frequency")) {
+                // if (info.data().frequency) == pref.frequency) {
                 //   score += 2.25;
                 // }
 
-                // if (info.data().gender)[eachInfo.get("gender")]) {
+                // if (pref.gender[info.data().gender]) {
                 //   score += 2;
                 // }
 
                 // if (score >= total) {
-                //   MatchPPL = eachInfo.get("name");
-                  // console.log('User name: ', MatchPPL);
+                //   MatchPPL = info.data().name;
+                //   console.log('User name: ', MatchPPL);
+
+                //   data.uid = user.id
+                //   data.name = info.data().name
+                //   data.age = info.data().age
+                //   data.gender = info.data().gender
+                //   data.img = info.data().pictureURL[1]
+                //   data.intro = info.data().intro
+                //   data.hobby = info.data().hobbies
                 // }
 
-                // 3/28 15:00 Paste on end
+                // 3/30 Add the current user's uid to the match person's database
 
-                // For testing check
-                // if (info.get("age") == "42") {
-                  // console.log('User id: ', user.id, ' Data:', info.data());
-                  // Load
-                // }
+                // 3/30 check the routing of Home -> beaconMatch -> Home -> Invitation
+
+
               }
             })
 
@@ -186,6 +239,60 @@ function Home(props) {
           {/* <View style={{ paddingTop: 8 }} /> */}
           {/* <Text style={styles.ButtonText}>+1</Text> */}
         </TouchableOpacity>
+
+        <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
+              <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
+                <View style={styles.ModalBox}>
+                  <Image
+                    style={styles.ModalImage}
+                    source={{ uri: data[1].img }}
+                  />
+
+                  <Text style={styles.ModalName}>{MatchPPL}</Text>
+
+                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={styles.ModalText}>{data[1].intro}</Text>
+                  </View>
+
+                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={styles.ModalText}>Gender: {data[1].gender}</Text>
+                    <Text style={styles.ModalText}>Age: {data[1].age}</Text>
+                    <Text style={styles.ModalText}>Weight: {data[1].weight} lb</Text>
+                    <Text style={styles.ModalText}>Hobby: {data[1].hobby}</Text>
+                  </View>
+                  <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 20
+                  }}>
+                    <View style={styles.IconBoxCheck}>
+                      <TouchableOpacity
+                        style={styles.IconButton}
+                        onPress={() => {
+                          props.navigation.navigate("PairUp");
+                          setModalVisible(false)
+                        }}
+                      >
+                        <Icon name='check' color='green' />
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={{ paddingLeft: 40 }} />
+
+                    <View style={styles.IconBoxClose}>
+                      <TouchableOpacity style={styles.IconButton}
+                        onPress={() => {
+                          setModalVisible(false)
+                        }}
+                      >
+                        <Icon name='close' color='red' />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+        </Modal>
 
         <View style={{ paddingLeft: 8 }} />
 
@@ -198,7 +305,7 @@ function Home(props) {
             // } else if (modalVisible.localeCompare('flex') == 0) {
             //   setModalVisible('none');
             // }
-            // props.navigation.navigate("Invitation")
+            props.navigation.navigate("Invitation")
           }
           }
         >
@@ -243,6 +350,49 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
   // fetchUserProfile
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchProps)(Home)
+
+// const data = [
+//   {
+//     uid: '',
+//     name: '',
+//     intro: '',
+//     img: '',
+//     gender: '',
+//     age: 20,
+//     weight: '190',
+//     hobby: ''
+//   }
+// ]
+
+const data = [
+  {
+    name: 'Conan O\'Brien',
+    intro: 'If you can really laugh at yourself loud and hard every time you fail,\nPeople will think you\' drunk',
+    img: 'https://tvline.com/wp-content/uploads/2020/11/conan-ending.jpg?',
+    gender: 'Male',
+    age: 57,
+    weight: '190',
+    hobby: 'Self pity'
+  },
+  {
+    name: 'Kevin Hart',
+    intro: 'Tallest and Fastest Man on Earth\nNever mess with me!',
+    img: 'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2020/05/Kevin-Hart-Headshot-Kevin-Kwan-High-Res--scaled-e1589926838234.jpg',
+    gender: 'Male',
+    age: 40,
+    weight: '150',
+    hobby: 'Cat, Movies, Thug Life'
+  },
+  {
+    name: 'Gordon Ramsay',
+    intro: 'This lamb is so undercooked,\n it\'s following Mary to school!',
+    img: 'https://www.telegraph.co.uk/content/dam/news/2016/09/29/6455882-ramsay-news_trans_NvBQzQNjv4BqbRF8GMdXQ5UNQkWBrq_MOBxo7k3IcFzOpcVpLpEd-fY.jpg',
+    gender: 'Male',
+    age: 54,
+    weight: '200',
+    hobby: 'Cook, Make adults cry'
+  }
+];
 
 const styles = StyleSheet.create({
   container: {
@@ -294,5 +444,58 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     flex: 1
-  }
+  },
+  ModalBox: {
+    flex: 1,
+    marginTop: 80,
+    marginBottom: 80,
+    marginLeft: 40,
+    marginRight: 40,
+    borderRadius: 10,
+    backgroundColor: '#EF9C2E',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  ModalImage: {
+    marginTop: 20,
+    height: 160,
+    width: 160,
+    borderRadius: 150,
+    alignSelf: "center"
+  },
+  ModalName: {
+    color: 'black',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  ModalText: {
+    color: 'black',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginHorizontal: 50
+  },
+  IconBoxCheck: {
+    width: 54,
+    height: 54,
+    backgroundColor: 'green',
+    borderRadius: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  IconBoxClose: {
+    width: 54,
+    height: 54,
+    backgroundColor: 'red',
+    borderRadius: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  IconButton: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#EF9C2E',
+    borderRadius: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })
