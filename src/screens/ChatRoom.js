@@ -25,7 +25,7 @@ function ChatRoom(props) {
     const readUser = async() => {
       try {
         await props.fetchUserProfile;
-        setUser({_id: firebase.auth().currentUser.uid, name: props.profile.name});
+        setUser({_id: firebase.auth().currentUser.uid, name: props.profile.name, avatar: props.profile.pictureURL[0].url});
       }
       catch (e) {}
     }
