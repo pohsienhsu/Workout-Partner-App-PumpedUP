@@ -113,8 +113,8 @@ function Home(props) {
   }
 
   const onSentInvitation = async (pairingUID) => {
-    console.log("#############  OnSentInvitation Function   ##############")
-    console.log(props);
+    // console.log("#############  OnSentInvitation Function   ##############")
+    // console.log(props);
     // const currentInvitations = await firebase.firestore()
     //   .collection("users")
     //   .doc(pairingUID)
