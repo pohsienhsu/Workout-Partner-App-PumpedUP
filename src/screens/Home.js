@@ -43,6 +43,19 @@ function Home(props) {
   const [profile, setProfile] = useState({})
   const [avatar, setAvatar] = useState(null);
   const [pref, setPref] = useState({});
+  const [beaconMatch, setBeaconMatch] = useState(data);
+
+  const data = [
+    {
+      uid: '',
+      name: '',
+      intro: '',
+      img: '',
+      gender: '',
+      age: 20,
+      hobby: ''
+    }
+  ]
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -136,9 +149,10 @@ function Home(props) {
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
               if (info.exists && user.id != firebase.auth().currentUser.uid) {
                 // For testing check No.1
+                console.log("For testing check No.1 : ")
                 if (info.get("age") == "42") {
                   MatchPPL += info.get("name")
-                  console.log('User id: ', user.id, ' Data:', info.data());
+                  console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
                 }
 
                 let score = 0;
@@ -229,7 +243,6 @@ function Home(props) {
                 // 3/30 Add the current user's uid to the match person's database
 
                 // 3/30 check the routing of Home -> beaconMatch -> Home -> Invitation
-
 
               }
             })
@@ -351,18 +364,7 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchProps)(Home)
 
-// const data = [
-//   {
-//     uid: '',
-//     name: '',
-//     intro: '',
-//     img: '',
-//     gender: '',
-//     age: 20,
-//     weight: '190',
-//     hobby: ''
-//   }
-// ]
+
 
 const data = [
   {
