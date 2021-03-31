@@ -46,7 +46,7 @@ function Home(props) {
   const [pref, setPref] = useState({});
   const [beaconMatch, setBeaconMatch] = useState({
     uid: '',
-    name: '',
+    name: '404 Not found!',
     intro: '',
     img: '',
     gender: '',
@@ -130,18 +130,60 @@ function Home(props) {
         .collection("invitations")
         .doc(pairingUID)
         .get()
-
-      await firebase.firestore()
+      
+      const sentInvitations = await firebase.firestore()
         .collection("users")
-        .doc(pairingUID)
-        .collection("invitations")
-        .doc(pairingUID)
-        .set({
-          invitation: [
-            ...currentInvitations.data().invitation,
-            { uid: firebase.auth().currentUser.uid, name: profile.name }
-          ]
-        })
+        .doc(firebase.auth().currentUser.uid)
+        .collection("sentInvitations")
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+      
+      let verify = 0
+
+      for (let i = 0; i < currentInvitations.data().invitation.length; i++) {
+        if (currentInvitations.data().invitation[i].uid == firebase.auth().currentUser.uid) {
+          verify += 1
+          break
+        }
+      }
+
+      if (verify == 0) {
+        await firebase.firestore()
+          .collection("users")
+          .doc(pairingUID)
+          .collection("invitations")
+          .doc(pairingUID)
+          .set({
+            invitation: [
+              ...currentInvitations.data().invitation,
+              { uid: firebase.auth().currentUser.uid, name: profile.name }
+            ]
+          })
+        
+        await firebase.firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("sentInvitations")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            uid: [
+              ...sentInvitations.data().uid,
+              pairingUID
+            ]
+          })
+      }
+
+      // await firebase.firestore()
+      //   .collection("users")
+      //   .doc(pairingUID)
+      //   .collection("invitations")
+      //   .doc(pairingUID)
+      //   .set({
+      //     invitation: [
+      //       ...currentInvitations.data().invitation,
+      //       { uid: firebase.auth().currentUser.uid, name: profile.name }
+      //     ]
+      //   })
     } catch (e) {
       await firebase.firestore()
         .collection("users")
@@ -176,12 +218,17 @@ function Home(props) {
             // Open Navigation menu
             // props.navigation.navigate("Invitation")
 
-            modalVisible ? setModalVisible(false) : setModalVisible(true)
+            // const currUserPref = await firebase.firestore()
+            //   .collection("users")
+            //   .doc(firebase.auth().currentUser.uid)
+            //   .collection("userPref")
+            //   .doc(firebase.auth().currentUser.uid)
+            //   .get()
 
-            const currUserPref = await firebase.firestore()
+            const sentInvitations = await firebase.firestore()
               .collection("users")
               .doc(firebase.auth().currentUser.uid)
-              .collection("userPref")
+              .collection("sentInvitations")
               .doc(firebase.auth().currentUser.uid)
               .get()
 
@@ -193,7 +240,19 @@ function Home(props) {
 
             users.forEach(async user => {
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
-              if (info.exists && user.id != firebase.auth().currentUser.uid) {
+              if (sentInvitations.data().uid.includes(user.id)) {
+                setBeaconMatch({
+                  uid: '',
+                  name: '404 Not found!',
+                  intro: '',
+                  img: '',
+                  gender: '',
+                  age: 20,
+                  hobbies: ''
+                })
+              }
+
+              if ((info.exists && user.id != firebase.auth().currentUser.uid) && !sentInvitations.data().uid.includes(user.id) ) {
                 // For testing check No.1
                 console.log("For testing check No.1 : ")
                 // if (info.get("age") == "42") {
@@ -298,6 +357,8 @@ function Home(props) {
                 // 3/30 check the routing of Home -> beaconMatch -> Home -> Invitation
               }
             })
+
+            modalVisible ? setModalVisible(false) : setModalVisible(true)
 
           }}>
           <Text style={styles.boxText}>Beacon Match</Text>
