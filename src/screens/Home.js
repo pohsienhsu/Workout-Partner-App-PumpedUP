@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,14 @@ import {
   addons,
 } from "react-native"
 import { fetchUser, fetchUserPref, fetchUserProfile, fetchUserPartner, clearData } from '../../redux/actions/index';
+import { Icon } from 'react-native-elements';
 
-import { Icon } from 'react-native-elements'
+import UserCard from "../components/userCard";
 
-import firebase from 'firebase'
-require('firebase/firestore')
-import { bindActionCreators } from 'redux'
-import { connect } from "react-redux"
+import firebase from 'firebase';
+require('firebase/firestore');
+import { bindActionCreators } from 'redux';
+import { connect } from "react-redux";
 
 const renderImage = (avatar) => {
   console.log("Avatar: ", avatar);
@@ -43,20 +44,15 @@ function Home(props) {
   const [profile, setProfile] = useState({})
   const [avatar, setAvatar] = useState(null);
   const [pref, setPref] = useState({});
-  const [beaconMatch, setBeaconMatch] = useState(BeaconMatchDefaultData);
-
-  const BeaconMatchDefaultData = [
-    {
-      uid: '',
-      name: '',
-      intro: '',
-      img: '',
-      gender: '',
-      age: 20,
-      hobby: ''
-    }
-  ]
-
+  const [beaconMatch, setBeaconMatch] = useState({
+    uid: '',
+    name: '',
+    intro: '',
+    img: '',
+    gender: '',
+    age: 20,
+    hobbies: ''
+  });
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -65,42 +61,14 @@ function Home(props) {
         await props;
         // await props.fetchUserPartner();
 
-        const { currentUser, profile} = props;
+        const { currentUser, profile, pairingPref } = props;
         setUser(currentUser);
         setProfile(profile);
-
-        const currUserPref = await firebase.firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("userPref")
-          .doc(firebase.auth().currentUser.uid)
-          .get()
-  
-        console.log("***************************************");
-        if (currUserPref.exists) {
-          console.log(currUserPref.data());
-          setPref(currUserPref.data());
-        }
+        setPref(pairingPref);
         setAvatar(profile.pictureURL[0].url);
       }
       catch (reject) { }
     }
-
-    // const onSentInvitation = async () => {
-    //   await firebase.firestore()
-    //     .collection("users")
-    //     .doc(firebase.auth().currentUser.uid)
-    //     .collection("invitations")
-    //     .doc(firebase.auth().currentUser.uid)
-    //     .set({
-    //       uid: beaconMatch.uid,
-    //       name: beaconMatch.name
-    //     })
-    //     .then(() => {
-    //       props.fetchUserProfile()
-    //       setProfile(profileDetails)
-    //     })
-    // }
 
     // null or undefined
     if (props.currentUser == null) {
@@ -125,7 +93,7 @@ function Home(props) {
 
   // console.log("###################  HOME PAGE  ####################")
   // console.log(props.currentUser);
-  // console.log(props.partners)
+  // console.log(props)
 
 
   if (user === null) {
@@ -142,6 +110,19 @@ function Home(props) {
     console.log("Showing");
     console.log(matchPPL);
     return matchPPL;
+  }
+
+  const onSentInvitation = async (pairingUID) => {
+    console.log("#############  OnSentInvitation Function   ##############")
+    console.log(props);
+    const currentInvitations = await firebase.firestore()
+      .collection("users")
+      .doc(pairingUID)
+      .collection("invitations")
+      .doc(pairingUID)
+      .update({
+        invitation: firebase.firestore.FieldValue.arrayUnion({ uid: firebase.auth().currentUser.uid, name: profile.name })
+      })
   }
 
   // For Matching algorithm
@@ -176,7 +157,7 @@ function Home(props) {
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
-              .where('name', '==', 'Kevin Hart')
+              // .where('name', '==', 'Kevin Hart')
               .get();
 
             users.forEach(async user => {
@@ -184,13 +165,13 @@ function Home(props) {
               if (info.exists && user.id != firebase.auth().currentUser.uid) {
                 // For testing check No.1
                 console.log("For testing check No.1 : ")
-                if (info.get("age") == "42") {
-                  MatchPPL += info.get("name")
-                  console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
-                }
+                // if (info.get("age") == "42") {
+                MatchPPL += info.get("name")
+                console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
+                // }
 
                 let score = 0;
-                
+
                 // BodyPart is an array
                 console.log("#############  users.forEach --> info  #############")
                 // console.log("Current User: ", user);
@@ -200,7 +181,7 @@ function Home(props) {
                 info.data().bodyPart.forEach(bodyInfo => {
                   const bodyScore = 2.75 / pref.bodyPart.length;
                   try {
-                    if (pref.bodyPart.includes(bodyInfo)){
+                    if (pref.bodyPart.includes(bodyInfo)) {
                       console.log(`Algorithm BodyPart Successful: ${bodyInfo} / Score: ${score}`)
                       score += bodyScore;
                     }
@@ -273,9 +254,9 @@ function Home(props) {
                     name: info.data().name,
                     age: info.data().age,
                     gender: info.data().gender,
-                    img: info.data().pictureURL[1],
+                    img: info.data().pictureURL[0].url,
                     intro: info.data().intro,
-                    hobby: info.data().hobbies
+                    hobbies: info.data().hobbies
                   })
 
                   console.log("BeaconMatch: ", beaconMatch);
@@ -294,58 +275,59 @@ function Home(props) {
         </TouchableOpacity>
 
         <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
-              <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
-                <View style={styles.ModalBox}>
-                  <Image
-                    style={styles.ModalImage}
-                    source={{ uri: beaconMatch.img.url }}
-                  />
+          <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
+            <View style={styles.ModalBox}>
+              <Image
+                style={styles.ModalImage}
+                source={beaconMatch.img == "" ? require("../image/default-profile-pic.png") : { uri: beaconMatch.img }}
+              />
 
-                  <Text style={styles.ModalName}>{beaconMatch.name}</Text>
+              <Text style={styles.ModalName}>{beaconMatch.name}</Text>
 
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
-                  </View>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
+              </View>
 
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
-                    <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
-                    {/* <Text style={styles.ModalText}>Weight: {beaconMatch.weight} lb</Text> */}
-                    <Text style={styles.ModalText}>Hobby: {beaconMatch.hobby}</Text>
-                  </View>
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: 20
-                  }}>
-                    <View style={styles.IconBoxCheck}>
-                      <TouchableOpacity
-                        style={styles.IconButton}
-                        onPress={() => {
-                          props.navigation.navigate("PairUp");
-                          setModalVisible(false)
-                        }}
-                      >
-                        <Icon name='check' color='green' />
-                      </TouchableOpacity>
-                    </View>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
+                <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
+                <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
+              </View>
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 20
+              }}>
+                <View style={styles.IconBoxCheck}>
+                  <TouchableOpacity
+                    style={styles.IconButton}
+                    onPress={() => {
+                      props.navigation.navigate("PairUp");
+                      setModalVisible(false);
+                      onSentInvitation(beaconMatch.uid);
+                    }}
+                  >
+                    <Icon name='check' color='green' />
+                  </TouchableOpacity>
+                </View>
 
-                    <View style={{ paddingLeft: 40 }} />
+                <View style={{ paddingLeft: 40 }} />
 
-                    <View style={styles.IconBoxClose}>
-                      <TouchableOpacity style={styles.IconButton}
-                        onPress={() => {
-                          setModalVisible(false)
-                        }}
-                      >
-                        <Icon name='close' color='red' />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                <View style={styles.IconBoxClose}>
+                  <TouchableOpacity style={styles.IconButton}
+                    onPress={() => {
+                      setModalVisible(false)
+                    }}
+                  >
+                    <Icon name='close' color='red' />
+                  </TouchableOpacity>
                 </View>
               </View>
+            </View>
+          </View>
         </Modal>
+        {/* <UserCard modalVisible setModalVisible={() => setModalVisible()} beaconMatch navigation={props.navigation} /> */}
 
         <View style={{ paddingLeft: 8 }} />
 
@@ -392,7 +374,7 @@ function Home(props) {
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   profile: store.userState.profile,
-  pairingPref: store.userState.profile,
+  pairingPref: store.userState.pairingPref,
   partners: store.userState.partners
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({
