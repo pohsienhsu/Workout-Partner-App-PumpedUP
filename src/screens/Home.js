@@ -115,14 +115,45 @@ function Home(props) {
   const onSentInvitation = async (pairingUID) => {
     console.log("#############  OnSentInvitation Function   ##############")
     console.log(props);
-    const currentInvitations = await firebase.firestore()
-      .collection("users")
-      .doc(pairingUID)
-      .collection("invitations")
-      .doc(pairingUID)
-      .update({
-        invitation: firebase.firestore.FieldValue.arrayUnion({ uid: firebase.auth().currentUser.uid, name: profile.name })
-      })
+    // const currentInvitations = await firebase.firestore()
+    //   .collection("users")
+    //   .doc(pairingUID)
+    //   .collection("invitations")
+    //   .doc(pairingUID)
+    //   .update({
+    //     invitation: firebase.firestore.FieldValue.arrayUnion({ uid: firebase.auth().currentUser.uid, name: profile.name })
+    //   })
+    try {
+      const currentInvitations = await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("invitations")
+        .doc(pairingUID)
+        .get()
+
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("invitations")
+        .doc(pairingUID)
+        .set({
+          invitation: [
+            ...currentInvitations.data().invitation,
+            { uid: firebase.auth().currentUser.uid, name: profile.name }
+          ]
+        })
+    } catch (e) {
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("invitations")
+        .doc(pairingUID)
+        .set({
+          invitation: [
+            { uid: firebase.auth().currentUser.uid, name: profile.name }
+          ]
+        })
+    }
   }
 
   // For Matching algorithm
