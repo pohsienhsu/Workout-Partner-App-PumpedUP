@@ -1,39 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
+  Button,
   Image,
   TouchableOpacity,
   Modal,
 } from "react-native"
+import { Icon } from 'react-native-elements';
 
-import { Icon } from 'react-native-elements'
 
-const popmodal = ({ data, navigation, nav, modalVisible, setModalVisible }) => {
-
-  
-
+function UserCard({modalVisible, setModalVisible, beaconMatch, navigation}) {
+  if (beaconMatch.img == "") {
+    return <View></View>;
+  }
   return (
-    <Modal transparent={true} visible={modalVisible} onRequestClose={()=>{setModalVisible(!modalVisible)}}>
+    <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible)}}>
       <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
         <View style={styles.ModalBox}>
           <Image
             style={styles.ModalImage}
-            source={{ uri: data.img }}
+            source={{ uri: beaconMatch.img }}
           />
 
-          <Text style={styles.ModalName}>{data.name}</Text>
+          <Text style={styles.ModalName}>{beaconMatch.name}</Text>
 
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.ModalText}>{data.intro}</Text>
+            <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
           </View>
 
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.ModalText}>Gender: {data.gender}</Text>
-            <Text style={styles.ModalText}>Age: {data.age}</Text>
-            <Text style={styles.ModalText}>Weight: {data.weight} lb</Text>
-            <Text style={styles.ModalText}>Hobby: {data.hobby}</Text>
+            <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
+            <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
+            <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
           </View>
           <View style={{
             flexDirection: 'row',
@@ -45,7 +45,8 @@ const popmodal = ({ data, navigation, nav, modalVisible, setModalVisible }) => {
               <TouchableOpacity
                 style={styles.IconButton}
                 onPress={() => {
-                  navigation.navigate(nav);
+                  navigation.navigate("PairUp");
+                  setModalVisible(false)
                 }}
               >
                 <Icon name='check' color='green' />
@@ -55,7 +56,10 @@ const popmodal = ({ data, navigation, nav, modalVisible, setModalVisible }) => {
             <View style={{ paddingLeft: 40 }} />
 
             <View style={styles.IconBoxClose}>
-              <TouchableOpacity style={styles.IconButton}>
+              <TouchableOpacity style={styles.IconButton}
+                onPress={() => {
+                  setModalVisible(false)
+                }}>
                 <Icon name='close' color='red' />
               </TouchableOpacity>
             </View>
@@ -66,7 +70,7 @@ const popmodal = ({ data, navigation, nav, modalVisible, setModalVisible }) => {
   )
 }
 
-export default popmodal;
+export default UserCard;
 
 const styles = StyleSheet.create({
   container: {
@@ -113,6 +117,11 @@ const styles = StyleSheet.create({
       height: 2,
     },
     textShadowColor: 'black',
+  },
+  textContent: {
+    alignSelf: "center",
+    justifyContent: "center",
+    flex: 1
   },
   ModalBox: {
     flex: 1,

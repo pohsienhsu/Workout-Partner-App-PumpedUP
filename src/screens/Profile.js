@@ -20,29 +20,46 @@ function Profile(props) {
 
   useEffect(() => {
 
-    if (props.currentUser === undefined) {
-      props.fetchUser().then(() => {
-        const { currentUser } = props;
+    const fetchData = async () => {
+      try {
+        await props;
+        // await props.fetchUserPartner();
+        const { currentUser, profile } = props;
         setUser(currentUser);
-      })
+        setProfile(profile);
+        setAvatar(profile.pictureURL[0].url)
+      }
+      catch (reject) { }
     }
 
     const fetchProfile = async () => {
       try {
         await props.profile;
         await props.profile.pictureURL;
+        setUser(props.currentUser);
+        setProfile(props.profile);
+        setPicURL(props.profile.pictureURL);
       }
       catch (r) { }
     }
-
-    fetchProfile().then(() => {
-      setUser(props.currentUser);
-      setProfile(props.profile);
-      setPicURL(props.profile.pictureURL);
-    })
-    // const { currentUser, profile } = props;
-    // setUser(currentUser);
-    // setProfile(profile);
+    // null or undefined
+    if (props.currentUser == null) {
+      const fetchUserData = async () => {
+        try {
+          await props.fetchUser()
+          setUser(props.currentUser);
+          console.log("currentUser: ", props.currentUser);
+        }
+        catch (e) {
+          console.log(e);
+        }
+      }
+      fetchUserData();
+    }
+    // if user exists
+    else {
+      fetchProfile()
+    }
 
   }, [props.profile, picURL])
 
@@ -59,6 +76,8 @@ function Profile(props) {
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
   }
+
+  console.log(profile);
 
   return (
     <ScrollView style={styles.container}>
@@ -88,7 +107,7 @@ function Profile(props) {
         <TouchableOpacity
           onPress={() => onLogout()}
         >
-          <Text style={{fontSize: 18, color: "#fff", fontWeight: "500"}}>Logout</Text>
+          <Text style={{ fontSize: 18, color: "#fff", fontWeight: "500" }}>Logout</Text>
         </TouchableOpacity>
       </View>
       <View style={{ marginTop: 100, backgroundColor: "#fff" }} />

@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from "react-native"
+import { View, Text, StyleSheet, Image } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import * as firebase from "firebase"
-import { firebaseConfig } from "./src/firebase/firebaseConfig"
+import * as firebase from "firebase";
+import { firebaseConfig } from "./src/firebase/firebaseConfig";
 
-import { Provider } from "react-redux"
-import { createStore, applyMiddleware } from "redux"
-import rootReducer from "./redux/reducers"
-import thunk from "redux-thunk"
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import rootReducer from "./redux/reducers";
+import thunk from "redux-thunk";
 
-import IntroScreen from "./src/auth/Intro"
-import RegisterScreen from "./src/auth/Register"
-import LoginScreen from "./src/auth/Login"
-import MainScreen from "./src/screens/MainScreen"
-import PairUpScreen from "./src/screens/PairUpSuccess"
-import InvitationScreen from "./src/screens/InvitationScreen"
-import EditProfile from "./src/screens/EditProfile"
+import IntroScreen from "./src/auth/Intro";
+import RegisterScreen from "./src/auth/Register";
+import LoginScreen from "./src/auth/Login";
+import MainScreen from "./src/screens/MainScreen";
+import PairUpScreen from "./src/screens/PairUpSuccess";
+import InvitationScreen from "./src/screens/InvitationScreen";
+import EditProfile from "./src/screens/EditProfile";
+import ChatRoom from "./src/screens/ChatRoom";
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -129,6 +130,16 @@ export class App extends Component {
               options={{
                 headerShown: true,
                 title: "Match",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff'
+              }}
+            />
+            <Stack.Screen name="ChatRoom" component={ChatRoom} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "Chat",
                 headerStyle: {
                   backgroundColor: '#313A3A',
                 },

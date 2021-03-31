@@ -8,7 +8,7 @@ import SliderEntry, {styles, colors, slideDimensions} from './sliderEntry';
 
 const SLIDER_1_FIRST_ITEM = 1;
 
-export default class ImageCarousel extends Component {
+export default class DashBoard extends Component {
 
     constructor (props) {
         super(props);
@@ -135,6 +135,5 @@ export default class ImageCarousel extends Component {
         );
     }
 }
-
 
 
