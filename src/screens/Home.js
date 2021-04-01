@@ -46,7 +46,7 @@ function Home(props) {
   const [pref, setPref] = useState({});
   const [beaconMatch, setBeaconMatch] = useState({
     uid: '',
-    name: '',
+    name: 'No Matches Available',
     intro: '',
     img: '',
     gender: '',
@@ -131,17 +131,59 @@ function Home(props) {
         .doc(pairingUID)
         .get()
 
-      await firebase.firestore()
+      const sentInvitations = await firebase.firestore()
         .collection("users")
-        .doc(pairingUID)
-        .collection("invitations")
-        .doc(pairingUID)
-        .set({
-          invitation: [
-            ...currentInvitations.data().invitation,
-            { uid: firebase.auth().currentUser.uid, name: profile.name }
-          ]
-        })
+        .doc(firebase.auth().currentUser.uid)
+        .collection("sentInvitations")
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+
+      let verify = 0
+
+      for (let i = 0; i < currentInvitations.data().invitation.length; i++) {
+        if (currentInvitations.data().invitation[i].uid == firebase.auth().currentUser.uid) {
+          verify += 1
+          break
+        }
+      }
+
+      if (verify == 0) {
+        await firebase.firestore()
+          .collection("users")
+          .doc(pairingUID)
+          .collection("invitations")
+          .doc(pairingUID)
+          .set({
+            invitation: [
+              ...currentInvitations.data().invitation,
+              { uid: firebase.auth().currentUser.uid, name: profile.name }
+            ]
+          })
+
+        await firebase.firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("sentInvitations")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            uid: [
+              ...sentInvitations.data().uid,
+              pairingUID
+            ]
+          })
+      }
+
+      // await firebase.firestore()
+      //   .collection("users")
+      //   .doc(pairingUID)
+      //   .collection("invitations")
+      //   .doc(pairingUID)
+      //   .set({
+      //     invitation: [
+      //       ...currentInvitations.data().invitation,
+      //       { uid: firebase.auth().currentUser.uid, name: profile.name }
+      //     ]
+      //   })
     } catch (e) {
       await firebase.firestore()
         .collection("users")
@@ -173,27 +215,32 @@ function Home(props) {
         <TouchableOpacity
           style={styles.Button}
           onPress={async () => {
-            // Open Navigation menu
-            // props.navigation.navigate("Invitation")
 
-            modalVisible ? setModalVisible(false) : setModalVisible(true)
+            let alreadySent = { uid: [] };
 
-            const currUserPref = await firebase.firestore()
-              .collection("users")
-              .doc(firebase.auth().currentUser.uid)
-              .collection("userPref")
-              .doc(firebase.auth().currentUser.uid)
-              .get()
+            try {
+              alreadySent = await firebase.firestore()
+                .collection("users")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("sentInvitations")
+                .doc(firebase.auth().currentUser.uid)
+                .get()
+              alreadySent = alreadySent.data()
+            }
+            catch (e) {
+              console.log("There is no already sent")
+              alreadySent = { uid: [] };
+            }
 
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
-              // .where('name', '==', 'Kevin Hart')
               .get();
 
             users.forEach(async user => {
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
-              if (info.exists && user.id != firebase.auth().currentUser.uid) {
+              console.log("Already Sent: ", alreadySent);
+              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
                 // For testing check No.1
                 console.log("For testing check No.1 : ")
                 // if (info.get("age") == "42") {
@@ -299,6 +346,8 @@ function Home(props) {
               }
             })
 
+            modalVisible? setModalVisible(false) : setModalVisible(true);
+
           }}>
           <Text style={styles.boxText}>Beacon Match</Text>
           {/* <View style={{ paddingTop: 8 }} /> */}
@@ -333,10 +382,50 @@ function Home(props) {
                 <View style={styles.IconBoxCheck}>
                   <TouchableOpacity
                     style={styles.IconButton}
-                    onPress={() => {
-                      props.navigation.navigate("PairUp");
+                    disabled={beaconMatch.uid == ""}
+                    onPress={async () => {
                       setModalVisible(false);
                       onSentInvitation(beaconMatch.uid);
+                      try {
+                        const sentInvitations = await firebase.firestore()
+                          .collection("users")
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("sentInvitations")
+                          .doc(firebase.auth().currentUser.uid)
+                          .get()
+
+                        await firebase.firestore()
+                          .collection("users")
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("sentInvitations")
+                          .doc(firebase.auth().currentUser.uid)
+                          .set({
+                            uid: [
+                              ...sentInvitations.data().uid,
+                              beaconMatch.uid
+                            ]
+                          })
+                      } catch (e) {
+                        await firebase.firestore()
+                          .collection("users")
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("sentInvitations")
+                          .doc(firebase.auth().currentUser.uid)
+                          .set({
+                            uid: [
+                              beaconMatch.uid
+                            ]
+                          })
+                      }
+                      setBeaconMatch({
+                        uid: '',
+                        name: 'No Matches Available',
+                        intro: '',
+                        img: '',
+                        gender: '',
+                        age: 20,
+                        hobbies: ''
+                      });
                     }}
                   >
                     <Icon name='check' color='green' />

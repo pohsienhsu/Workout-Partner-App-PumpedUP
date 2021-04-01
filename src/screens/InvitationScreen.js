@@ -21,22 +21,37 @@ import { fetchUserPref } from "../../redux/actions/index"
 function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [allUser, setAllUser] = useState([])
+  const [currUser, setCurrUser] = useState([])
 
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        await firebase.firestore()
-        .collection("users")
-        .get()
-        .then((snapshot) => {
-          let usersData = snapshot.docs.map(doc => {
-            const id = doc.id;
-            return { id: id }
-          })
-          setAllUser(usersData);
-        })
+        // await firebase.firestore()
+        //   .collection("users")
+        //   .get()
+        //   .then((snapshot) => {
+        //     let usersData = snapshot.docs.map(doc => {
+        //       const id = doc.id;
+        //       return { id: id }
+        //     })
+        //     setAllUser(usersData);
+        //   })
         console.log("###########################################")
-        console.log(allUser);
+
+        const invitations = await firebase.firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("invitations")
+          .doc(firebase.auth().currentUser.uid)
+          .get()
+
+        invitations.data().invitation.forEach(async user => {
+          const info = await firebase.firestore().collection("users").doc(user.uid).collection("userProfile").doc(user.uid).get();
+          if (info.exists) {
+            console.log(info.data());
+          }
+          setAllUser([...allUser, info.data()]);
+        });
       }
       catch(r) {};   
     }
@@ -54,13 +69,13 @@ function InvitationScreen(props) {
         placeholder="Type Here..."
       />
       {
-        data.map((l, i) => (
+        allUser.map((l, i) => (
           <ListItem key={i} bottomDivider
             onPress={() => (
               modalVisible ? setModalVisible(false) : setModalVisible(true)
             )}
           >
-            <Avatar source={{ uri: l.img }} />
+            <Avatar source={{ uri: l.pictureURL[0].url }} />
             <ListItem.Content>
               <ListItem.Title>{l.name}</ListItem.Title>
               <ListItem.Subtitle>{l.intro}</ListItem.Subtitle>
@@ -70,20 +85,20 @@ function InvitationScreen(props) {
                 <View style={styles.ModalBox}>
                   <Image
                     style={styles.ModalImage}
-                    source={{ uri: data[1].img }}
+                    source={{ uri: allUser[i].pictureURL[0].url }}
                   />
 
-                  <Text style={styles.ModalName}>{data[1].name}</Text>
+                  <Text style={styles.ModalName}>{allUser[i].name}</Text>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>{data[1].intro}</Text>
+                    <Text style={styles.ModalText}>{allUser[i].intro}</Text>
                   </View>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>Gender: {data[1].gender}</Text>
-                    <Text style={styles.ModalText}>Age: {data[1].age}</Text>
-                    <Text style={styles.ModalText}>Weight: {data[1].weight} lb</Text>
-                    <Text style={styles.ModalText}>Hobby: {data[1].hobby}</Text>
+                    <Text style={styles.ModalText}>Gender: {allUser[i].gender}</Text>
+                    <Text style={styles.ModalText}>Age: {allUser[i].age}</Text>
+                    {/* <Text style={styles.ModalText}>Weight: {allUser[i].weight} lb</Text> */}
+                    <Text style={styles.ModalText}>Hobby: {allUser[i].hobbies}</Text>
                   </View>
                   <View style={{
                     flexDirection: 'row',
@@ -132,38 +147,6 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({}, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(InvitationScreen)
-
-
-
-const data = [
-  {
-    name: 'Conan O\'Brien',
-    intro: 'If you can really laugh at yourself loud and hard every time you fail,\nPeople will think you\' drunk',
-    img: 'https://tvline.com/wp-content/uploads/2020/11/conan-ending.jpg?',
-    gender: 'Male',
-    age: 57,
-    weight: '190',
-    hobby: 'Self pity'
-  },
-  {
-    name: 'Kevin Hart',
-    intro: 'Tallest and Fastest Man on Earth\nNever mess with me!',
-    img: 'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2020/05/Kevin-Hart-Headshot-Kevin-Kwan-High-Res--scaled-e1589926838234.jpg',
-    gender: 'Male',
-    age: 40,
-    weight: '150',
-    hobby: 'Cat, Movies, Thug Life'
-  },
-  {
-    name: 'Gordon Ramsay',
-    intro: 'This lamb is so undercooked,\n it\'s following Mary to school!',
-    img: 'https://www.telegraph.co.uk/content/dam/news/2016/09/29/6455882-ramsay-news_trans_NvBQzQNjv4BqbRF8GMdXQ5UNQkWBrq_MOBxo7k3IcFzOpcVpLpEd-fY.jpg',
-    gender: 'Male',
-    age: 54,
-    weight: '200',
-    hobby: 'Cook, Make adults cry'
-  }
-];
 
 const styles = StyleSheet.create({
   container: {
