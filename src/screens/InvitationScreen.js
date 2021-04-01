@@ -23,19 +23,27 @@ function InvitationScreen(props) {
   const [allUser, setAllUser] = useState([])
   const [currUser, setCurrUser] = useState([])
 
-  const onAcceptPartner = async (pairingUID) => {
+  const deleteInvitations = async (pairingUID) => {
 
     try {
       // Delete Invitation from pairingUID
 
       // Delete Sent Invitation from current user
 
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const addFriend = async (pairingUID) => {
+
+    try {
       // Make each other friends
 
     } catch (e) {
       console.log(e);
     }
-  }
+  } 
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -118,7 +126,8 @@ function InvitationScreen(props) {
                         onPress={() => {
                           props.navigation.navigate("PairUp");
                           setModalVisible(false)
-                          //onAcceptPartner(allUser[i][0]);
+                          // deleteInvitations(allUser[i][0]);
+                          // addFriend(allUser[i][0]);
                         }}
                       >
                         <Icon name='check' color='green' />
@@ -131,6 +140,7 @@ function InvitationScreen(props) {
                       <TouchableOpacity style={styles.IconButton}
                         onPress={() => {
                           setModalVisible(false)
+                          // deleteInvitations(allUser[i][0]);
                         }}
                       >
                         <Icon name='close' color='red' />
