@@ -34,7 +34,6 @@ function PairUpSuccess(props) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState({});
   const [avatar, setAvatar] = useState(null);
-  const [pairURL, setPairURL] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,22 +49,6 @@ function PairUpSuccess(props) {
       catch (reject) { }
     }
 
-    const fetchPairUser = async () => {
-      try {
-        const pairUser = await firebase.firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("sentInvitations")
-          .doc(firebase.auth().currentUser.uid)
-          .get()
-        
-        setPairURL(pairUser.data().uid[pairUser.data().uid.length - 1])
-      }
-      catch (e) {
-        console.log(e)
-      }
-    }
-
     // null or undefined
     if (props.currentUser == null) {
       const fetchUserData = async () => {
@@ -79,15 +62,13 @@ function PairUpSuccess(props) {
         }
       }
       fetchUserData();
-      fetchPairUser();
     }
     // if user exists
     else {
       console.log("currentUser: ", props.currentUser);
       fetchData();
-      fetchPairUser();
     }
-  }, [props.currentUser, props.profile, avatar, pairURL])
+  }, [props.currentUser, props.profile, avatar])
 
   return (
     <View style={styles.container}>
