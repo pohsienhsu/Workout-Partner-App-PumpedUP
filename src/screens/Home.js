@@ -104,13 +104,6 @@ function Home(props) {
 
   // let avatarURL = avatar ? avatar : require()
 
-  // For testing fetch data
-  let MatchPPL = '';
-  const showMatchPPL = (matchPPL) => {
-    console.log("Showing");
-    console.log(matchPPL);
-    return matchPPL;
-  }
 
   const onSentInvitation = async (pairingUID) => {
     // console.log("#############  OnSentInvitation Function   ##############")
@@ -237,30 +230,29 @@ function Home(props) {
               .collection("users")
               .get();
 
+            console.log("#############################################################")
+            console.log("################  Start of the Algorithm  ###################")
+            console.log("#############################################################")
+            // const forLoop = async () => {
+            // for (let user of users) {
             users.forEach(async user => {
+
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
-              console.log("Already Sent: ", alreadySent);
+              // console.log("Already Sent: ", alreadySent);
               if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
-                // For testing check No.1
-                console.log("For testing check No.1 : ")
-                // if (info.get("age") == "42") {
-                MatchPPL += info.get("name")
-                console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
-                // }
+
+                console.log("\n")
+                console.log('User id: ', user.id, ' Data name:', info.data().name);
 
                 let score = 0;
 
                 // BodyPart is an array
                 console.log("#############  users.forEach --> info  #############")
-                // console.log("Current User: ", user);
-                // console.log("Current UserPref: ", pref.bodyPart);
-                // console.log("Potential Partner: ", info.data().name)
-                // console.log("Potential Partner's Body Part", info.data().bodyPart);
                 info.data().bodyPart.forEach(bodyInfo => {
                   const bodyScore = 2.75 / pref.bodyPart.length;
                   try {
                     if (pref.bodyPart.includes(bodyInfo)) {
-                      console.log(`Algorithm BodyPart Successful: ${bodyInfo} / Score: ${score}`)
+                      // console.log(`Algorithm BodyPart Successful: ${bodyInfo} / Score: ${score}`)
                       score += bodyScore;
                     }
                   }
@@ -271,10 +263,7 @@ function Home(props) {
 
                 // 3/29 update matching algorithm
                 // If testing check No.1 pass, check the following (testing check No.2)
-                console.log(pref.age);
-                console.log(profile.age);
                 for (const [range, boolean] of Object.entries(pref.age)) {
-                  console.log("range: ", range, "boolean: ", boolean);
                   if ((range == "18 ~ 25") && boolean) {
                     if ((info.data().age >= 18) && (info.data().age <= 25)) {
                       score += 1.5;
@@ -324,8 +313,7 @@ function Home(props) {
                 }
 
                 if (score >= total) {
-                  MatchPPL = info.data().name;
-                  console.log('User name: ', MatchPPL);
+                  console.log('User name: ', info.data().name, ", Score: ", score);
 
                   setBeaconMatch({
                     uid: user.id,
@@ -337,16 +325,12 @@ function Home(props) {
                     hobbies: info.data().hobbies
                   })
 
-                  console.log("BeaconMatch: ", beaconMatch);
+
                 }
-
-                // 3/30 Add the current user's uid to the match person's database
-
-                // 3/30 check the routing of Home -> beaconMatch -> Home -> Invitation
               }
             })
 
-            modalVisible? setModalVisible(false) : setModalVisible(true);
+            modalVisible ? setModalVisible(false) : setModalVisible(true);
 
           }}>
           <Text style={styles.boxText}>Beacon Match</Text>
@@ -368,11 +352,12 @@ function Home(props) {
                 <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
               </View>
 
-              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              {beaconMatch.uid != "" ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
                 <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
                 <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
-              </View>
+              </View> : null}
+
               <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
