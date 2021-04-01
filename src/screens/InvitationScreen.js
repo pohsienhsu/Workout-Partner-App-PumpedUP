@@ -23,19 +23,31 @@ function InvitationScreen(props) {
   const [allUser, setAllUser] = useState([])
   const [currUser, setCurrUser] = useState([])
 
+  const deleteInvitations = async (pairingUID) => {
+
+    try {
+      // Delete Invitation from pairingUID
+
+      // Delete Sent Invitation from current user
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const addFriend = async (pairingUID) => {
+
+    try {
+      // Make each other friends
+
+    } catch (e) {
+      console.log(e);
+    }
+  } 
+
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        // await firebase.firestore()
-        //   .collection("users")
-        //   .get()
-        //   .then((snapshot) => {
-        //     let usersData = snapshot.docs.map(doc => {
-        //       const id = doc.id;
-        //       return { id: id }
-        //     })
-        //     setAllUser(usersData);
-        //   })
         console.log("###########################################")
 
         const invitations = await firebase.firestore()
@@ -50,7 +62,7 @@ function InvitationScreen(props) {
           if (info.exists) {
             console.log(info.data());
           }
-          setAllUser([...allUser, info.data()]);
+          setAllUser([...allUser, [user.uid, info.data()]]);
         });
       }
       catch(r) {};   
@@ -75,30 +87,32 @@ function InvitationScreen(props) {
               modalVisible ? setModalVisible(false) : setModalVisible(true)
             )}
           >
-            <Avatar source={{ uri: l.pictureURL[0].url }} />
+            <Avatar source={{ uri: l[1].pictureURL[0].url }} />
             <ListItem.Content>
-              <ListItem.Title>{l.name}</ListItem.Title>
-              <ListItem.Subtitle>{l.intro}</ListItem.Subtitle>
+              <ListItem.Title>{l[1].name}</ListItem.Title>
+              <ListItem.Subtitle>{l[1].intro}</ListItem.Subtitle>
             </ListItem.Content>
             <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
               <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
                 <View style={styles.ModalBox}>
                   <Image
                     style={styles.ModalImage}
-                    source={{ uri: allUser[i].pictureURL[0].url }}
+                    source={{ uri: allUser[i][1].pictureURL[0].url }}
                   />
 
-                  <Text style={styles.ModalName}>{allUser[i].name}</Text>
+                  <Text style={styles.ModalName}>{allUser[i][1].name}</Text>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>{allUser[i].intro}</Text>
+                    <Text style={styles.ModalText}>{allUser[i][1].intro}</Text>
                   </View>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>Gender: {allUser[i].gender}</Text>
-                    <Text style={styles.ModalText}>Age: {allUser[i].age}</Text>
-                    {/* <Text style={styles.ModalText}>Weight: {allUser[i].weight} lb</Text> */}
-                    <Text style={styles.ModalText}>Hobby: {allUser[i].hobbies}</Text>
+                    <Text style={styles.ModalText}>Gender: {allUser[i][1].gender}</Text>
+                    <Text style={styles.ModalText}>Age: {allUser[i][1].age}</Text>
+                    {/* <Text style={styles.ModalText}>Weight: {allUser[i][1].weight} lb</Text> */}
+                    <Text style={styles.ModalText}>Hobby: {allUser[i][1].hobbies}</Text>
+                    <Text style={styles.ModalText}>Experience: {allUser[i][1].experience}</Text>
+                    <Text style={styles.ModalText}>Frequency: {allUser[i][1].frequency}</Text>
                   </View>
                   <View style={{
                     flexDirection: 'row',
@@ -112,6 +126,8 @@ function InvitationScreen(props) {
                         onPress={() => {
                           props.navigation.navigate("PairUp");
                           setModalVisible(false)
+                          // deleteInvitations(allUser[i][0]);
+                          // addFriend(allUser[i][0]);
                         }}
                       >
                         <Icon name='check' color='green' />
@@ -124,6 +140,7 @@ function InvitationScreen(props) {
                       <TouchableOpacity style={styles.IconButton}
                         onPress={() => {
                           setModalVisible(false)
+                          // deleteInvitations(allUser[i][0]);
                         }}
                       >
                         <Icon name='close' color='red' />
