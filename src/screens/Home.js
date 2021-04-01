@@ -386,6 +386,7 @@ function Home(props) {
                     onPress={async () => {
                       setModalVisible(false);
                       onSentInvitation(beaconMatch.uid);
+                      props.navigation.navigate("PairUp");
                       try {
                         const sentInvitations = await firebase.firestore()
                           .collection("users")
