@@ -42,6 +42,7 @@ function Profile(props) {
       }
       catch (r) { }
     }
+    
     // null or undefined
     if (props.currentUser == null) {
       const fetchUserData = async () => {

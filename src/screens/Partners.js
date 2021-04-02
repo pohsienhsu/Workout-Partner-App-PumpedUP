@@ -28,7 +28,7 @@ function Partners(props) {
 
     fetchData();
 
-  }, [])
+  }, [props.partners])
 
 
   if (partners === null) {

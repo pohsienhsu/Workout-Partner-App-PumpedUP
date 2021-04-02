@@ -16,18 +16,44 @@ import firebase from 'firebase'
 require('firebase/firestore')
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUserPref } from "../../redux/actions/index"
+import { fetchUserProfile, fetchUserInvitation } from "../../redux/actions/index"
 
 function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [profile, setProfile] = useState({})
   const [allUser, setAllUser] = useState([])
-  const [currUser, setCurrUser] = useState([])
 
   const deleteInvitations = async (pairingUID) => {
 
     try {
       // Delete Invitation from pairingUID
+      let currentInvitation = await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("invitations")
+        .doc(firebase.auth().currentUser.uid)
+        .get()
 
+      currentInvitation = currentInvitation.data().invitation
+      console.log("Current Invitation: ", currentInvitation);
+
+      let newInvitaion = []
+      for (let i of currentInvitation) {
+        if (i.uid !== pairingUID) {
+          newInvitaion.push(i);
+        }
+      }
+
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("invitations")
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          invitation: newInvitaion
+        })
+
+      setAllUser(newInvitaion);
       // Delete Sent Invitation from current user
 
     } catch (e) {
@@ -35,48 +61,146 @@ function InvitationScreen(props) {
     }
   }
 
-  const addFriend = async (pairingUID) => {
-
+  const addFriend = async (pairingUID, parnterName, partnerImg) => {
+    // Add current user
+    currentName = profile.name.replace(/\s/g, '');
+    parnterName = parnterName.replace(/\s/g, '');
     try {
-      // Make each other friends
+      const currentParnter = await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("partners")
+        .doc(firebase.auth().currentUser.uid)
+        .get()
 
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("partners")
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          partner: [
+            ...currentParnter.data().partner,
+            {
+              chatID: `${currentName}and${parnterName}`,
+              img: partnerImg,
+              name: parnterName,
+              uid: pairingUID
+            }
+          ]
+        })
+    } catch (e) {
+      console.log(e);
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("partners")
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          partner: [
+            {
+              chatID: `${currentName}and${parnterName}`,
+              img: partnerImg,
+              name: parnterName,
+              uid: pairingUID
+            }
+          ]
+        })
+    }
+    // Add the other user
+    try {
+      const currentParnter = await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("partners")
+        .doc(pairingUID)
+        .get()
+
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("partners")
+        .doc(pairingUID)
+        .set({
+          partner: [
+            ...currentParnter.data().partner,
+            {
+              chatID: `${currentName}and${parnterName}`,
+              img: profile.pictureURL[0].url,
+              name: profile.name,
+              uid: firebase.auth().currentUser.uid
+            }
+          ]
+        })
+    } catch (e) {
+      console.log(e);
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("partners")
+        .doc(pairingUID)
+        .set({
+          partner: [
+            {
+              chatID: `${currentName}and${parnterName}`,
+              img: profile.pictureURL[0].url,
+              name: profile.name,
+              uid: firebase.auth().currentUser.uid
+            }
+          ]
+        })
+    }
+    // create chatroom backend
+    try {
+      await firebase.firestore()
+        .collection("userChat")
+        .doc(`${currentName}and${parnterName}`)
+        .set({
+          name: [currentName, parnterName]
+        })
     } catch (e) {
       console.log(e);
     }
-  } 
+  }
 
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        console.log("###########################################")
+        // console.log("###########################################")
 
-        const invitations = await firebase.firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("invitations")
-          .doc(firebase.auth().currentUser.uid)
-          .get()
+        // const invitations = await firebase.firestore()
+        //   .collection("users")
+        //   .doc(firebase.auth().currentUser.uid)
+        //   .collection("invitations")
+        //   .doc(firebase.auth().currentUser.uid)
+        //   .get()
+        // setAllUser(invitations.data().invitation);
+        await props.fetchUserInvitation();
+        setAllUser(props.invitations);
+        await props.fetchUserProfile();
+        setProfile(props.profile);
 
-        invitations.data().invitation.forEach(async user => {
-          const info = await firebase.firestore().collection("users").doc(user.uid).collection("userProfile").doc(user.uid).get();
-          if (info.exists) {
-            console.log(info.data());
-          }
-          setAllUser([...allUser, [user.uid, info.data()]]);
-        });
+        // invitations.data().invitation.forEach(async user => {
+        //   const info = await firebase.firestore().collection("users").doc(user.uid).collection("userProfile").doc(user.uid).get();
+        //   if (info.exists) {
+        //     console.log(info.data());
+        //   }
+        //   setAllUser([...allUser, [user.uid, info.data()]]);
+        // });
       }
-      catch(r) {};   
+      catch (r) { };
     }
 
     fetchAllUsers()
 
-  }, [])
+  }, [props.invitations])
 
+  // console.log(props.invitations)
 
   return (
     <View>
       {/* <Text>Number of Users {allUser.length}</Text> */}
-      
+
       <SearchBar
         placeholder="Type Here..."
       />
@@ -87,32 +211,31 @@ function InvitationScreen(props) {
               modalVisible ? setModalVisible(false) : setModalVisible(true)
             )}
           >
-            <Avatar source={{ uri: l[1].pictureURL[0].url }} />
+            <Avatar source={{ uri: l.avatar }} />
             <ListItem.Content>
-              <ListItem.Title>{l[1].name}</ListItem.Title>
-              <ListItem.Subtitle>{l[1].intro}</ListItem.Subtitle>
+              <ListItem.Title>{l.name}</ListItem.Title>
+              <ListItem.Subtitle>{l.intro}</ListItem.Subtitle>
             </ListItem.Content>
             <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
               <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
                 <View style={styles.ModalBox}>
                   <Image
                     style={styles.ModalImage}
-                    source={{ uri: allUser[i][1].pictureURL[0].url }}
+                    source={{ uri: l.avatar }}
                   />
 
-                  <Text style={styles.ModalName}>{allUser[i][1].name}</Text>
+                  <Text style={styles.ModalName}>{l.name}</Text>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>{allUser[i][1].intro}</Text>
+                    <Text style={styles.ModalText}>{l.intro}</Text>
                   </View>
 
                   <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.ModalText}>Gender: {allUser[i][1].gender}</Text>
-                    <Text style={styles.ModalText}>Age: {allUser[i][1].age}</Text>
-                    {/* <Text style={styles.ModalText}>Weight: {allUser[i][1].weight} lb</Text> */}
-                    <Text style={styles.ModalText}>Hobby: {allUser[i][1].hobbies}</Text>
-                    <Text style={styles.ModalText}>Experience: {allUser[i][1].experience}</Text>
-                    <Text style={styles.ModalText}>Frequency: {allUser[i][1].frequency}</Text>
+                    <Text style={styles.ModalText}>Gender: {l.gender}</Text>
+                    <Text style={styles.ModalText}>Age: {l.age}</Text>
+                    <Text style={styles.ModalText}>Hobby: {l.hobbies}</Text>
+                    <Text style={styles.ModalText}>Experience: {l.experience}</Text>
+                    <Text style={styles.ModalText}>Frequency: {l.frequency}</Text>
                   </View>
                   <View style={{
                     flexDirection: 'row',
@@ -124,10 +247,10 @@ function InvitationScreen(props) {
                       <TouchableOpacity
                         style={styles.IconButton}
                         onPress={() => {
-                          props.navigation.navigate("PairUp");
                           setModalVisible(false)
-                          // deleteInvitations(allUser[i][0]);
-                          // addFriend(allUser[i][0]);
+                          deleteInvitations(l.uid);
+                          addFriend(l.uid, l.name, l.avatar);
+                          props.navigation.navigate("PairUp", { pairingImg: l.avatar });
                         }}
                       >
                         <Icon name='check' color='green' />
@@ -160,9 +283,10 @@ function InvitationScreen(props) {
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   pairingPref: store.userState.pairingPref,
-  profile: store.userState.profile
+  profile: store.userState.profile,
+  invitations: store.userState.invitations
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({}, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserInvitation, fetchUserProfile }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(InvitationScreen)
 
 const styles = StyleSheet.create({

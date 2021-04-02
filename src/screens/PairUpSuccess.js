@@ -85,7 +85,7 @@ function PairUpSuccess(props) {
       <View style={{ flex: 0.45 }}>
         <Image
           style={styles.profileImage}
-          source={{ uri: "https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2020/05/Kevin-Hart-Headshot-Kevin-Kwan-High-Res--scaled-e1589926838234.jpg" }}
+          source={{ uri: props.route.params.pairingImg }}
           // source={{ uri: pairURL }}
         />
       </View>

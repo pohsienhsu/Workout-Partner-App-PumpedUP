@@ -134,29 +134,39 @@ function Home(props) {
       }
 
       if (verify == 0) {
-        await firebase.firestore()
-          .collection("users")
-          .doc(pairingUID)
-          .collection("invitations")
-          .doc(pairingUID)
-          .set({
-            invitation: [
-              ...currentInvitations.data().invitation,
-              { uid: firebase.auth().currentUser.uid, name: profile.name }
-            ]
-          })
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("invitations")
+        .doc(pairingUID)
+        .set({
+          invitation: [
+            ...currentInvitations.data().invitation,
+            { uid: firebase.auth().currentUser.uid, 
+              name: profile.name,
+              age: profile.age,
+              hobbies: profile.hobbies,
+              experience: profile.experience,
+              frequency: profile.frequency,
+              gender: profile.gender,
+              intro: profile.intro,
+              avatar: profile.pictureURL[0].url,
+              bodyPart: profile.bodyPart
+            }
+          ]
+        })
 
-        await firebase.firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("sentInvitations")
-          .doc(firebase.auth().currentUser.uid)
-          .set({
-            uid: [
-              ...sentInvitations.data().uid,
-              pairingUID
-            ]
-          })
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("sentInvitations")
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          uid: [
+            ...sentInvitations.data().uid,
+            pairingUID
+          ]
+        })
       }
     } catch (e) {
       await firebase.firestore()
@@ -189,7 +199,7 @@ function Home(props) {
         <TouchableOpacity
           style={styles.Button}
           onPress={async () => {
-            console.log("------------- Beacon Match Clicked --------------")
+            // console.log("------------- Beacon Match Clicked --------------")
 
             let alreadySent = { uid: [] };
 
@@ -201,60 +211,60 @@ function Home(props) {
                 .doc(firebase.auth().currentUser.uid)
                 .get()
               alreadySent = alreadySent.data()
+              if (alreadySent == undefined) {
+                alreadySent = { uid: [] };
+              }
 
-              // console.log("Already Sent: ", alreadySent);
+              console.log("Already Sent: ", alreadySent);
             }
             catch (e) {
               console.log("There is no already sent")
               alreadySent = { uid: [] };
             }
 
-            let alreadyGetInvited = [];
+            // let alreadyGetInvited = [];
 
-            try {
-              const getInvitations = await firebase.firestore()
-                .collection("users")
-                .doc(firebase.auth().currentUser.uid)
-                .collection("invitations")
-                .doc(firebase.auth().currentUser.uid)
-                .get()
-              
-              for (let i = 0; i < getInvitations.data().invitation.length; i++) {
-                alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
-              }
+            // try {
+            //   const getInvitations = await firebase.firestore()
+            //     .collection("users")
+            //     .doc(firebase.auth().currentUser.uid)
+            //     .collection("invitations")
+            //     .doc(firebase.auth().currentUser.uid)
+            //     .get()
 
-              // console.log("Already Sent: ", alreadySent);
-            }
-            catch (e) {
-              console.log("There is no already sent")
-              alreadyGetInvited = [];
-            }
+            //   for (let i = 0; i < getInvitations.data().invitation.length; i++) {
+            //     alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
+            //   }
+
+            //   // console.log("Already Sent: ", alreadySent);
+            // }
+            // catch (e) {
+            //   console.log("There is no already sent")
+            //   alreadyGetInvited = [];
+            // }
 
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
               .get();
 
-            console.log("#############################################################")
-            console.log("################  Start of the Algorithm  ###################")
-            console.log("#############################################################")
+            // console.log("#############################################################")
+            // console.log("################  Start of the Algorithm  ###################")
+            // console.log("#############################################################")
             // const forLoop = async () => {
             // for (let user of users) {
             users.forEach(async user => {
 
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
-              
+
               // console.log(alreadySent.uid.includes("YfJmRgVQg0fAUeJmZkC19uNOM7j1"));
 
-              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id) && !alreadyGetInvited.includes(user.id)) {
+              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
                 // For testing check No.1
                 // console.log("For testing check No.1 : ")
-                // if (info.get("age") == "42") {
-                MatchPPL += info.get("name")
-                // console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
-                // }
+                console.log('User id: ', user.id, ' Data name:', info.data().name);
 
-                let score = 0;
+                let score = 0
 
                 // BodyPart is an array
                 // console.log("#############  users.forEach --> info  #############")
@@ -328,10 +338,8 @@ function Home(props) {
                   score += 2;
                 }
 
+                // BeaconMatch Success
                 if (score >= total) {
-                  MatchPPL = info.data().name;
-                  // console.log('User name: ', MatchPPL);
-
                   setBeaconMatch({
                     uid: user.id,
                     name: info.data().name,
@@ -343,8 +351,7 @@ function Home(props) {
                     experience: info.data().experience,
                     frequency: info.data().frequency
                   })
-
-
+                  // console.log("BeaconMatch!! Score: ", score)
                 }
               }
             })
@@ -377,7 +384,7 @@ function Home(props) {
                 <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
                 <Text style={styles.ModalText}>Experience: {beaconMatch.experience}</Text>
                 <Text style={styles.ModalText}>Frequency: {beaconMatch.frequency}</Text>
-              </View> : null }
+              </View> : null}
               <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -391,37 +398,38 @@ function Home(props) {
                     onPress={async () => {
                       setModalVisible(false);
                       onSentInvitation(beaconMatch.uid);
-                      try {
-                        const sentInvitations = await firebase.firestore()
-                          .collection("users")
-                          .doc(firebase.auth().currentUser.uid)
-                          .collection("sentInvitations")
-                          .doc(firebase.auth().currentUser.uid)
-                          .get()
+                      // try {
+                      //   const sentInvitations = await firebase.firestore()
+                      //     .collection("users")
+                      //     .doc(firebase.auth().currentUser.uid)
+                      //     .collection("sentInvitations")
+                      //     .doc(firebase.auth().currentUser.uid)
+                      //     .get()
 
-                        await firebase.firestore()
-                          .collection("users")
-                          .doc(firebase.auth().currentUser.uid)
-                          .collection("sentInvitations")
-                          .doc(firebase.auth().currentUser.uid)
-                          .set({
-                            uid: [
-                              ...sentInvitations.data().uid,
-                              beaconMatch.uid
-                            ]
-                          })
-                      } catch (e) {
-                        await firebase.firestore()
-                          .collection("users")
-                          .doc(firebase.auth().currentUser.uid)
-                          .collection("sentInvitations")
-                          .doc(firebase.auth().currentUser.uid)
-                          .set({
-                            uid: [
-                              beaconMatch.uid
-                            ]
-                          })
-                      }
+                      //   await firebase.firestore()
+                      //     .collection("users")
+                      //     .doc(firebase.auth().currentUser.uid)
+                      //     .collection("sentInvitations")
+                      //     .doc(firebase.auth().currentUser.uid)
+                      //     .set({
+                      //       uid: [
+                      //         ...sentInvitations.data().uid,
+                      //         beaconMatch.uid
+                      //       ]
+                      //     })
+                      // } catch (e) {
+                      //   await firebase.firestore()
+                      //     .collection("users")
+                      //     .doc(firebase.auth().currentUser.uid)
+                      //     .collection("sentInvitations")
+                      //     .doc(firebase.auth().currentUser.uid)
+                      //     .set({
+                      //       uid: [
+                      //         beaconMatch.uid
+                      //       ]
+                      //     })
+                      // }
+
                       setBeaconMatch({
                         uid: '',
                         name: 'No Matches Available',
