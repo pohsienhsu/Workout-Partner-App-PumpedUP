@@ -75,7 +75,7 @@ function InvitationScreen(props) {
 
   return (
     <View>
-      <Text>Number of Users {allUser.length}</Text>
+      {/* <Text>Number of Users {allUser.length}</Text> */}
       
       <SearchBar
         placeholder="Type Here..."
