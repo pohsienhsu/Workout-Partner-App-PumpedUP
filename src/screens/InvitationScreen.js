@@ -23,18 +23,43 @@ function InvitationScreen(props) {
   const [allUser, setAllUser] = useState([])
   const [currUser, setCurrUser] = useState([])
 
+
   const deleteInvitations = async (pairingUID) => {
-
     try {
-      // Delete Invitation from pairingUID
-
-      // Delete Sent Invitation from current user
-
+      // Delete the Invitation from the pairing user (pairingUID)
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection('invitations')
+        .doc(firebase.auth().currentUser.uid)
+        .update({
+          invitation: firebase.firestore.FieldValue.arrayRemove(pairingUID)
+        })
     } catch (e) {
+      console.log("[invitationScreen.js] deleteInvitations -> delete the invitation from the pairing user");
       console.log(e);
     }
   }
 
+  const deleteSentInvitations = async (pairingUID) => {
+    try {
+      // Delete the Invitation sent from the current user (firebase.auth().currentUser.uid)
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection('invitations')
+        .doc(pairingUID)
+        .update({
+          invitation: firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser)
+        })
+    } catch (e) {
+      console.log("[invitationScreen.js] deleteSentInvitations -> delete the invitation sent from the current user")
+      console.log(e)
+    }
+  }
+
+    
+  // I think this part is already covered in Partner.js?
   const addFriend = async (pairingUID) => {
 
     try {
