@@ -1,4 +1,4 @@
-import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE, USER_PARTNER_CHANGE } from "../constants"
+import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE, USER_PARTNER_CHANGE, USER_INVITATION_CHANGE } from "../constants"
 
 const initialState = {
   currentUser: null,
@@ -26,7 +26,8 @@ const initialState = {
     experience: "",
     location: { 'In-Person': false, "Remote": false },
   },
-  partners: []
+  partners: [], 
+  invitations: []
 }
 
 export const user = (state = initialState, action) => {
@@ -50,6 +51,11 @@ export const user = (state = initialState, action) => {
       return {
         ...state,
         partners: action.partners
+      }
+    case USER_INVITATION_CHANGE:
+      return {
+        ...state,
+        invitations: action.invitations
       }
     case CLEAR_DATA:
       return initialState;
