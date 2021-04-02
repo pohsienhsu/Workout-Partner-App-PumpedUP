@@ -216,6 +216,27 @@ function Home(props) {
               alreadySent = { uid: [] };
             }
 
+            let alreadyGetInvited = [];
+
+            try {
+              const getInvitations = await firebase.firestore()
+                .collection("users")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("invitations")
+                .doc(firebase.auth().currentUser.uid)
+                .get()
+              
+              for (let i = 0; i < getInvitations.data().invitation.length; i++) {
+                alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
+              }
+
+              // console.log("Already Sent: ", alreadySent);
+            }
+            catch (e) {
+              console.log("There is no already sent")
+              alreadyGetInvited = [];
+            }
+
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
@@ -226,7 +247,7 @@ function Home(props) {
               
               // console.log(alreadySent.uid.includes("YfJmRgVQg0fAUeJmZkC19uNOM7j1"));
 
-              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
+              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id) && !alreadyGetInvited.includes(user.id)) {
                 // For testing check No.1
                 // console.log("For testing check No.1 : ")
                 // if (info.get("age") == "42") {
