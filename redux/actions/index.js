@@ -1,6 +1,6 @@
 import firebase from "firebase"
 require("firebase/firestore")
-import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE, USER_PARTNER_CHANGE } from "../constants/index"
+import { USER_STATE_CHANGE, USER_PREF_CHANGE, CLEAR_DATA, USER_PROFILE_CHANGE, USER_PARTNER_CHANGE, USER_INVITATION_CHANGE } from "../constants/index"
 
 export function clearData() {
   return ((dispatch) => {
@@ -86,4 +86,27 @@ export function fetchUserPartner() {
       })
   })
 }
+
+export function fetchUserInvitation() {
+  return ((dispatch) => {
+    firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("invitations")
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        // console.log("#############  fetchUserInvitation  ###############")
+        // console.log(snapshot.data())
+        if (snapshot.exists) {
+          //type & payload
+          dispatch({ type: USER_INVITATION_CHANGE, invitations: snapshot.data().invitation })
+        } else {
+          console.log("FetchUserInvitation: does not exist")
+        }
+      })
+  })
+}
+
+
 
