@@ -108,14 +108,7 @@ function Home(props) {
   const onSentInvitation = async (pairingUID) => {
     // console.log("#############  OnSentInvitation Function   ##############")
     // console.log(props);
-    // const currentInvitations = await firebase.firestore()
-    //   .collection("users")
-    //   .doc(pairingUID)
-    //   .collection("invitations")
-    //   .doc(pairingUID)
-    //   .update({
-    //     invitation: firebase.firestore.FieldValue.arrayUnion({ uid: firebase.auth().currentUser.uid, name: profile.name })
-    //   })
+
     try {
       const currentInvitations = await firebase.firestore()
         .collection("users")
@@ -165,18 +158,6 @@ function Home(props) {
             ]
           })
       }
-
-      // await firebase.firestore()
-      //   .collection("users")
-      //   .doc(pairingUID)
-      //   .collection("invitations")
-      //   .doc(pairingUID)
-      //   .set({
-      //     invitation: [
-      //       ...currentInvitations.data().invitation,
-      //       { uid: firebase.auth().currentUser.uid, name: profile.name }
-      //     ]
-      //   })
     } catch (e) {
       await firebase.firestore()
         .collection("users")
@@ -208,6 +189,7 @@ function Home(props) {
         <TouchableOpacity
           style={styles.Button}
           onPress={async () => {
+            console.log("------------- Beacon Match Clicked --------------")
 
             let alreadySent = { uid: [] };
 
@@ -219,10 +201,33 @@ function Home(props) {
                 .doc(firebase.auth().currentUser.uid)
                 .get()
               alreadySent = alreadySent.data()
+
+              // console.log("Already Sent: ", alreadySent);
             }
             catch (e) {
               console.log("There is no already sent")
               alreadySent = { uid: [] };
+            }
+
+            let alreadyGetInvited = [];
+
+            try {
+              const getInvitations = await firebase.firestore()
+                .collection("users")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("invitations")
+                .doc(firebase.auth().currentUser.uid)
+                .get()
+              
+              for (let i = 0; i < getInvitations.data().invitation.length; i++) {
+                alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
+              }
+
+              // console.log("Already Sent: ", alreadySent);
+            }
+            catch (e) {
+              console.log("There is no already sent")
+              alreadyGetInvited = [];
             }
 
             // Get all users
@@ -238,16 +243,25 @@ function Home(props) {
             users.forEach(async user => {
 
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
-              // console.log("Already Sent: ", alreadySent);
-              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
+              
+              // console.log(alreadySent.uid.includes("YfJmRgVQg0fAUeJmZkC19uNOM7j1"));
 
-                console.log("\n")
-                console.log('User id: ', user.id, ' Data name:', info.data().name);
+              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id) && !alreadyGetInvited.includes(user.id)) {
+                // For testing check No.1
+                // console.log("For testing check No.1 : ")
+                // if (info.get("age") == "42") {
+                MatchPPL += info.get("name")
+                // console.log('User id: ', user.id, ' Data:', info.data(), ' Data name:', info.data().name);
+                // }
 
                 let score = 0;
 
                 // BodyPart is an array
-                console.log("#############  users.forEach --> info  #############")
+                // console.log("#############  users.forEach --> info  #############")
+                // console.log("Current User: ", user);
+                // console.log("Current UserPref: ", pref.bodyPart);
+                // console.log("Potential Partner: ", info.data().name)
+                // console.log("Potential Partner's Body Part", info.data().bodyPart);
                 info.data().bodyPart.forEach(bodyInfo => {
                   const bodyScore = 2.75 / pref.bodyPart.length;
                   try {
@@ -263,6 +277,8 @@ function Home(props) {
 
                 // 3/29 update matching algorithm
                 // If testing check No.1 pass, check the following (testing check No.2)
+                // console.log(pref.age);
+                // console.log(profile.age);
                 for (const [range, boolean] of Object.entries(pref.age)) {
                   if ((range == "18 ~ 25") && boolean) {
                     if ((info.data().age >= 18) && (info.data().age <= 25)) {
@@ -313,7 +329,8 @@ function Home(props) {
                 }
 
                 if (score >= total) {
-                  console.log('User name: ', info.data().name, ", Score: ", score);
+                  MatchPPL = info.data().name;
+                  // console.log('User name: ', MatchPPL);
 
                   setBeaconMatch({
                     uid: user.id,
@@ -322,7 +339,9 @@ function Home(props) {
                     gender: info.data().gender,
                     img: info.data().pictureURL[0].url,
                     intro: info.data().intro,
-                    hobbies: info.data().hobbies
+                    hobbies: info.data().hobbies,
+                    experience: info.data().experience,
+                    frequency: info.data().frequency
                   })
 
 
@@ -356,8 +375,9 @@ function Home(props) {
                 <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
                 <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
                 <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
-              </View> : null}
-
+                <Text style={styles.ModalText}>Experience: {beaconMatch.experience}</Text>
+                <Text style={styles.ModalText}>Frequency: {beaconMatch.frequency}</Text>
+              </View> : null }
               <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -490,38 +510,6 @@ const mapDispatchProps = (dispatch) => bindActionCreators({
   // fetchUserProfile
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchProps)(Home)
-
-
-
-const data = [
-  {
-    name: 'Conan O\'Brien',
-    intro: 'If you can really laugh at yourself loud and hard every time you fail,\nPeople will think you\' drunk',
-    img: 'https://tvline.com/wp-content/uploads/2020/11/conan-ending.jpg?',
-    gender: 'Male',
-    age: 57,
-    weight: '190',
-    hobby: 'Self pity'
-  },
-  {
-    name: 'Kevin Hart',
-    intro: 'Tallest and Fastest Man on Earth\nNever mess with me!',
-    img: 'https://www.blackenterprise.com/wp-content/blogs.dir/1/files/2020/05/Kevin-Hart-Headshot-Kevin-Kwan-High-Res--scaled-e1589926838234.jpg',
-    gender: 'Male',
-    age: 40,
-    weight: '150',
-    hobby: 'Cat, Movies, Thug Life'
-  },
-  {
-    name: 'Gordon Ramsay',
-    intro: 'This lamb is so undercooked,\n it\'s following Mary to school!',
-    img: 'https://www.telegraph.co.uk/content/dam/news/2016/09/29/6455882-ramsay-news_trans_NvBQzQNjv4BqbRF8GMdXQ5UNQkWBrq_MOBxo7k3IcFzOpcVpLpEd-fY.jpg',
-    gender: 'Male',
-    age: 54,
-    weight: '200',
-    hobby: 'Cook, Make adults cry'
-  }
-];
 
 const styles = StyleSheet.create({
   container: {
