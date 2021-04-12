@@ -92,18 +92,11 @@ function Home(props) {
   }, [props.currentUser, props.profile, avatar, props.partners, props.pairingPref, beaconMatch])
 
   // console.log("###################  HOME PAGE  ####################")
-  // console.log(props.currentUser);
-  // console.log(props)
-
-
   if (user === null) {
     return <View style={styles.textContent}>
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
   }
-
-  // let avatarURL = avatar ? avatar : require()
-
 
   const onSentInvitation = async (pairingUID) => {
     // console.log("#############  OnSentInvitation Function   ##############")
@@ -189,9 +182,12 @@ function Home(props) {
     <View style={styles.container}>
       {/* {renderImage(avatar)}   */}
       <View>
-        <Image
-          style={styles.profileImage}
-          source={{ uri: avatar }} />
+        
+          <Image
+            style={styles.profileImage}
+            source={{ uri: avatar }}
+          /> 
+
       </View>
       <View style={{ paddingTop: 50 }} />
 
@@ -257,8 +253,6 @@ function Home(props) {
 
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
 
-              // console.log(alreadySent.uid.includes("YfJmRgVQg0fAUeJmZkC19uNOM7j1"));
-
               if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
                 // For testing check No.1
                 // console.log("For testing check No.1 : ")
@@ -268,10 +262,6 @@ function Home(props) {
 
                 // BodyPart is an array
                 // console.log("#############  users.forEach --> info  #############")
-                // console.log("Current User: ", user);
-                // console.log("Current UserPref: ", pref.bodyPart);
-                // console.log("Potential Partner: ", info.data().name)
-                // console.log("Potential Partner's Body Part", info.data().bodyPart);
                 info.data().bodyPart.forEach(bodyInfo => {
                   const bodyScore = 2.75 / pref.bodyPart.length;
                   try {
@@ -287,8 +277,6 @@ function Home(props) {
 
                 // 3/29 update matching algorithm
                 // If testing check No.1 pass, check the following (testing check No.2)
-                // console.log(pref.age);
-                // console.log(profile.age);
                 for (const [range, boolean] of Object.entries(pref.age)) {
                   if ((range == "18 ~ 25") && boolean) {
                     if ((info.data().age >= 18) && (info.data().age <= 25)) {
@@ -367,18 +355,24 @@ function Home(props) {
         <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
           <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
             <View style={styles.ModalBox}>
-              <Image
-                style={styles.ModalImage}
-                source={beaconMatch.img == "" ? require("../image/default-profile-pic.png") : { uri: beaconMatch.img }}
-              />
-
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.navigate("PairUpProfile", { beaconMatchUID: beaconMatch.uid })
+                  setModalVisible(false);
+                }}
+              >
+                <Image
+                  style={styles.ModalImage}
+                  source={beaconMatch.img == "" ? require("../image/default-profile-pic.png") : { uri: beaconMatch.img }}
+                />
+              </TouchableOpacity>
               <Text style={styles.ModalName}>{beaconMatch.name}</Text>
 
-              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ justifyContent: 'flex-start' }}>
                 <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
               </View>
 
-              {beaconMatch.uid != "" ? <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              {beaconMatch.uid != "" ? <View style={{ justifyContent: 'flex-start' }}>
                 <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
                 <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
                 <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
@@ -398,37 +392,6 @@ function Home(props) {
                     onPress={async () => {
                       setModalVisible(false);
                       onSentInvitation(beaconMatch.uid);
-                      // try {
-                      //   const sentInvitations = await firebase.firestore()
-                      //     .collection("users")
-                      //     .doc(firebase.auth().currentUser.uid)
-                      //     .collection("sentInvitations")
-                      //     .doc(firebase.auth().currentUser.uid)
-                      //     .get()
-
-                      //   await firebase.firestore()
-                      //     .collection("users")
-                      //     .doc(firebase.auth().currentUser.uid)
-                      //     .collection("sentInvitations")
-                      //     .doc(firebase.auth().currentUser.uid)
-                      //     .set({
-                      //       uid: [
-                      //         ...sentInvitations.data().uid,
-                      //         beaconMatch.uid
-                      //       ]
-                      //     })
-                      // } catch (e) {
-                      //   await firebase.firestore()
-                      //     .collection("users")
-                      //     .doc(firebase.auth().currentUser.uid)
-                      //     .collection("sentInvitations")
-                      //     .doc(firebase.auth().currentUser.uid)
-                      //     .set({
-                      //       uid: [
-                      //         beaconMatch.uid
-                      //       ]
-                      //     })
-                      // }
 
                       setBeaconMatch({
                         uid: '',
@@ -445,8 +408,6 @@ function Home(props) {
                   </TouchableOpacity>
                 </View>
 
-                <View style={{ paddingLeft: 40 }} />
-
                 <View style={styles.IconBoxClose}>
                   <TouchableOpacity style={styles.IconButton}
                     onPress={() => {
@@ -460,26 +421,18 @@ function Home(props) {
             </View>
           </View>
         </Modal>
-        {/* <UserCard modalVisible setModalVisible={() => setModalVisible()} beaconMatch navigation={props.navigation} /> */}
+        {/* <UserCard BeaconMatch={beaconMatch} show={modalVisible} /> */}
 
         <View style={{ paddingLeft: 8 }} />
 
         <TouchableOpacity
           style={styles.Button}
           onPress={() => {
-            // console.log(modalVisible)
-            // if (modalVisible.localeCompare('none') == 0) {
-            //   setModalVisible('flex');
-            // } else if (modalVisible.localeCompare('flex') == 0) {
-            //   setModalVisible('none');
-            // }
             props.navigation.navigate("Invitation")
           }
           }
         >
           <Text style={styles.boxText}>Invitation</Text>
-          {/* <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+3</Text> */}
         </TouchableOpacity>
       </View>
 
@@ -488,16 +441,12 @@ function Home(props) {
       <View style={{ flexDirection: 'row', justifyContent: 'center', diaplay: "flex" }}>
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Daily Goal</Text>
-          {/* <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+2</Text> */}
         </TouchableOpacity>
 
         <View style={{ paddingLeft: 8 }} />
 
         <TouchableOpacity style={styles.Button}>
           <Text style={styles.boxText}>Schedule</Text>
-          {/* <View style={{ paddingTop: 8 }} />
-          <Text style={styles.ButtonText}>+0</Text> */}
         </TouchableOpacity>
       </View>
     </View>
@@ -524,7 +473,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   profileImage: {
-    margin: 10,
+    marginTop: 40,
     height: 300,
     width: 300,
     borderRadius: 150,
@@ -572,30 +521,31 @@ const styles = StyleSheet.create({
   },
   ModalBox: {
     flex: 1,
-    marginTop: 80,
-    marginBottom: 80,
+    marginTop: 120,
+    marginBottom: 140,
     marginLeft: 40,
     marginRight: 40,
     borderRadius: 10,
     backgroundColor: '#EF9C2E',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   ModalImage: {
     marginTop: 20,
-    height: 160,
-    width: 160,
+    height: 250,
+    width: 250,
     borderRadius: 150,
     alignSelf: "center"
   },
   ModalName: {
     color: 'black',
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    alignSelf: "center"
   },
   ModalText: {
     color: 'black',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     marginHorizontal: 50
   },
@@ -606,6 +556,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20
   },
   IconBoxClose: {
     width: 54,
@@ -614,6 +565,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20
   },
   IconButton: {
     width: 50,

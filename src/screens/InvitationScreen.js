@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+
 import {
   View,
   Text,
@@ -22,7 +23,6 @@ function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [profile, setProfile] = useState({})
   const [allUser, setAllUser] = useState([])
-
 
   const deleteInvitations = async (pairingUID) => {
     try {
@@ -287,7 +287,9 @@ const mapStateToProps = (store) => ({
   profile: store.userState.profile,
   invitations: store.userState.invitations
 })
+
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserInvitation, fetchUserProfile }, dispatch);
+
 export default connect(mapStateToProps, mapDispatchProps)(InvitationScreen)
 
 const styles = StyleSheet.create({
@@ -338,8 +340,8 @@ const styles = StyleSheet.create({
   },
   ModalBox: {
     flex: 1,
-    marginTop: 80,
-    marginBottom: 80,
+    marginTop: 120,
+    marginBottom: 140,
     marginLeft: 40,
     marginRight: 40,
     borderRadius: 10,
@@ -349,8 +351,8 @@ const styles = StyleSheet.create({
   },
   ModalImage: {
     marginTop: 20,
-    height: 160,
-    width: 160,
+    height: 250,
+    width: 250,
     borderRadius: 150,
     alignSelf: "center"
   },

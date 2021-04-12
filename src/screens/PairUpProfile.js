@@ -13,72 +13,78 @@ import ImageCarousel from '../components/imageCarousel'
 import UserInfo from '../components/userInfo'
 import { colors } from "../styles/index.styles"
 
-function Profile(props) {
-  const [user, setUser] = useState(null);
+function PairUpProfile(props) {
+  // const [user, setUser] = useState(null);
   const [profile, setProfile] = useState({});
   const [picURL, setPicURL] = useState([]);
 
   useEffect(() => {
 
-    const fetchData = async () => {
-      try {
-        await props;
-        // await props.fetchUserPartner();
-        const { currentUser, profile } = props;
-        setUser(currentUser);
-        setProfile(profile);
-        setAvatar(profile.pictureURL[0].url)
-      }
-      catch (reject) { }
-    }
+    // const fetchData = async () => {
+    //   try {
+    //     await props;
+    //     await props.fetchUserPartner();
+    //     const { currentUser, profile } = props;
+    //     setUser(currentUser);
+    //     setProfile(profile);
+    //     setAvatar(profile.pictureURL[0].url)
+    //   }
+    //   catch (reject) { }
+    // }
 
     const fetchProfile = async () => {
       try {
-        await props.profile;
-        await props.profile.pictureURL;
-        setUser(props.currentUser);
-        setProfile(props.profile);
-        setPicURL(props.profile.pictureURL);
+        let data = await firebase.firestore()
+        .collection("users")
+        .doc(props.route.params.beaconMatchUID)
+        .collection("userProfile")
+        .doc(props.route.params.beaconMatchUID)
+        .get()
+        
+        setProfile(data.data());
+        setPicURL(data.data().pictureURL);
       }
       catch (r) { }
     }
-
+    
     // null or undefined
-    if (props.currentUser == null) {
-      const fetchUserData = async () => {
-        try {
-          await props.fetchUser()
-          setUser(props.currentUser);
-          console.log("currentUser: ", props.currentUser);
-        }
-        catch (e) {
-          console.log(e);
-        }
-      }
-      fetchUserData();
-    }
-    // if user exists
-    else {
-      fetchProfile()
-    }
+    // if (props.currentUser == null) {
+    //   const fetchUserData = async () => {
+    //     try {
+    //       await props.fetchUser()
+    //       setUser(props.currentUser);
+    //       console.log("currentUser: ", props.currentUser);
+    //     }
+    //     catch (e) {
+    //       console.log(e);
+    //     }
+    //   }
+    //   fetchUserData();
+    // }
+    // // if user exists
+    // else {
+    fetchProfile()
+    // }
 
-  }, [props.profile, picURL])
+  }, [])
 
-  // console.log("###################  Profile Page  ###################")
+  console.log("###################  PairUpProfile  ###################")
   // console.log(picURL);
   // console.log("Frequency:" + profile.frequency);
 
-  const onLogout = () => {
-    firebase.auth().signOut();
-  }
+  // const onLogout = () => {
+  //   firebase.auth().signOut();
+  // }
 
-  if (user === null || picURL.length === 0) {
+  console.log(profile);
+
+  if (picURL.length === 0) {
     return <View style={styles.textContent}>
       <Text style={{ fontSize: 18 }}>Loading...</Text>
     </View>
   }
 
-  console.log(profile);
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -90,29 +96,27 @@ function Profile(props) {
 
       <View style={styles.fabContainer}>
         <Text style={styles.Title}>Profile</Text>
-        <FAB
+        {/* <FAB
           style={styles.fab}
           small
           icon="pen"
           onPress={() => {
             props.navigation.navigate("EditProfile");
           }}
-        />
+        /> */}
       </View>
 
       <View>
-        <UserInfo
-          profile={profile}
-        />
+        <UserInfo profile={profile} />
       </View>
 
-      <View style={styles.logOutBtn}>
+      {/* <View style={styles.logOutBtn}>
         <TouchableOpacity
           onPress={() => onLogout()}
         >
           <Text style={{ fontSize: 18, color: "#fff", fontWeight: "500" }}>Logout</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={{ marginTop: 100, backgroundColor: "#fff" }} />
     </ScrollView>
   )
@@ -158,11 +162,11 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser,
-  profile: store.userState.profile
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile, fetchUser }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Profile)
+// const mapStateToProps = (store) => ({
+//   currentUser: store.userState.currentUser,
+//   profile: store.userState.profile
+// })
+// const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile, fetchUser }, dispatch);
+// export default connect(mapStateToProps, mapDispatchProps)(PairUpProfile)
 
-// export default Profile
+export default PairUpProfile
