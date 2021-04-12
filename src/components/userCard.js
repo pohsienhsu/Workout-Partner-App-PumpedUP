@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -11,66 +11,81 @@ import {
 import { Icon } from 'react-native-elements';
 
 
-function UserCard({modalVisible, setModalVisible, beaconMatch, navigation}) {
-  if (beaconMatch.img == "") {
-    return <View></View>;
+export default class UserCard extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+        show: false
+    };
   }
-  return (
-    <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible)}}>
-      <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
-        <View style={styles.ModalBox}>
-          <Image
-            style={styles.ModalImage}
-            source={{ uri: beaconMatch.img }}
-          />
 
-          <Text style={styles.ModalName}>{beaconMatch.name}</Text>
+  componentDidUpdate(prevProps, prevState) {
+    let clickedOnBeaconMatch = this.props.show == prevProps.show
+    // if (this.props.data == null || this.props.data.length != prevState.data.length || picChanged) {
+    //   this.setState({...prevState, show: this.props.show});
+    // }
+  }
 
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.ModalText}>{beaconMatch.intro}</Text>
-          </View>
+  setShow(show) {
+    this.setState({...this.state, show: show})
+  }
 
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={styles.ModalText}>Gender: {beaconMatch.gender}</Text>
-            <Text style={styles.ModalText}>Age: {beaconMatch.age}</Text>
-            <Text style={styles.ModalText}>Hobbies: {beaconMatch.hobbies}</Text>
-          </View>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 20
-          }}>
-            <View style={styles.IconBoxCheck}>
-              <TouchableOpacity
-                style={styles.IconButton}
-                onPress={() => {
-                  navigation.navigate("PairUp");
-                  setModalVisible(false)
-                }}
-              >
-                <Icon name='check' color='green' />
-              </TouchableOpacity>
+  render() {
+    return (
+      <Modal transparent={true} visible={this.state.show} onRequestClose={() => {this.setShow(!this.state.show)}}>
+        <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
+          <View style={styles.ModalBox}>
+            {/* <Image
+              style={styles.ModalImage}
+              source={{ uri: beaconMatch.img }}
+            /> */}
+  
+            <Text style={styles.ModalName}>{this.props.BeaconMatch.name}</Text>
+  
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.ModalText}>{this.props.BeaconMatch.intro}</Text>
             </View>
-
-            <View style={{ paddingLeft: 40 }} />
-
-            <View style={styles.IconBoxClose}>
-              <TouchableOpacity style={styles.IconButton}
-                onPress={() => {
-                  setModalVisible(false)
-                }}>
-                <Icon name='close' color='red' />
-              </TouchableOpacity>
+  
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={styles.ModalText}>Gender: {this.props.BeaconMatch.gender}</Text>
+              <Text style={styles.ModalText}>Age: {this.props.BeaconMatch.age}</Text>
+              <Text style={styles.ModalText}>Hobbies: {this.props.BeaconMatch.hobbies}</Text>
+            </View>
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 20
+            }}>
+              <View style={styles.IconBoxCheck}>
+                <TouchableOpacity
+                  style={styles.IconButton}
+                  onPress={() => {
+                    this.props.navigation.navigate("PairUp");
+                    setShow(false)
+                  }}
+                >
+                  <Icon name='check' color='green' />
+                </TouchableOpacity>
+              </View>
+  
+              <View style={{ paddingLeft: 40 }} />
+  
+              <View style={styles.IconBoxClose}>
+                <TouchableOpacity style={styles.IconButton}
+                  onPress={() => {
+                    setShow(false)
+                  }}>
+                  <Icon name='close' color='red' />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </Modal>
-  )
+      </Modal>
+    )
+  }
 }
-
-export default UserCard;
 
 const styles = StyleSheet.create({
   container: {

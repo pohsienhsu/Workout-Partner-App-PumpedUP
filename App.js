@@ -19,6 +19,7 @@ import PairUpScreen from "./src/screens/PairUpSuccess";
 import InvitationScreen from "./src/screens/InvitationScreen";
 import EditProfile from "./src/screens/EditProfile";
 import ChatRoom from "./src/screens/ChatRoom";
+import PairUpProfile from "./src/screens/PairUpProfile";
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
@@ -104,6 +105,16 @@ export class App extends Component {
                   backgroundColor: '#313A3A',
                 },
                 headerTintColor: '#fff',
+              }}
+            />
+            <Stack.Screen name="PairUpProfile" component={PairUpProfile} navigation={this.props.navigation}
+              options={{
+                headerShown: true,
+                title: "Profile",
+                headerStyle: {
+                  backgroundColor: '#313A3A',
+                },
+                headerTintColor: '#fff'
               }}
             />
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation}

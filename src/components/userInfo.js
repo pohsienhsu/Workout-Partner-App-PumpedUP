@@ -26,13 +26,10 @@ function UserInfo(props) {
   const [intro, setIntro] = useState("");
   const [name, setName] = useState("");
 
-
-
   useEffect(() => {
     const getProfileData = async () => {
       await props.profile;
     }
-
     getProfileData().then(() => {
       setAge(props.profile.age);
       setGender(props.profile.gender);
@@ -42,15 +39,17 @@ function UserInfo(props) {
       setHobbies(props.profile.hobbies);
       setIntro(props.profile.intro);
       setName(props.profile.name);
+
     })
   }, [props.profile])
 
   let workoutBody = "";
-  let arr = bodyPart;
-  arr.forEach((bp) => {
+  let bp_arr = props.profile.bodyPart;
+  bp_arr.forEach((bp) => {
     workoutBody += `${bp.charAt(0).toUpperCase() + bp.slice(1)}\n`
   })
   workoutBody = workoutBody.trim()
+
 
   return (
     <ScrollView style={styles.view}>
@@ -108,13 +107,15 @@ function UserInfo(props) {
   )
 }
 
-const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser,
-  profile: store.userState.profile,
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile }, dispatch);
+// const mapStateToProps = (store) => ({
+//   currentUser: store.userState.currentUser,
+//   profile: store.userState.profile,
+// })
+// const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchProps)(UserInfo);
+// export default connect(mapStateToProps, mapDispatchProps)(UserInfo);
+
+export default UserInfo;
 
 const colors = {
   uiGray: '#313A3A',
