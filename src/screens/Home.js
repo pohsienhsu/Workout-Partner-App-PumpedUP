@@ -13,6 +13,7 @@ import { fetchUser, fetchUserPref, fetchUserProfile, fetchUserPartner, clearData
 import { Icon } from 'react-native-elements';
 
 import UserCard from "../components/userCard";
+import { basePairingAlg } from "../algorithm/pairingAlg";
 
 import firebase from 'firebase';
 require('firebase/firestore');
@@ -76,7 +77,7 @@ function Home(props) {
         try {
           await props.fetchUser();
           setUser(props.currentUser);
-          console.log("currentUser: ", props.currentUser);
+          // console.log("currentUser: ", props.currentUser);
         }
         catch (e) {
           console.log(e);
@@ -86,7 +87,7 @@ function Home(props) {
     }
     // if user exists
     else {
-      console.log("currentUser: ", props.currentUser);
+      // console.log("currentUser: ", props.currentUser);
       fetchData();
     }
   }, [props.currentUser, props.profile, avatar, props.partners, props.pairingPref, beaconMatch])
@@ -127,39 +128,40 @@ function Home(props) {
       }
 
       if (verify == 0) {
-      await firebase.firestore()
-        .collection("users")
-        .doc(pairingUID)
-        .collection("invitations")
-        .doc(pairingUID)
-        .set({
-          invitation: [
-            ...currentInvitations.data().invitation,
-            { uid: firebase.auth().currentUser.uid, 
-              name: profile.name,
-              age: profile.age,
-              hobbies: profile.hobbies,
-              experience: profile.experience,
-              frequency: profile.frequency,
-              gender: profile.gender,
-              intro: profile.intro,
-              avatar: profile.pictureURL[0].url,
-              bodyPart: profile.bodyPart
-            }
-          ]
-        })
+        await firebase.firestore()
+          .collection("users")
+          .doc(pairingUID)
+          .collection("invitations")
+          .doc(pairingUID)
+          .set({
+            invitation: [
+              ...currentInvitations.data().invitation,
+              {
+                uid: firebase.auth().currentUser.uid,
+                name: profile.name,
+                age: profile.age,
+                hobbies: profile.hobbies,
+                experience: profile.experience,
+                frequency: profile.frequency,
+                gender: profile.gender,
+                intro: profile.intro,
+                avatar: profile.pictureURL[0].url,
+                bodyPart: profile.bodyPart
+              }
+            ]
+          })
 
-      await firebase.firestore()
-        .collection("users")
-        .doc(firebase.auth().currentUser.uid)
-        .collection("sentInvitations")
-        .doc(firebase.auth().currentUser.uid)
-        .set({
-          uid: [
-            ...sentInvitations.data().uid,
-            pairingUID
-          ]
-        })
+        await firebase.firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("sentInvitations")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            uid: [
+              ...sentInvitations.data().uid,
+              pairingUID
+            ]
+          })
       }
     } catch (e) {
       await firebase.firestore()
@@ -182,11 +184,11 @@ function Home(props) {
     <View style={styles.container}>
       {/* {renderImage(avatar)}   */}
       <View>
-        
-          <Image
-            style={styles.profileImage}
-            source={{ uri: avatar }}
-          /> 
+
+        <Image
+          style={styles.profileImage}
+          source={{ uri: avatar }}
+        />
 
       </View>
       <View style={{ paddingTop: 50 }} />
@@ -218,55 +220,25 @@ function Home(props) {
               alreadySent = { uid: [] };
             }
 
-            // let alreadyGetInvited = [];
-
-            // try {
-            //   const getInvitations = await firebase.firestore()
-            //     .collection("users")
-            //     .doc(firebase.auth().currentUser.uid)
-            //     .collection("invitations")
-            //     .doc(firebase.auth().currentUser.uid)
-            //     .get()
-
-            //   for (let i = 0; i < getInvitations.data().invitation.length; i++) {
-            //     alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
-            //   }
-
-            //   // console.log("Already Sent: ", alreadySent);
-            // }
-            // catch (e) {
-            //   console.log("There is no already sent")
-            //   alreadyGetInvited = [];
-            // }
 
             // Get all users
             const users = await firebase.firestore()
               .collection("users")
               .get();
 
-            // console.log("#############################################################")
-            // console.log("################  Start of the Algorithm  ###################")
-            // console.log("#############################################################")
-            // const forLoop = async () => {
-            // for (let user of users) {
             users.forEach(async user => {
 
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
 
               if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
-                // For testing check No.1
-                // console.log("For testing check No.1 : ")
                 console.log('User id: ', user.id, ' Data name:', info.data().name);
 
                 let score = 0
 
-                // BodyPart is an array
-                // console.log("#############  users.forEach --> info  #############")
                 info.data().bodyPart.forEach(bodyInfo => {
                   const bodyScore = 2.75 / pref.bodyPart.length;
                   try {
                     if (pref.bodyPart.includes(bodyInfo)) {
-                      // console.log(`Algorithm BodyPart Successful: ${bodyInfo} / Score: ${score}`)
                       score += bodyScore;
                     }
                   }
@@ -275,8 +247,6 @@ function Home(props) {
                   }
                 })
 
-                // 3/29 update matching algorithm
-                // If testing check No.1 pass, check the following (testing check No.2)
                 for (const [range, boolean] of Object.entries(pref.age)) {
                   if ((range == "18 ~ 25") && boolean) {
                     if ((info.data().age >= 18) && (info.data().age <= 25)) {
@@ -339,17 +309,19 @@ function Home(props) {
                     experience: info.data().experience,
                     frequency: info.data().frequency
                   })
-                  // console.log("BeaconMatch!! Score: ", score)
                 }
               }
             })
+            // const matchedUser = basePairingAlg(pref, bar);
+            // console.log("matchedUser: ", matchedUser)
+            // setBeaconMatch(matchedUser);
+            // console.log("beaconmatch: ", beaconMatch)
+
 
             modalVisible ? setModalVisible(false) : setModalVisible(true);
 
           }}>
           <Text style={styles.boxText}>Beacon Match</Text>
-          {/* <View style={{ paddingTop: 8 }} /> */}
-          {/* <Text style={styles.ButtonText}>+1</Text> */}
         </TouchableOpacity>
 
         <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
@@ -545,7 +517,7 @@ const styles = StyleSheet.create({
   },
   ModalText: {
     color: 'black',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     marginHorizontal: 50
   },
