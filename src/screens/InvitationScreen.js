@@ -220,18 +220,24 @@ function InvitationScreen(props) {
             <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
               <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
                 <View style={styles.ModalBox}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.navigation.navigate("PairUpProfile", { beaconMatchUID: l.uid })
+                      setModalVisible(false);
+                    }}
+                  >
                   <Image
                     style={styles.ModalImage}
                     source={{ uri: l.avatar }}
                   />
-
+                  </TouchableOpacity>
                   <Text style={styles.ModalName}>{l.name}</Text>
 
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ justifyContent: 'flex-start' }}>
                     <Text style={styles.ModalText}>{l.intro}</Text>
                   </View>
 
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ justifyContent: 'flex-start' }}>
                     <Text style={styles.ModalText}>Gender: {l.gender}</Text>
                     <Text style={styles.ModalText}>Age: {l.age}</Text>
                     <Text style={styles.ModalText}>Hobby: {l.hobbies}</Text>
@@ -347,7 +353,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#EF9C2E',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   ModalImage: {
     marginTop: 20,
@@ -360,6 +366,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 24,
     fontWeight: 'bold',
+    alignSelf: "center"
   },
   ModalText: {
     color: 'black',
@@ -374,6 +381,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20
   },
   IconBoxClose: {
     width: 54,
@@ -382,6 +390,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20
   },
   IconButton: {
     width: 50,

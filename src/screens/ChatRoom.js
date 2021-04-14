@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { GiftedChat } from 'react-native-gifted-chat'
-import AsyncStorage from '@react-native-community/async-storage'
-import { StyleSheet, TextInput, View, YellowBox, Button } from 'react-native'
+import { GiftedChat, Bubble, Time } from 'react-native-gifted-chat'
+// import AsyncStorage from '@react-native-community/async-storage'
+// import { StyleSheet, TextInput, View, YellowBox, Button } from 'react-native'
 import * as firebase from 'firebase'
 require('firebase/firestore')
 import { connect } from 'react-redux'
@@ -22,12 +22,12 @@ function ChatRoom(props) {
   const chatsRef = db.collection('userChat').doc(props.route.params.chatID).collection("chat")
 
   useEffect(() => {
-    const readUser = async() => {
+    const readUser = async () => {
       try {
         await props.fetchUserProfile;
-        setUser({_id: firebase.auth().currentUser.uid, name: props.profile.name, avatar: props.profile.pictureURL[0].url});
+        setUser({ _id: firebase.auth().currentUser.uid, name: props.profile.name, avatar: props.profile.pictureURL[0].url });
       }
-      catch (e) {}
+      catch (e) { }
     }
     readUser()
     const unsubscribe = chatsRef.onSnapshot((querySnapshot) => {
@@ -72,29 +72,68 @@ function ChatRoom(props) {
   //     </View>
   //   )
   // }
-  return <GiftedChat messages={messages} user={user} onSend={handleSend} />
+  return <GiftedChat
+    messages={messages}
+    user={user}
+    onSend={handleSend}
+    onPressAvatar={() => {
+      props.navigation.navigate("PairUpProfile", { beaconMatchUID: props.route.params.partnerUID })
+    }}
+    renderBubble={props => {
+      return (
+        <Bubble
+          {...props}
+          wrapperStyle={{
+            left: {
+              backgroundColor: 'orange',
+            },
+          }}
+          textStyle={{
+            left: {
+              color: 'black',
+            },
+          }}
+        />
+      )
+    }}
+    renderTime={props => {
+      return (
+        <Time
+          {...props}
+          timeTextStyle={{
+            right: {
+              color: "white"
+            },
+            left: {
+              color: "black"
+            }
+          }}
+        />
+      );
+    }}
+  />
 }
 
 const mapStateToProps = (store) => ({
   profile: store.userState.profile
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({fetchUserProfile}, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserProfile }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(ChatRoom);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 30,
-  },
-  input: {
-    height: 50,
-    width: '100%',
-    borderWidth: 1,
-    padding: 15,
-    marginBottom: 20,
-    borderColor: 'gray',
-  },
-})
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     padding: 30,
+//   },
+//   input: {
+//     height: 50,
+//     width: '100%',
+//     borderWidth: 1,
+//     padding: 15,
+//     marginBottom: 20,
+//     borderColor: 'gray',
+//   },
+// })

@@ -54,7 +54,7 @@ function Partners(props) {
           onPress={() => {
             // console.log("######## chat List########")
             // console.log(l.chatID)
-            props.navigation.navigate("ChatRoom", {chatID: l.chatID})
+            props.navigation.navigate("ChatRoom", {chatID: l.chatID, partnerUID: l.uid})
           }}
           >
             <Avatar source={{ uri: l.img }} />
