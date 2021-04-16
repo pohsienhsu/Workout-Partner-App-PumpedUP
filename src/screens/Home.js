@@ -296,8 +296,10 @@ function Home(props) {
                   score += 2;
                 }
 
+                let locationMatch = pref.location["In-Person"] == info.data().location["In-Person"] || pref.location["Remote"] == info.data().location["Remote"];
+
                 // BeaconMatch Success
-                if (score >= total) {
+                if (locationMatch && score >= total) {
                   setBeaconMatch({
                     uid: user.id,
                     name: info.data().name,
