@@ -47,7 +47,7 @@ function Home(props) {
   const [pref, setPref] = useState({});
   const [beaconMatch, setBeaconMatch] = useState({
     uid: '',
-    name: 'Sorry, no matches right now!',
+    name: 'No Matches',
     intro: '',
     img: '',
     gender: '',
@@ -393,7 +393,7 @@ function Home(props) {
 
                       setBeaconMatch({
                         uid: '',
-                        name: 'Sorry, no matches right now!',
+                        name: 'No Matches',
                         intro: '',
                         img: '',
                         gender: '',
@@ -519,8 +519,8 @@ const styles = StyleSheet.create({
   },
   ModalBox: {
     flex: 1,
-    marginTop: 40,
-    marginBottom: 40,
+    marginTop: 120,
+    marginBottom: 140,
     marginLeft: 40,
     marginRight: 40,
     borderRadius: 10,
