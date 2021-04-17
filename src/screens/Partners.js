@@ -37,8 +37,7 @@ function Partners(props) {
     </View>
   }
 
-
-  return (
+   return (
     <View>
 
       {/* <SearchBar
