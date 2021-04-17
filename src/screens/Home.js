@@ -47,7 +47,7 @@ function Home(props) {
   const [pref, setPref] = useState({});
   const [beaconMatch, setBeaconMatch] = useState({
     uid: '',
-    name: 'No Matches Available',
+    name: 'Sorry, no matches right now!',
     intro: '',
     img: '',
     gender: '',
@@ -220,6 +220,30 @@ function Home(props) {
               alreadySent = { uid: [] };
             }
 
+            // 4/16 02:00 found someone just covered what I did on last sprint 
+            // =================================================================
+            let alreadyGetInvited = [];
+
+            try {
+              const getInvitations = await firebase.firestore()
+                .collection("users")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("invitations")
+                .doc(firebase.auth().currentUser.uid)
+                .get()
+              
+              for (let i = 0; i < getInvitations.data().invitation.length; i++) {
+                alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
+              }
+
+              // console.log("Already Sent: ", alreadySent);
+            }
+            catch (e) {
+              console.log("There is no already sent")
+              alreadyGetInvited = [];
+            }
+            // =================================================================
+            // 4/16 02:00 found someone just covered what I did on last sprint
 
             // Get all users
             const users = await firebase.firestore()
@@ -230,7 +254,7 @@ function Home(props) {
 
               const info = await firebase.firestore().collection("users").doc(user.id).collection("userProfile").doc(user.id).get();
 
-              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id)) {
+              if (info.exists && user.id != firebase.auth().currentUser.uid && !alreadySent.uid.includes(user.id) && !alreadyGetInvited.includes(user.id)) {
                 console.log('User id: ', user.id, ' Data name:', info.data().name);
 
                 let score = 0
@@ -357,7 +381,7 @@ function Home(props) {
                 justifyContent: 'center',
                 marginBottom: 20
               }}>
-                <View style={styles.IconBoxCheck}>
+                {beaconMatch.uid != "" ? <View style={styles.IconBoxCheck}>
                   <TouchableOpacity
                     style={styles.IconButton}
                     disabled={beaconMatch.uid == ""}
@@ -367,7 +391,7 @@ function Home(props) {
 
                       setBeaconMatch({
                         uid: '',
-                        name: 'No Matches Available',
+                        name: 'Sorry, no matches right now!',
                         intro: '',
                         img: '',
                         gender: '',
@@ -378,7 +402,7 @@ function Home(props) {
                   >
                     <Icon name='check' color='green' />
                   </TouchableOpacity>
-                </View>
+                </View>: null}
 
                 <View style={styles.IconBoxClose}>
                   <TouchableOpacity style={styles.IconButton}
@@ -493,8 +517,8 @@ const styles = StyleSheet.create({
   },
   ModalBox: {
     flex: 1,
-    marginTop: 120,
-    marginBottom: 140,
+    marginTop: 40,
+    marginBottom: 40,
     marginLeft: 40,
     marginRight: 40,
     borderRadius: 10,
