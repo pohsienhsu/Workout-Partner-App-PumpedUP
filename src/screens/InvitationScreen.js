@@ -54,7 +54,6 @@ function InvitationScreen(props) {
         })
       console.log("#####Delete Invitations######")
       console.log("Current Invitations: ", newInvitaion)
-      console.log("AllUser: ", allUser)
       setAllUser(newInvitaion);
       // Delete Sent Invitation from current user
 
@@ -224,11 +223,9 @@ function InvitationScreen(props) {
 
   return (
     <View>
-      {/* <Text>Number of Users {allUser.length}</Text> */}
-
-      <SearchBar
+      {/* <SearchBar
         placeholder="Type Here..."
-      />
+      /> */}
       {
         allUser.map((l, i) => (
           <ListItem key={i} bottomDivider
