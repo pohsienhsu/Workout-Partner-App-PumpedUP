@@ -31,12 +31,11 @@ function Partners(props) {
   }, [props.partners])
 
 
-  if (partners === null) {
+  if (partners.length == 0) {
     return <View style={styles.textContent}>
-      <Text style={{ fontSize: 18 }}>Loading...</Text>
+      <Text style={{ fontSize: 18 }}>Currently No Partners!</Text>
     </View>
   }
-
 
 
   return (

@@ -22,7 +22,7 @@ import { fetchUserProfile, fetchUserInvitation } from "../../redux/actions/index
 function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [profile, setProfile] = useState({})
-  const [allUser, setAllUser] = useState([])
+  const [allUser, setAllUser] = useState(null)
 
   const deleteInvitations = async (pairingUID) => {
     try {
@@ -35,7 +35,7 @@ function InvitationScreen(props) {
         .get()
 
       currentInvitation = currentInvitation.data().invitation
-      console.log("Current Invitation: ", currentInvitation);
+      // console.log("Current Invitation: ", currentInvitation);
 
       let newInvitaion = []
       for (let i of currentInvitation) {
@@ -52,7 +52,9 @@ function InvitationScreen(props) {
         .set({
           invitation: newInvitaion
         })
-
+      console.log("#####Delete Invitations######")
+      console.log("Current Invitations: ", newInvitaion)
+      console.log("AllUser: ", allUser)
       setAllUser(newInvitaion);
       // Delete Sent Invitation from current user
 
@@ -177,7 +179,7 @@ function InvitationScreen(props) {
         //   .get()
         // setAllUser(invitations.data().invitation);
         await props.fetchUserInvitation();
-        setAllUser(props.invitations);
+        setAllUser(props.invitations)
         await props.fetchUserProfile();
         setProfile(props.profile);
 
@@ -193,10 +195,32 @@ function InvitationScreen(props) {
     }
 
     fetchAllUsers()
+    console.log("#######Invitation useEffect#######")
+    console.log("AllUser: ", allUser)
 
-  }, [props.invitations])
+  }, [])
 
-  // console.log(props.invitations)
+  useEffect(() => {
+    setAllUser(allUser)
+  }, [allUser])
+
+  console.log("#########Invitation Screen########")
+
+  if (allUser == null) {
+    return (
+      <View style={styles.textContent}>
+        <Text style={{ fontSize: 14 }} > Loading... </Text>
+      </View>
+    )
+  }
+
+  else if (allUser.length == 0) {
+    return (
+      <View style={styles.textContent}>
+        <Text style={{ fontSize: 16 }} > Currently No Invitations </Text>
+      </View>
+    )
+  }
 
   return (
     <View>
@@ -226,10 +250,10 @@ function InvitationScreen(props) {
                       setModalVisible(false);
                     }}
                   >
-                  <Image
-                    style={styles.ModalImage}
-                    source={{ uri: l.avatar }}
-                  />
+                    <Image
+                      style={styles.ModalImage}
+                      source={{ uri: l.avatar }}
+                    />
                   </TouchableOpacity>
                   <Text style={styles.ModalName}>{l.name}</Text>
 
@@ -255,8 +279,8 @@ function InvitationScreen(props) {
                         style={styles.IconButton}
                         onPress={() => {
                           setModalVisible(false)
-                          deleteInvitations(l.uid);
                           addFriend(l.uid, l.name, l.avatar);
+                          deleteInvitations(l.uid);
                           props.navigation.navigate("PairUp", { pairingImg: l.avatar });
                         }}
                       >
@@ -400,4 +424,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textContent: {
+    alignSelf: "center",
+    justifyContent: "center",
+    flex: 1
+  }
 })
