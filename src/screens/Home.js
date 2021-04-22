@@ -101,23 +101,59 @@ function Home(props) {
 
   const onSentInvitation = async (pairingUID) => {
     // console.log("#############  OnSentInvitation Function   ##############")
-    // console.log(props);
 
-    try {
-      const currentInvitations = await firebase.firestore()
+    let currentInvitations = await firebase.firestore()
+      .collection("users")
+      .doc(pairingUID)
+      .collection("invitations")
+      .doc(pairingUID)
+      .get()
+    console.log("CurrentInvitations: ", currentInvitations.data())
+    if (currentInvitations.data() == undefined) {
+      // For new users
+      await firebase.firestore()
+        .collection("users")
+        .doc(pairingUID)
+        .collection("invitations")
+        .doc(pairingUID)
+        .set({
+          invitation: []
+        })
+      currentInvitations = await firebase.firestore()
         .collection("users")
         .doc(pairingUID)
         .collection("invitations")
         .doc(pairingUID)
         .get()
+    }
 
-      const sentInvitations = await firebase.firestore()
+
+    let sentInvitations = await firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("sentInvitations")
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+    console.log("sentInvitations: ", sentInvitations.data())
+    if (sentInvitations.data() == undefined) {
+      // For new users
+      await firebase.firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("sentInvitations")
+        .doc(firebase.auth().currentUser.uid)
+        .set({
+          uid: []
+        })
+      sentInvitations = await firebase.firestore()
         .collection("users")
         .doc(firebase.auth().currentUser.uid)
         .collection("sentInvitations")
         .doc(firebase.auth().currentUser.uid)
         .get()
+    }
 
+    try {
       let verify = 0
 
       for (let i = 0; i < currentInvitations.data().invitation.length; i++) {
@@ -128,6 +164,18 @@ function Home(props) {
       }
 
       if (verify == 0) {
+        await firebase.firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("sentInvitations")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            uid: [
+              ...sentInvitations.data().uid,
+              pairingUID
+            ]
+          })
+
         await firebase.firestore()
           .collection("users")
           .doc(pairingUID)
@@ -150,31 +198,9 @@ function Home(props) {
               }
             ]
           })
-
-        await firebase.firestore()
-          .collection("users")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("sentInvitations")
-          .doc(firebase.auth().currentUser.uid)
-          .set({
-            uid: [
-              ...sentInvitations.data().uid,
-              pairingUID
-            ]
-          })
       }
-    } catch (e) {
-      await firebase.firestore()
-        .collection("users")
-        .doc(pairingUID)
-        .collection("invitations")
-        .doc(pairingUID)
-        .set({
-          invitation: [
-            { uid: firebase.auth().currentUser.uid, name: profile.name }
-          ]
-        })
     }
+    catch (e) { }
   }
 
   // For Matching algorithm
@@ -231,7 +257,7 @@ function Home(props) {
                 .collection("invitations")
                 .doc(firebase.auth().currentUser.uid)
                 .get()
-              
+
               for (let i = 0; i < getInvitations.data().invitation.length; i++) {
                 alreadyGetInvited.push(getInvitations.data().invitation[i].uid)
               }
@@ -404,7 +430,7 @@ function Home(props) {
                   >
                     <Icon name='check' color='green' />
                   </TouchableOpacity>
-                </View>: null}
+                </View> : null}
 
                 <View style={styles.IconBoxClose}>
                   <TouchableOpacity style={styles.IconButton}

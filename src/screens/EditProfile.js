@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Button } from "react-native"
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Button, Image } from "react-native"
 import {
   Dropdown,
   MultiselectDropdown,
 } from 'sharingan-rn-modal-dropdown';
 import { RadioButton } from 'react-native-paper';
 import BeaconCheckBox from "../components/BeaconCheckBox";
+import * as ImagePicker from 'expo-image-picker';
 
 import { fetchUser, fetchUserPref, fetchUserProfile, clearData } from '../../redux/actions/index';
 
@@ -33,9 +34,11 @@ function EditProfile(props) {
   const [frequency, setFrequency] = useState('3 ~ 5 / week');
   // const [distance, setDistance] = useState(1);
 
-  const [pic1, setPic1] = useState("")
-  const [pic2, setPic2] = useState("")
-  const [pic3, setPic3] = useState("")
+  const [pic1, setPic1] = useState("https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640")
+  const [pic2, setPic2] = useState("https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640")
+  const [pic3, setPic3] = useState("https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640")
+
+  const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
 
   useEffect(() => {
     const { currentUser, pairingPref, profile } = props;
@@ -46,12 +49,6 @@ function EditProfile(props) {
     const fetchProfile = async () => {
       try {
         await profile;
-      }
-      catch (r) { }
-    }
-
-    fetchProfile()
-      .then(() => {
         setGender(profile.gender);
         setExperience(profile.experience);
         setBodyPart(profile.bodyPart);
@@ -66,7 +63,13 @@ function EditProfile(props) {
         setPic1(profile.pictureURL[0].url);
         setPic2(profile.pictureURL[1].url);
         setPic3(profile.pictureURL[2].url);
-      })
+        const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        setHasGalleryPermission(galleryStatus.status === 'granted');
+      }
+      catch (r) { }
+    }
+
+    fetchProfile()
   }, [])
 
   // console.log("#####################  Edit Profile  ######################")
@@ -98,9 +101,68 @@ function EditProfile(props) {
       })
   }
 
+  const pickImage = async (num) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    console.log(result);
+
+    if (!result.cancelled) {
+      const uri = result.uri
+      if (num == 1) {
+        setPic1(uri)
+        uploadImage(num, uri)
+      }
+      else if (num == 2) {
+        setPic2(uri)
+        uploadImage(num, uri)
+      }
+      else if (num == 3) {
+        setPic3(uri)
+        uploadImage(num, uri)
+      }
+    }
+  };
+
+  const uploadImage = async (num, uri) => {
+    const childPath = `pictures/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
+    // console.log(childPath)
+
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    const task = firebase
+      .storage()
+      .ref()
+      .child(childPath)
+      .put(blob);
+
+    const taskProgress = snapshot => {
+      console.log(`transferred: ${snapshot.bytesTransferred}`)
+    }
+
+    const taskCompleted = () => {
+      task.snapshot.ref.getDownloadURL().then((snapshot) => {
+        let profilePicArr = pictureURL
+        profilePicArr[num - 1] = {url: snapshot}
+        setPictureURL(profilePicArr)
+        // console.log(snapshot)
+      })
+    }
+
+    const taskError = snapshot => {
+      console.log(snapshot)
+    }
+
+    task.on("state_changed", taskProgress, taskError, taskCompleted);
+  }
+
   return (
     <ScrollView style={styles.view}>
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
         <Text style={styles.title}>Upload Profile Picture URL</Text>
         <Text style={{ marginHorizontal: 12, marginTop: 10 }}>Pic1 (Avatar)</Text>
         <TextInput
@@ -135,6 +197,46 @@ function EditProfile(props) {
           }}
           value={pic3}
         />
+      </View> */}
+      <View style={styles.container}>
+        <Text style={styles.title}>Profile Image</Text>
+        <Text style={styles.imageDescription}>Press pictures to upload </Text>
+        <View style={styles.imageRow}>
+          <TouchableOpacity
+            onPress={() => {
+              pickImage(1)
+
+            }}
+          >
+            <Image
+              style={styles.image}
+              source={{ uri: pic1 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              pickImage(2)
+              // console.log(pic2)
+            }}
+          >
+            <Image
+              style={styles.image}
+              source={{ uri: pic2 }}
+            />
+
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              pickImage(3)
+
+            }}
+          >
+            <Image
+              style={styles.image}
+              source={{ uri: pic3 }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.container}>
@@ -155,15 +257,6 @@ function EditProfile(props) {
           multiline={true}
         />
       </View>
-
-      {/* <View style={styles.container}>
-        <Text style={styles.title}>Gender</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setGender}
-          value={gender}
-        />
-      </View> */}
 
       <View style={styles.container}>
         <Text style={styles.title}> Gender </Text>
@@ -342,13 +435,32 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
-    paddingLeft: 5
+    paddingLeft: 5,
+    borderRadius: 10
   },
   introInput: {
     height: 120,
     margin: 12,
     borderWidth: 1,
-    paddingLeft: 5
+    paddingLeft: 5,
+    borderRadius: 10
+  },
+  imageRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: "3%"
+  },
+  image: {
+    // marginTop: 20,
+    height: 100,
+    width: 100,
+    // borderRadius: 150,
+    // alignSelf: "center"
+  },
+  imageDescription: {
+    fontSize: 12,
+    color: "grey",
+    marginTop: "5%"
   }
 })
 

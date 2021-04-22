@@ -92,7 +92,9 @@ export class Main extends Component {
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   pairingPref: store.userState.pairingPref,
-  profile: store.userState.profile
+  profile: store.userState.profile, 
+  partners: store.userState.partners,
+  invitations: store.userState.invitations
 })
 
 const mapDispatchProps = (dispatch) => bindActionCreators({ 
