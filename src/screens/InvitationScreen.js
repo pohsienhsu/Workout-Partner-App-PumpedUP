@@ -22,7 +22,7 @@ import { fetchUserProfile, fetchUserInvitation } from "../../redux/actions/index
 function InvitationScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [profile, setProfile] = useState({})
-  const [allUser, setAllUser] = useState([])
+  const [allUser, setAllUser] = useState(null)
 
   const deleteInvitations = async (pairingUID) => {
     try {
@@ -35,7 +35,7 @@ function InvitationScreen(props) {
         .get()
 
       currentInvitation = currentInvitation.data().invitation
-      console.log("Current Invitation: ", currentInvitation);
+      // console.log("Current Invitation: ", currentInvitation);
 
       let newInvitaion = []
       for (let i of currentInvitation) {
@@ -52,7 +52,8 @@ function InvitationScreen(props) {
         .set({
           invitation: newInvitaion
         })
-
+      console.log("#####Delete Invitations######")
+      console.log("Current Invitations: ", newInvitaion)
       setAllUser(newInvitaion);
       // Delete Sent Invitation from current user
 
@@ -177,7 +178,7 @@ function InvitationScreen(props) {
         //   .get()
         // setAllUser(invitations.data().invitation);
         await props.fetchUserInvitation();
-        setAllUser(props.invitations);
+        setAllUser(props.invitations)
         await props.fetchUserProfile();
         setProfile(props.profile);
 
@@ -193,18 +194,38 @@ function InvitationScreen(props) {
     }
 
     fetchAllUsers()
+    console.log("#######Invitation useEffect#######")
+    console.log("AllUser: ", allUser)
 
-  }, [props.invitations])
+  }, [])
 
-  // console.log(props.invitations)
+  useEffect(() => {
+    setAllUser(allUser)
+  }, [allUser])
+
+  console.log("#########Invitation Screen########")
+
+  if (allUser == null) {
+    return (
+      <View style={styles.textContent}>
+        <Text style={{ fontSize: 14 }} > Loading... </Text>
+      </View>
+    )
+  }
+
+  else if (allUser.length == 0) {
+    return (
+      <View style={styles.textContent}>
+        <Text style={{ fontSize: 16 }} > Currently No Invitations </Text>
+      </View>
+    )
+  }
 
   return (
     <View>
-      {/* <Text>Number of Users {allUser.length}</Text> */}
-
-      <SearchBar
+      {/* <SearchBar
         placeholder="Type Here..."
-      />
+      /> */}
       {
         allUser.map((l, i) => (
           <ListItem key={i} bottomDivider
@@ -220,18 +241,24 @@ function InvitationScreen(props) {
             <Modal transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(!modalVisible) }}>
               <View style={{ backgroundColor: '#000000aa', flex: 1 }}>
                 <View style={styles.ModalBox}>
-                  <Image
-                    style={styles.ModalImage}
-                    source={{ uri: l.avatar }}
-                  />
-
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.navigation.navigate("PairUpProfile", { beaconMatchUID: l.uid })
+                      setModalVisible(false);
+                    }}
+                  >
+                    <Image
+                      style={styles.ModalImage}
+                      source={{ uri: l.avatar }}
+                    />
+                  </TouchableOpacity>
                   <Text style={styles.ModalName}>{l.name}</Text>
 
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ justifyContent: 'flex-start' }}>
                     <Text style={styles.ModalText}>{l.intro}</Text>
                   </View>
 
-                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ justifyContent: 'flex-start' }}>
                     <Text style={styles.ModalText}>Gender: {l.gender}</Text>
                     <Text style={styles.ModalText}>Age: {l.age}</Text>
                     <Text style={styles.ModalText}>Hobby: {l.hobbies}</Text>
@@ -249,8 +276,8 @@ function InvitationScreen(props) {
                         style={styles.IconButton}
                         onPress={() => {
                           setModalVisible(false)
-                          deleteInvitations(l.uid);
                           addFriend(l.uid, l.name, l.avatar);
+                          deleteInvitations(l.uid);
                           props.navigation.navigate("PairUp", { pairingImg: l.avatar });
                         }}
                       >
@@ -347,7 +374,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#EF9C2E',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   ModalImage: {
     marginTop: 20,
@@ -360,6 +387,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 24,
     fontWeight: 'bold',
+    alignSelf: "center"
   },
   ModalText: {
     color: 'black',
@@ -374,6 +402,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20
   },
   IconBoxClose: {
     width: 54,
@@ -382,6 +411,7 @@ const styles = StyleSheet.create({
     borderRadius: 150,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 20
   },
   IconButton: {
     width: 50,
@@ -391,4 +421,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textContent: {
+    alignSelf: "center",
+    justifyContent: "center",
+    flex: 1
+  }
 })
